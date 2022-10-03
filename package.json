@@ -1,0 +1,15 @@
+{
+  "name": "userjs-jop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4",
+    "vite": "^3.1.4",
+    "vite-plugin-monkey": "^2.5.1"
+  }
+}

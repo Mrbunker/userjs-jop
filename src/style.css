@@ -1,0 +1,101 @@
+.jop-panel {
+  box-sizing: border-box;
+  position: fixed;
+  top: 37.5%;
+  right: -305px;
+  width: 330px;
+  height: 400px;
+  padding: 35px 35px 35px 60px;
+  border-radius: 15px 0 0 15px;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 26%) 3px 0px 8px;
+  transition: right 200ms ease-in-out;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 0;
+}
+.jop-panel_open {
+  right: 0;
+}
+
+.jop-button {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  outline: 0px;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+  text-decoration: none;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  min-width: 110px;
+  padding: 5px 15px;
+  border-radius: 8px;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  color: #606266;
+  border: 1px solid #dcdfe6;
+}
+.jop-button:visited {
+  color: #606266;
+}
+.jop-button:hover {
+  text-decoration: none;
+  color: #409eff;
+  border: 1px solid #c6e2ff;
+  background-color: #ecf5ff;
+}
+
+.jop-button-loading {
+  position: absolute;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #dcdfe6;
+  border-top-color: transparent;
+  border-radius: 100%;
+  animation: btnLoading infinite 0.75s linear;
+}
+
+.jop-button_green {
+  color: #67c23a !important;
+  background-color: #f0f9eb;
+  border: 1px solid #b3e19d;
+}
+.jop-button_green:hover {
+  color: white !important;
+  background-color: #67c23a;
+}
+
+.jop-button_red {
+  color: #f56c6c !important;
+  background-color: #fef0f0;
+  border: 1px solid #fab6b6;
+}
+.jop-button_red:hover {
+  color: white !important;
+  background-color: #f56c6c;
+}
+
+@keyframes btnLoading {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
