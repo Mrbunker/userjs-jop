@@ -1,17 +1,18 @@
 import { defineConfig } from "vite";
-import monkey, { MonkeyUserScript } from "vite-plugin-monkey";
+import monkey from "vite-plugin-monkey";
+import type { MonkeyUserScript } from "vite-plugin-monkey";
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.0.0",
+  version: "1.0.1",
   license: "MIT",
   name: "JAV 添加跳转在线观看 三合一",
   match: ["*://*.javdb.com/*", "*://*.javbus.com/*", "*://*.javlibrary.com/*"],
   include: /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
   icon: "https://javdb.com/favicon-32x32.png",
-  namespace: "https://greasyfork.org/users/58790",
+  namespace: "https://greasyfork.org/zh-CN/scripts/429173",
   description:
-    "在 JavDB、JavBus、JavLibrart 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否存在可播放资源，资源是否为「字幕」、「无码」等信息。",
+    "在 JavDB、JavBus、JavLibrart 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕",
   connect: [
     "jable.tv",
     "missav.com",
@@ -36,9 +37,7 @@ export default defineConfig({
     monkey({
       entry: "src/index.ts",
       build: { fileName: "jop.user.js" },
-      userscript: {
-        ...UserscriptConfig,
-      },
+      userscript: UserscriptConfig,
     }),
   ],
 });

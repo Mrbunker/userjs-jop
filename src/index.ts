@@ -9,21 +9,22 @@ import "./style.css";
 
 function getCode(cmsName: Cms["name"]) {
   if (cmsName === "javdb") {
-    return document.querySelector<HTMLElement>(`[data-clipboard-text]`)?.dataset
-      .clipboardText as string;
+    return document.querySelector<HTMLElement>(`[data-clipboard-text]`)?.dataset.clipboardText;
   } else if (cmsName === "javbus") {
     return document
       .querySelector<HTMLElement>(`span[style="color:#CC0000;"]`)
-      ?.innerText.replace("复制", "") as string;
+      ?.innerText.replace("复制", "");
   } else {
-    return document.querySelector<HTMLElement>(`#video_id td.text`)?.innerHTML as string;
+    return document.querySelector<HTMLElement>(`#video_id td.text`)?.innerHTML;
   }
 }
 
-export async function main(HOSTNAME: string) {
+export async function main() {
   /** 当前 macth 站点对象 */
-  const cms = matchList.find((item) => item.hostname === HOSTNAME) as Cms;
+  const cms = matchList.find((item) => item.hostname === window.location.hostname) as Cms;
   const CODE = getCode(cms.name);
+  if (CODE === undefined) return;
+
   const panel = createPanel();
 
   /** 禁用部分 */
@@ -39,4 +40,4 @@ export async function main(HOSTNAME: string) {
   });
 }
 
-main(window.location.hostname);
+main();

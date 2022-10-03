@@ -4,6 +4,7 @@ export type Cms = {
   hostname: string;
   panelParentQueryStr: string;
 };
+
 export const matchList: Cms[] = [
   {
     name: "javdb",
