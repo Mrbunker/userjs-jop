@@ -18,6 +18,27 @@
 .jop-panel_open {
   right: 0;
 }
+.jop-button_leakage::after,
+.jop-button_subtitle::before {
+  position: absolute;
+  font-size: 10px;
+  padding: 4px;
+  border-radius: 4px;
+  top: -8px;
+  line-height: 0.75;
+  color: white;
+  background: #67c23a;
+}
+
+.jop-button_subtitle::before {
+  content: "字幕";
+  right: -10px;
+}
+
+.jop-button_leakage::after {
+  content: "无码";
+  right: 18px;
+}
 
 .jop-button {
   display: inline-flex;
