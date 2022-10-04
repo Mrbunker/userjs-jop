@@ -1,5 +1,9 @@
-export function createPanel() {
-  const parentNode = document.querySelector("body");
+import type { Cms } from "./matchList";
+
+export function createPanel(cms: Cms) {
+  const parentNode = document.querySelector(cms.panelParentQueryStr);
+  // const removeNode =
+  parentNode?.remove();
   const panelNode = document.createElement("div");
   parentNode && parentNode.appendChild(panelNode);
   panelNode.classList.add("jop-panel");

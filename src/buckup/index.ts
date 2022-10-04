@@ -1,23 +1,11 @@
-import { createButtonNode, createPanel } from "./createNode";
-import { matchList } from "./matchList";
-import { siteList } from "./siteList";
-import { xhr } from "./xhr";
+import { createButtonNode, createPanel } from "./utils/createNode";
+import { matchList } from "./utils/matchList";
+import { siteList } from "./utils/siteList";
+import { xhr } from "./utils/xhr";
 
-import type { Cms } from "./matchList";
+import type { Cms } from "./utils/matchList";
 
 import "./style.css";
-
-function getCode(cmsName: Cms["name"]) {
-  if (cmsName === "javdb") {
-    return document.querySelector<HTMLElement>(`[data-clipboard-text]`)?.dataset.clipboardText;
-  } else if (cmsName === "javbus") {
-    return document
-      .querySelector<HTMLElement>(`span[style="color:#CC0000;"]`)
-      ?.innerText.replace("复制", "");
-  } else {
-    return document.querySelector<HTMLElement>(`#video_id td.text`)?.innerHTML;
-  }
-}
 
 export async function main() {
   /** 当前 macth 站点对象 */
@@ -25,7 +13,7 @@ export async function main() {
   const CODE = getCode(cms.name);
   if (CODE === undefined) return;
 
-  const panel = createPanel();
+  const panel = createPanel(cms);
 
   /** 禁用部分 */
   const envSiteList = siteList.filter((item) => item.disable !== cms.name);

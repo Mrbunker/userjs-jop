@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
-import monkey from "vite-plugin-monkey";
+import monkey, { cdn } from "vite-plugin-monkey";
+import preact from "@preact/preset-vite";
 import type { MonkeyUserScript } from "vite-plugin-monkey";
 
 const UserscriptConfig: MonkeyUserScript = {
@@ -34,9 +35,16 @@ const UserscriptConfig: MonkeyUserScript = {
 
 export default defineConfig({
   plugins: [
+    preact(),
     monkey({
-      entry: "src/index.ts",
-      build: { fileName: "jop.user.js" },
+      entry: "src/main.tsx",
+      build: {
+        fileName: "jop.user.js",
+        externalGlobals: {
+          preact: cdn.jsdelivr("preact", "dist/preact.min.js"),
+        },
+      },
+
       userscript: UserscriptConfig,
     }),
   ],

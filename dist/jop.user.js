@@ -10,6 +10,7 @@
 // @match        *://*.javdb.com/*
 // @match        *://*.javbus.com/*
 // @match        *://*.javlibrary.com/*
+// @require      https://cdn.jsdelivr.net/npm/preact@10.11.0/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
 // @connect      javhhh.com
@@ -25,69 +26,153 @@
 // @connect      javfc2.net
 // @connect      paipancon.com
 // @connect      ggjav.com
-// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(e=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=e,document.head.appendChild(o)})('.jop-panel{box-sizing:border-box;position:fixed;top:37.5%;right:-305px;width:330px;height:400px;padding:35px 35px 35px 60px;border-radius:15px 0 0 15px;background-color:#fff;box-shadow:#00000042 3px 0 8px;transition:right .2s ease-in-out;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 0}.jop-panel_open{right:0}.jop-button_leakage:after,.jop-button_subtitle:before{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-8px;line-height:.75;color:#fff;background:#67c23a}.jop-button_subtitle:before{content:"\\5b57\\5e55";right:-10px}.jop-button_leakage:after{content:"\\65e0\\7801";right:18px}.jop-button{display:inline-flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;position:relative;box-sizing:border-box;-webkit-tap-highlight-color:transparent;background-color:transparent;outline:0px;cursor:pointer;user-select:none;vertical-align:middle;appearance:none;text-decoration:none;font-family:Roboto,Helvetica,Arial,sans-serif;font-weight:500;font-size:14px;line-height:1.75;letter-spacing:.02857em;min-width:110px;padding:5px 15px;border-radius:8px;transition:background-color .25s cubic-bezier(.4,0,.2,1) 0ms,box-shadow .25s cubic-bezier(.4,0,.2,1) 0ms,border-color .25s cubic-bezier(.4,0,.2,1) 0ms,color .25s cubic-bezier(.4,0,.2,1) 0ms;color:#606266;border:1px solid #dcdfe6}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button-loading{position:absolute;left:5px;width:8px;height:8px;border:1px solid #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite .75s linear}.jop-button_green{color:#67c23a!important;background-color:#f0f9eb;border:1px solid #b3e19d}.jop-button_green:hover{color:#fff!important;background-color:#67c23a}.jop-button_red{color:#f56c6c!important;background-color:#fef0f0;border:1px solid #fab6b6}.jop-button_red:hover{color:#fff!important;background-color:#f56c6c}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}');
+(e=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=e,document.head.appendChild(o)})('.jop-panelParent{position:relative}.jop-panel{box-sizing:border-box;position:absolute;top:0;left:1rem;width:100%;height:100%;z-index:10;border-radius:15px 0 0 15px;background-color:#fff;box-shadow:#00000042 -3px 0 8px;transition:right .2s ease-in-out;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 0}.jop-panel_open{right:0}.jop-button_leakage:after,.jop-button_subtitle:before{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-8px;line-height:.75;color:#fff;background:#67c23a}.jop-button_subtitle:before{content:"\\5b57\\5e55";right:-10px}.jop-button_leakage:after{content:"\\65e0\\7801";right:18px}.jop-button{display:inline-flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;position:relative;box-sizing:border-box;-webkit-tap-highlight-color:transparent;background-color:transparent;outline:0px;cursor:pointer;user-select:none;vertical-align:middle;appearance:none;text-decoration:none;font-family:Roboto,Helvetica,Arial,sans-serif;font-weight:500;font-size:14px;line-height:1.75;letter-spacing:.02857em;min-width:110px;padding:5px 15px;border-radius:8px;transition:background-color .25s cubic-bezier(.4,0,.2,1) 0ms,box-shadow .25s cubic-bezier(.4,0,.2,1) 0ms,border-color .25s cubic-bezier(.4,0,.2,1) 0ms,color .25s cubic-bezier(.4,0,.2,1) 0ms;color:#606266;border:1px solid #dcdfe6}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button-loading{position:absolute;left:5px;width:8px;height:8px;border:1px solid #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite .75s linear}.jop-button_green{color:#67c23a!important;background-color:#f0f9eb;border:1px solid #b3e19d}.jop-button_green:hover{color:#fff!important;background-color:#67c23a}.jop-button_red{color:#f56c6c!important;background-color:#fef0f0;border:1px solid #fab6b6}.jop-button_red:hover{color:#fff!important;background-color:#f56c6c}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}');
 
-var vite_plugin_monkey_a18d479d16c8e = function(exports) {
-  var _a, _b;
+(function(preact2) {
   "use strict";
-  function createPanel() {
-    const parentNode = document.querySelector("body");
-    const panelNode = document.createElement("div");
-    parentNode && parentNode.appendChild(panelNode);
-    panelNode.classList.add("jop-panel");
-    panelNode.addEventListener("click", () => {
-      const class1 = panelNode.classList[1];
-      if (class1 === void 0) {
-        panelNode.classList.add("jop-panel_open");
-      } else {
-        panelNode.classList.remove("jop-panel_open");
-      }
-    });
-    return panelNode;
-  }
-  function createButtonNode(panelNode, siteName, siteUrl) {
-    const button = document.createElement("a");
-    button.setAttribute("target", "_blank");
-    button.classList.add("jop-button");
-    button.innerHTML = siteName;
-    button.href = siteUrl;
-    button.addEventListener("click", (e) => e.stopPropagation());
-    panelNode.appendChild(button);
-    const loadAni = document.createElement("span");
-    loadAni.classList.add("jop-button-loading");
-    button.appendChild(loadAni);
-    const setButtonStatus = (targetLink, color, hasLeakage = false, hasSubtitle = false) => {
-      button.href = targetLink;
-      button.classList.add(`jop-button_${color}`);
-      loadAni.classList.remove("jop-button-loading");
-      hasLeakage && button.classList.add("jop-button_leakage");
-      hasSubtitle && button.classList.add("jop-button_subtitle");
-    };
-    return { button, setButtonStatus };
-  }
   const matchList = [
     {
       name: "javdb",
       enable: true,
       hostname: "javdb.com",
-      panelParentQueryStr: "video-meta-panel"
-    },
-    {
-      name: "javbus",
-      enable: true,
-      hostname: "www.javbus.com",
-      panelParentQueryStr: "div.row.movie"
-    },
-    {
-      name: "javlib",
-      enable: true,
-      hostname: "www.javlibrary.com",
-      panelParentQueryStr: "#video_jacket_info"
+      panelParentQueryStr: ".video-meta-panel .column:nth-child(2)",
+      infoPanelQueryStr: "video-meta-panel"
     }
   ];
+  function getInfo(cmsName) {
+    var _a;
+    if (cmsName === "javdb") {
+      const codeNode = document.querySelector(`[data-clipboard-text]`);
+      const actorNode = document.querySelector(`.panel-block>span.value>a`);
+      return {
+        codeText: codeNode == null ? void 0 : codeNode.dataset.clipboardText,
+        codeLink: codeNode == null ? void 0 : codeNode.href,
+        actorText: actorNode == null ? void 0 : actorNode.innerHTML,
+        actorLink: actorNode == null ? void 0 : actorNode.href
+      };
+    } else if (cmsName === "javbus") {
+      const codeNode = document.querySelector(`span[style="color:#CC0000;"]`);
+      document.querySelector(`.panel-block>span.value>a`);
+      return {
+        codeText: codeNode == null ? void 0 : codeNode.innerText.replace("\u590D\u5236", ""),
+        codeLink: "",
+        actorText: "",
+        actorLink: ""
+      };
+    } else {
+      return {
+        codeText: (_a = document.querySelector(`#video_id td.text`)) == null ? void 0 : _a.innerHTML,
+        codeLink: "",
+        actorText: "",
+        actorLink: ""
+      };
+    }
+  }
+  const style = "";
+  var r, u, i, o$1, f = 0, c = [], e = [], a = preact2.options.__b, v = preact2.options.__r, l = preact2.options.diffed, m = preact2.options.__c, d = preact2.options.unmount;
+  function p(t, r2) {
+    preact2.options.__h && preact2.options.__h(u, t, f || r2), f = 0;
+    var i2 = u.__H || (u.__H = { __: [], __h: [] });
+    return t >= i2.__.length && i2.__.push({ __V: e }), i2.__[t];
+  }
+  function y(n) {
+    return f = 1, h(C, n);
+  }
+  function h(n, t, i2) {
+    var o2 = p(r++, 2);
+    if (o2.t = n, !o2.__c && (o2.__ = [i2 ? i2(t) : C(void 0, t), function(n2) {
+      var t2 = o2.__N ? o2.__N[0] : o2.__[0], r2 = o2.t(t2, n2);
+      t2 !== r2 && (o2.__N = [r2, o2.__[1]], o2.__c.setState({}));
+    }], o2.__c = u, !u.u)) {
+      u.u = true;
+      var f2 = u.shouldComponentUpdate;
+      u.shouldComponentUpdate = function(n2, t2, r2) {
+        if (!o2.__c.__H)
+          return true;
+        var u2 = o2.__c.__H.__.filter(function(n3) {
+          return n3.__c;
+        });
+        if (u2.every(function(n3) {
+          return !n3.__N;
+        }))
+          return !f2 || f2.call(this, n2, t2, r2);
+        var i3 = false;
+        return u2.forEach(function(n3) {
+          if (n3.__N) {
+            var t3 = n3.__[0];
+            n3.__ = n3.__N, n3.__N = void 0, t3 !== n3.__[0] && (i3 = true);
+          }
+        }), !!i3 && (!f2 || f2.call(this, n2, t2, r2));
+      };
+    }
+    return o2.__N || o2.__;
+  }
+  function g() {
+    for (var t; t = c.shift(); )
+      if (t.__P && t.__H)
+        try {
+          t.__H.__h.forEach(w), t.__H.__h.forEach(z), t.__H.__h = [];
+        } catch (r2) {
+          t.__H.__h = [], preact2.options.__e(r2, t.__v);
+        }
+  }
+  preact2.options.__b = function(n) {
+    "function" != typeof n.type || n.o || n.type === preact2.Fragment ? n.o || (n.o = n.__ && n.__.o ? n.__.o : "") : n.o = (n.__ && n.__.o ? n.__.o : "") + (n.__ && n.__.__k ? n.__.__k.indexOf(n) : 0), u = null, a && a(n);
+  }, preact2.options.__r = function(n) {
+    v && v(n), r = 0;
+    var t = (u = n.__c).__H;
+    t && (i === u ? (t.__h = [], u.__h = [], t.__.forEach(function(n2) {
+      n2.__N && (n2.__ = n2.__N), n2.__V = e, n2.__N = n2.i = void 0;
+    })) : (t.__h.forEach(w), t.__h.forEach(z), t.__h = [])), i = u;
+  }, preact2.options.diffed = function(t) {
+    l && l(t);
+    var r2 = t.__c;
+    r2 && r2.__H && (r2.__H.__h.length && (1 !== c.push(r2) && o$1 === preact2.options.requestAnimationFrame || ((o$1 = preact2.options.requestAnimationFrame) || k)(g)), r2.__H.__.forEach(function(n) {
+      n.i && (n.__H = n.i), n.__V !== e && (n.__ = n.__V), n.i = void 0, n.__V = e;
+    })), i = u = null;
+  }, preact2.options.__c = function(t, r2) {
+    r2.some(function(t2) {
+      try {
+        t2.__h.forEach(w), t2.__h = t2.__h.filter(function(n) {
+          return !n.__ || z(n);
+        });
+      } catch (u2) {
+        r2.some(function(n) {
+          n.__h && (n.__h = []);
+        }), r2 = [], preact2.options.__e(u2, t2.__v);
+      }
+    }), m && m(t, r2);
+  }, preact2.options.unmount = function(t) {
+    d && d(t);
+    var r2, u2 = t.__c;
+    u2 && u2.__H && (u2.__H.__.forEach(function(n) {
+      try {
+        w(n);
+      } catch (n2) {
+        r2 = n2;
+      }
+    }), u2.__H = void 0, r2 && preact2.options.__e(r2, u2.__v));
+  };
+  var j = "function" == typeof requestAnimationFrame;
+  function k(n) {
+    var t, r2 = function() {
+      clearTimeout(u2), j && cancelAnimationFrame(t), setTimeout(n);
+    }, u2 = setTimeout(r2, 100);
+    j && (t = requestAnimationFrame(r2));
+  }
+  function w(n) {
+    var t = u, r2 = n.__c;
+    "function" == typeof r2 && (n.__c = void 0, r2()), u = t;
+  }
+  function z(n) {
+    var t = u;
+    n.__c = n.__(), u = t;
+  }
+  function C(n, t) {
+    return "function" == typeof t ? t(n) : t;
+  }
   const print = (name) => {
     console.log(name);
   };
@@ -97,7 +182,9 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       hostname: "jable.tv",
       url: "https://jable.tv/videos/{{code}}/",
       fetcher: "get",
-      domQuery: { subQuery: ".header-right>h6" },
+      domQuery: {
+        subQuery: ".header-right>h6"
+      },
       method: print
     },
     {
@@ -116,7 +203,10 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       hostname: "netflav.com",
       url: "https://netflav.com/search?type=title&keyword={{code}}",
       fetcher: "parser",
-      domQuery: { linkQuery: ".grid_cell>a", titleQuery: ".grid_cell>a>.grid_title" },
+      domQuery: {
+        linkQuery: ".grid_cell>a",
+        titleQuery: ".grid_cell>a>.grid_title"
+      },
       method: print
     },
     {
@@ -146,7 +236,10 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       hostname: "bestjavporn.com",
       url: "https://www3.bestjavporn.com/search/{{code}}",
       fetcher: "parser",
-      domQuery: { linkQuery: "article.thumb-block>a", titleQuery: "article.thumb-block>a" },
+      domQuery: {
+        linkQuery: "article.thumb-block>a",
+        titleQuery: "article.thumb-block>a"
+      },
       method: print
     },
     {
@@ -164,7 +257,10 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       hostname: "jav.guru",
       url: "https://jav.guru/?s={{code}}",
       fetcher: "parser",
-      domQuery: { linkQuery: ".imgg>a[href]", titleQuery: ".inside-article>.grid1 a[title]" },
+      domQuery: {
+        linkQuery: ".imgg>a[href]",
+        titleQuery: ".inside-article>.grid1 a[title]"
+      },
       method: print
     },
     {
@@ -218,7 +314,10 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       hostname: "av01.tv",
       url: "https://www.av01.tv/search/videos?search_query={{code}}",
       fetcher: "parser",
-      domQuery: { linkQuery: "div[id].well-sm>a", titleQuery: ".video-views>.pull-left" },
+      domQuery: {
+        linkQuery: "div[id].well-sm>a",
+        titleQuery: ".video-views>.pull-left"
+      },
       method: print
     },
     {
@@ -231,130 +330,65 @@ var vite_plugin_monkey_a18d479d16c8e = function(exports) {
       method: print
     }
   ];
-  var r = (_a = Reflect.get(document, "__monkeyWindow")) != null ? _a : window;
-  r.GM;
-  r.unsafeWindow = (_b = r.unsafeWindow) != null ? _b : window;
-  r.unsafeWindow;
-  r.GM_info;
-  r.GM_cookie;
-  var b = (...e) => r.GM_xmlhttpRequest(...e);
-  function videoPageParser(responseText, { subQuery, leakQuery, videoQuery }) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const subNode = subQuery ? doc.querySelector(subQuery) : "";
-    const subNodeText = subNode ? subNode.innerHTML : "";
-    const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
-    const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
-    return {
-      isSuccess: !!videoNode,
-      hasSubtitle: subNodeText.includes("\u5B57\u5E55") || subNodeText.includes("subtitle"),
-      hasLeakage: !!leakNode
-    };
+  var _ = 0;
+  function o(o2, e2, n, t, f2) {
+    var l2, s, u2 = {};
+    for (s in e2)
+      "ref" == s ? l2 = e2[s] : u2[s] = e2[s];
+    var a2 = { type: o2, props: u2, key: n, ref: l2, __k: null, __: null, __b: 0, __e: null, __d: void 0, __c: null, __h: null, constructor: void 0, __v: --_, __source: f2, __self: t };
+    if ("function" == typeof o2 && (l2 = o2.defaultProps))
+      for (s in l2)
+        void 0 === u2[s] && (u2[s] = l2[s]);
+    return preact2.options.vnode && preact2.options.vnode(a2), a2;
   }
-  function serachPageParser(responseText, { linkQuery, titleQuery, listIndex = 0, spaceCode = false }, siteHostName, CODE) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
-    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
-    const titleNodeText = titleNode ? titleNode == null ? void 0 : titleNode.outerHTML : "";
-    function query() {
-      const envCodeWithSpace = spaceCode ? CODE.replace("-", " ") : CODE;
-      const condition = linkNode && titleNode && (titleNodeText.includes(envCodeWithSpace) || titleNodeText.includes(CODE));
-      if (condition) {
-        return {
-          isSuccess: true,
-          targetLink: linkNode.href.replace(linkNode.hostname, siteHostName),
-          hasLeakage: titleNodeText.includes("\u65E0\u7801") || titleNodeText.includes("Uncensored"),
-          hasSubtitle: titleNodeText.includes("\u5B57\u5E55") || titleNodeText.includes("subtitle")
-        };
-      } else {
-        return { targetLink: "", isSuccess: false };
-      }
-    }
-    return query();
-  }
-  async function xhr(siteItem, siteUrl, CODE) {
-    const xhrPromise = new Promise((resolve) => {
-      b({
-        method: "GET",
-        url: siteUrl,
-        onload: (response) => {
-          if (siteItem.fetcher === "get") {
-            if (response.status === 404) {
-              resolve({
-                isSuccess: false,
-                targetLink: siteUrl,
-                name: siteItem.name,
-                msg: "\u5E94\u8BE5\u662F\u6CA1\u6709\u8D44\u6E90"
-              });
-            } else {
-              const { hasSubtitle, hasLeakage, isSuccess } = videoPageParser(
-                response.responseText,
-                siteItem.domQuery
-              );
-              resolve({
-                isSuccess,
-                targetLink: siteUrl,
-                name: siteItem.name,
-                hasSubtitle,
-                hasLeakage,
-                msg: "[get]\uFF0C\u5B58\u5728\u8D44\u6E90"
-              });
-            }
-          } else if (siteItem.fetcher === "parser") {
-            const { targetLink, isSuccess, hasLeakage, hasSubtitle } = serachPageParser(
-              response.responseText,
-              siteItem.domQuery,
-              siteItem.hostname,
-              CODE
-            );
-            resolve({
-              name: siteItem.name,
-              isSuccess,
-              targetLink: isSuccess ? targetLink : siteUrl,
-              hasSubtitle,
-              hasLeakage,
-              msg: "[parser]\u5B58\u5728\u8D44\u6E90"
-            });
-          }
-        },
-        onerror: (error) => {
-          resolve({
-            isSuccess: false,
-            targetLink: siteUrl,
-            name: siteItem.name,
-            msg: error.error
-          });
-        }
-      });
+  const Info = ({
+    info
+  }) => {
+    console.log(info);
+    return o("div", {
+      children: [o("a", {
+        href: info.codeLink,
+        children: ["\u756A\u53F7:", info.codeText]
+      }), o("a", {
+        href: info.actorLink,
+        children: ["\u6F14\u5458:", info.actorText]
+      })]
     });
-    return xhrPromise;
-  }
-  const style = "";
-  function getCode(cmsName) {
-    var _a2, _b2, _c;
-    if (cmsName === "javdb") {
-      return (_a2 = document.querySelector(`[data-clipboard-text]`)) == null ? void 0 : _a2.dataset.clipboardText;
-    } else if (cmsName === "javbus") {
-      return (_b2 = document.querySelector(`span[style="color:#CC0000;"]`)) == null ? void 0 : _b2.innerText.replace("\u590D\u5236", "");
-    } else {
-      return (_c = document.querySelector(`#video_id td.text`)) == null ? void 0 : _c.innerHTML;
-    }
-  }
-  async function main() {
+  };
+  const Panel = function({
+    cms,
+    info
+  }) {
+    siteList.filter((item) => item.disable !== cms.name);
+    const [showPanel, setShowPanel] = y(true);
+    return o(preact2.Fragment, {
+      children: [o("div", {
+        style: {
+          position: "absolute",
+          zIndex: 11
+        },
+        onClick: () => setShowPanel(!showPanel),
+        children: "\u5173\u6389"
+      }), showPanel && o("div", {
+        className: "jop-panel",
+        children: o(Info, {
+          info
+        })
+      })]
+    });
+  };
+  function main() {
     const cms = matchList.find((item) => item.hostname === window.location.hostname);
-    const CODE = getCode(cms.name);
+    const info = getInfo(cms.name);
+    const CODE = info.codeText;
     if (CODE === void 0)
       return;
-    const panel = createPanel();
-    const envSiteList = siteList.filter((item) => item.disable !== cms.name);
-    envSiteList.forEach(async (siteItem) => {
-      const siteUrl = siteItem.url.replace("{{code}}", CODE);
-      const { setButtonStatus } = createButtonNode(panel, siteItem.name, siteUrl);
-      const { isSuccess, hasLeakage, hasSubtitle, targetLink } = await xhr(siteItem, siteUrl, CODE);
-      setButtonStatus(targetLink, isSuccess ? "green" : "red", hasLeakage, hasSubtitle);
-    });
+    const panelParent = document.querySelector(cms.panelParentQueryStr);
+    panelParent == null ? void 0 : panelParent.classList.add("jop-panelParent");
+    panelParent && preact2.render(o(Panel, {
+      cms,
+      info
+    }), panelParent);
   }
   main();
-  exports.main = main;
-  Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-  return exports;
-}({});
+})(preact);
