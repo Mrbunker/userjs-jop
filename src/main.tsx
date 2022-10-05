@@ -1,9 +1,6 @@
 import { render } from "preact";
-import { xhr } from "./utils/xhr";
 import { Cms, matchList } from "./utils/matchList";
-import { siteList } from "./utils/siteList";
 import { getInfos } from "./utils/getInfos";
-import { createButtonNode, createPanel } from "./utils/createNode";
 import "./style.css";
 
 import Panel from "./components/Panel";
@@ -13,22 +10,22 @@ import Panel from "./components/Panel";
 
 function main() {
   /** 当前 macth 站点对象 */
-  const cms = matchList.find((item) => item.hostname === window.location.hostname) as Cms;
-  cms.method();
+  const cms = matchList.find((item) => item.hostname.includes(window.location.hostname)) as Cms;
   const infos = getInfos(cms);
   const CODE = infos.codeText;
   if (CODE === undefined) return;
+  cms.method();
 
-  const panelParent = document.querySelector(cms.panelParentQueryStr);
+  const panelParent = document.querySelector(cms.panelParentQueryStr) as Element;
   panelParent?.classList.add("jop-panelParent");
-  panelParent &&
-    render(
-      <Panel
-        cms={cms}
-        infos={infos}
-      />,
-      panelParent,
-    );
+  render(
+    <Panel
+      cms={cms}
+      CODE={CODE}
+      infos={infos}
+    />,
+    panelParent,
+  );
 }
 
 main();

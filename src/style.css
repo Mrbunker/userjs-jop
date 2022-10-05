@@ -5,30 +5,42 @@
   box-sizing: border-box;
   position: absolute;
   top: 0;
-  /* left: 10px; */
   right: -3px;
   width: 100%;
   height: 100%;
-  z-index: 10;
-  padding: 20px;
-  border-radius: 15px 0 0 15px;
+  z-index: 1;
+  padding: 17.5px;
+  /* border-radius: 15px 0 0 15px; */
   background-color: white;
-  box-shadow: rgb(0 0 0 / 26%) -3px 0px 8px;
+  /* box-shadow: rgb(0 0 0 / 26%) -3px 0px 8px; */
   transition: right 200ms ease-in-out;
 }
-
+.jop-closeBtn {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  right: 10px;
+  z-index: 1;
+}
+.jop-closeBtn-svg {
+  height: 40px;
+}
 .jop-info {
   color: black;
-  text-align: right;
+  /* text-align: right; */
   height: 30px;
 }
 .jop-info-code {
+  margin-bottom: 20px;
   color: #3272dc;
   font-size: 30px;
   cursor: pointer;
   font-family: system-ui, -apple-system;
   font-weight: bolder;
   font-style: italic;
+}
+.jop-info-actor {
+  margin-top: 6px;
 }
 .jop-info-actor-item {
   padding: 3px 6px;
@@ -37,65 +49,29 @@
   border: 1px solid #d9ecff;
   border-radius: 4px;
 }
-.jop-info-actor-more {
-  font-size: 0.8em;
-}
 .jop-list {
+  position: absolute;
+  top: 115px;
+  width: 90%;
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px 0;
-}
-.jop-list_open {
-  right: 0;
-}
-.jop-button_leakage::after,
-.jop-button_subtitle::before {
-  position: absolute;
-  font-size: 10px;
-  padding: 4px;
-  border-radius: 4px;
-  top: -8px;
-  line-height: 0.75;
-  color: white;
-  background: #67c23a;
-}
-
-.jop-button_subtitle::before {
-  content: "字幕";
-  right: -10px;
-}
-
-.jop-button_leakage::after {
-  content: "无码";
-  right: 18px;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .jop-button {
-  display: inline-flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-  background-color: transparent;
-  outline: 0px;
-  cursor: pointer;
-  user-select: none;
-  vertical-align: middle;
-  appearance: none;
-  text-decoration: none;
+  min-width: 120px;
+  padding: 3px 10px;
+  border-radius: 8px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: 500;
   font-size: 14px;
-  line-height: 1.75;
-  letter-spacing: 0.02857em;
-  min-width: 110px;
-  padding: 5px 15px;
-  border-radius: 8px;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
@@ -113,15 +89,16 @@
   background-color: #ecf5ff;
 }
 
-.jop-button-loading {
+.jop-button_label {
   position: absolute;
-  left: 5px;
-  width: 8px;
-  height: 8px;
-  border: 1px solid #dcdfe6;
-  border-top-color: transparent;
-  border-radius: 100%;
-  animation: btnLoading infinite 0.75s linear;
+  font-size: 10px;
+  padding: 4px;
+  border-radius: 4px;
+  top: -8px;
+  right: -10px;
+  line-height: 0.75;
+  color: white;
+  background: #67c23a;
 }
 
 .jop-button_green {
@@ -144,6 +121,16 @@
   background-color: #f56c6c;
 }
 
+.jop-loading {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 10px;
+  border: 2px dashed #dcdfe6;
+  border-top-color: transparent;
+  border-radius: 100%;
+  animation: btnLoading infinite 1s linear;
+}
 @keyframes btnLoading {
   0% {
     transform: rotate(0);

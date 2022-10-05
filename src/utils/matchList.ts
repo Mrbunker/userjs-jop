@@ -2,7 +2,7 @@
 export type Cms = {
   name: "javdb" | "javbus" | "javlib";
   enable: boolean;
-  hostname: string;
+  hostname: string[];
   panelParentQueryStr: string;
   codeQueryStr: string;
   actorQueryStr: string;
@@ -12,16 +12,22 @@ export const matchList: Cms[] = [
   {
     name: "javdb",
     enable: true,
-    hostname: "javdb.com",
+    hostname: ["javdb.com"],
     panelParentQueryStr: ".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)",
-    codeQueryStr: `span[style="color:#CC0000;"]`,
+    codeQueryStr: `[data-clipboard-text]`,
     actorQueryStr: `span.value>a[href^="/actors"]`,
     method() {},
   },
   {
     name: "javbus",
     enable: true,
-    hostname: "www.javbus.com",
+    hostname: [
+      "www.javbus.com",
+      "www.seejav.one",
+      "www.seejav.cc",
+      "www.javsee.me",
+      "www.javsee.in",
+    ],
     panelParentQueryStr: ".movie>div.info",
     codeQueryStr: `span[style="color:#CC0000;"]`,
     actorQueryStr: `.genre>a`,
@@ -38,8 +44,8 @@ export const matchList: Cms[] = [
   {
     name: "javlib",
     enable: true,
-    hostname: "www.javlibrary.com",
-    panelParentQueryStr: "#video_jacket_info",
+    hostname: ["www.javlibrary.com", "www.javlib.com"],
+    panelParentQueryStr: "#video_jacket_info #video_info",
     codeQueryStr: `#video_id td.text`,
     actorQueryStr: `.cast>.star>a`,
     method() {},

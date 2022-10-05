@@ -1,5 +1,14 @@
 import { GM_xmlhttpRequest } from "$";
+import { RenderSiteItem } from "../components/Panel";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
+
+export type xhrResult = {
+  isSuccess: boolean;
+  targetLink: string;
+  hasSubtitle: boolean;
+  hasLeakage: boolean;
+  msg: string;
+};
 
 /** 针对视频播放页进行解析，寻找字幕等信息 */
 function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery }: DomQuery_get) {
@@ -52,32 +61,26 @@ function serachPageParser(
         hasSubtitle: titleNodeText.includes("字幕") || titleNodeText.includes("subtitle"),
       };
     } else {
-      return { targetLink: "", isSuccess: false };
+      return { targetLink: "", isSuccess: false, hasSubtitle: false, hasLeakage: false };
     }
   }
   return query();
 }
 
-export async function xhr(siteItem: SiteItem, siteUrl: string, CODE: string) {
-  const xhrPromise: Promise<{
-    isSuccess: boolean;
-    targetLink: string;
-    name: string;
-    hasSubtitle?: boolean;
-    hasLeakage?: boolean;
-    msg: string;
-  }> = new Promise((resolve) => {
+async function xhrPage(siteItem: SiteItem, targetLink: string, CODE: string) {
+  const xhrPromise: Promise<xhrResult> = new Promise((resolve) => {
     GM_xmlhttpRequest({
       method: "GET",
-      url: siteUrl,
+      url: targetLink,
       onload: (response) => {
         if (siteItem.fetcher === "get") {
           // 直接 get 网页，且 get 结果为 404，大概是对应网站没有资源
           if (response.status === 404) {
             resolve({
               isSuccess: false,
-              targetLink: siteUrl,
-              name: siteItem.name,
+              targetLink: targetLink,
+              hasSubtitle: false,
+              hasLeakage: false,
               msg: "应该是没有资源",
             });
           }
@@ -89,8 +92,7 @@ export async function xhr(siteItem: SiteItem, siteUrl: string, CODE: string) {
             );
             resolve({
               isSuccess,
-              targetLink: siteUrl,
-              name: siteItem.name,
+              targetLink: targetLink,
               hasSubtitle,
               hasLeakage,
               msg: "[get]，存在资源",
@@ -106,9 +108,8 @@ export async function xhr(siteItem: SiteItem, siteUrl: string, CODE: string) {
             CODE,
           );
           resolve({
-            name: siteItem.name,
             isSuccess,
-            targetLink: isSuccess ? targetLink : siteUrl,
+            targetLink: isSuccess ? targetLink : targetLink,
             hasSubtitle,
             hasLeakage,
             msg: "[parser]存在资源",
@@ -118,12 +119,30 @@ export async function xhr(siteItem: SiteItem, siteUrl: string, CODE: string) {
       onerror: (error) => {
         resolve({
           isSuccess: false,
-          targetLink: siteUrl,
-          name: siteItem.name,
+          targetLink: targetLink,
+          hasSubtitle: false,
+          hasLeakage: false,
           msg: error.error,
         });
       },
     });
   });
   return xhrPromise;
+}
+
+export function xhrMain(CODE: string, initSiteList: SiteItem[]) {
+  return initSiteList.map(async (siteItem): Promise<RenderSiteItem> => {
+    const targetLink = siteItem.url.replace("{{code}}", CODE);
+    const result = await xhrPage(siteItem, targetLink, CODE);
+
+    return {
+      name: siteItem.name,
+      targetLink,
+      status: {
+        isSuccess: result.isSuccess ? "fulfilled" : "rejected",
+        hasLeakage: result.hasLeakage,
+        hasSubtitle: result.hasSubtitle,
+      },
+    };
+  });
 }
