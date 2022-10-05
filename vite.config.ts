@@ -5,7 +5,7 @@ import type { MonkeyUserScript } from "vite-plugin-monkey";
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.0.1",
+  version: "1.0.2",
   license: "MIT",
   name: "JAV 添加跳转在线观看 三合一",
   match: [
