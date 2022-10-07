@@ -1,5 +1,5 @@
 import { memo } from "preact/compat";
-import { RenderSiteItem } from "./Panel";
+import { RenderSiteItem } from "./App";
 const SiteButton = memo(({ itemData }: { itemData: RenderSiteItem }) => {
   const { name, targetLink, status } = itemData;
   const { isSuccess, hasSubtitle, hasLeakage } = status;

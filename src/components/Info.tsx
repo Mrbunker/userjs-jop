@@ -1,5 +1,4 @@
 import { memo } from "preact/compat";
-import { useRef } from "preact/hooks";
 
 /** 从原 info panel 抄一点精简的信息 */
 export type Infos = {
@@ -12,15 +11,12 @@ export type Infos = {
 };
 
 const Info = memo(({ infos }: { infos: Infos }) => {
-  const codeRef = useRef<HTMLDivElement>(null);
-
   return (
     <div className="jop-info">
       <span
         className="jop-info-code"
-        ref={codeRef}
         title="点击复制"
-        onClick={() => codeRef.current && navigator.clipboard.writeText(codeRef.current.innerHTML)}
+        onClick={() => navigator.clipboard.writeText(infos.codeText)}
       >
         {infos.codeText}
       </span>

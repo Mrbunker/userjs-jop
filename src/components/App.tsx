@@ -1,11 +1,13 @@
 import { memo } from "preact/compat";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { xhrMain } from "../utils/xhr";
 import { Cms } from "../utils/matchList";
 import { siteList } from "../utils/siteList";
 import Info, { Infos } from "./Info";
 import SiteButton from "./SiteButton";
-import CloseBtn from "./CloseBtn";
+import CloseBtn from "./Top";
+import { GM_getValue } from "vite-plugin-monkey/dist/client";
+import Top from "./Top";
 
 export type RenderSiteItem = {
   name: string;
@@ -17,9 +19,18 @@ export type RenderSiteItem = {
   };
 };
 
-/** Panel 就是根组件了… */
-const Panel = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE: string }) {
-  const [showPanel, setShowPanel] = useState(true);
+const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE: string }) {
+  // !todo hook buttons
+  // const rbu = document.querySelector(`a[href="#magnet-links"]`) as HTMLElement;
+  // console.log(rbu);
+  // const rbuRef = useRef<HTMLElement>(rbu);
+  // rbuRef.current.click();
+
+  // !todo setting.json
+  // GM_registerMenuCommand
+  const gmShowPanel = GM_getValue("setting", { gmShowPanel: true }).gmShowPanel;
+
+  const [showPanel, setShowPanel] = useState(gmShowPanel);
 
   /**  禁用 disable  */
   const initSiteList = siteList.filter((item) => item.disable !== cms.name);
@@ -34,9 +45,9 @@ const Panel = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; COD
 
   useEffect(() => {
     const awaitSiteList = xhrMain(CODE, initSiteList);
-    Promise.all(awaitSiteList).then((resList) => {
-      console.log("fulfilled", resList);
-      setRenderSiteList(resList);
+    Promise.all(awaitSiteList).then((list) => {
+      console.log("fulfilled", list);
+      setRenderSiteList(list);
     });
   }, []);
 
@@ -52,7 +63,7 @@ const Panel = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; COD
           </div>
         </div>
       )}
-      <CloseBtn
+      <Top
         showPanel={showPanel}
         setShowPanel={setShowPanel}
       />
@@ -60,4 +71,4 @@ const Panel = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; COD
   );
 });
 
-export default Panel;
+export default App;

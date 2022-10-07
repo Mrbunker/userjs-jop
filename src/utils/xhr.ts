@@ -1,5 +1,5 @@
 import { GM_xmlhttpRequest } from "$";
-import { RenderSiteItem } from "../components/Panel";
+import { RenderSiteItem } from "../components/App";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type xhrResult = {

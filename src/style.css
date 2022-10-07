@@ -15,16 +15,55 @@
   /* box-shadow: rgb(0 0 0 / 26%) -3px 0px 8px; */
   transition: right 200ms ease-in-out;
 }
-.jop-closeBtn {
+
+/*  */
+
+.jop-top {
   position: absolute;
-  width: 30px;
-  height: 30px;
-  right: 10px;
+  width: 100%;
   z-index: 1;
 }
-.jop-closeBtn-svg {
+.jop-top-item {
+  position: absolute;
+  top: 20px;
+  width: 40px;
   height: 40px;
+  cursor: pointer;
 }
+.jop-top-close {
+  right: 10px;
+}
+.jop-top-setting {
+  position: absolute;
+  right: 50px;
+}
+.jop-top-settingPanel {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 230px;
+  height: 150px;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 26%) 0px -3px 8px;
+  background: white;
+}
+.jop-top-settingPanel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.jop-top-setting-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.jop-top-checkbox {
+  margin-left: 20px;
+  width: 14px;
+  height: 14px;
+}
+/*  */
 .jop-info {
   color: black;
   /* text-align: right; */
@@ -49,6 +88,9 @@
   border: 1px solid #d9ecff;
   border-radius: 4px;
 }
+
+/*  */
+
 .jop-list {
   position: absolute;
   top: 115px;
@@ -57,7 +99,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 12px;
 }
 
 .jop-button {
@@ -68,16 +110,12 @@
   box-sizing: border-box;
   min-width: 120px;
   padding: 3px 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: 500;
   font-size: 14px;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  color: #606266;
   border: 1px solid #dcdfe6;
+  color: #606266;
 }
 .jop-button:visited {
   color: #606266;
@@ -94,31 +132,32 @@
   font-size: 10px;
   padding: 4px;
   border-radius: 4px;
-  top: -8px;
+  top: -13px;
   right: -10px;
   line-height: 0.75;
-  color: white;
-  background: #67c23a;
+  color: #67c23a;
+  border: 1px solid #e1f3d8;
+  background: white;
 }
 
 .jop-button_green {
-  color: #67c23a !important;
-  background-color: #f0f9eb;
-  border: 1px solid #b3e19d;
+  color: white !important;
+  background-color: #67c23a;
+  /* border: 1px solid #b3e19d; */
 }
 .jop-button_green:hover {
   color: white !important;
-  background-color: #67c23a;
+  background-color: #95d475;
 }
 
 .jop-button_red {
-  color: #f56c6c !important;
-  background-color: #fef0f0;
-  border: 1px solid #fab6b6;
+  color: white !important;
+  background-color: #f56c6c;
+  /* border: 1px solid #fab6b6; */
 }
 .jop-button_red:hover {
   color: white !important;
-  background-color: #f56c6c;
+  background-color: #f89898;
 }
 
 .jop-loading {

@@ -3,7 +3,7 @@ import { Cms, matchList } from "./utils/matchList";
 import { getInfos } from "./utils/getInfos";
 import "./style.css";
 
-import Panel from "./components/Panel";
+import App from "./components/App";
 
 // !debugger 图片关
 // document.querySelectorAll("img").forEach((item) => (item.style.display = "none"));
@@ -19,7 +19,7 @@ function main() {
   const panelParent = document.querySelector(cms.panelParentQueryStr) as Element;
   panelParent?.classList.add("jop-panelParent");
   render(
-    <Panel
+    <App
       cms={cms}
       CODE={CODE}
       infos={infos}
