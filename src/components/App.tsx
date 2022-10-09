@@ -1,11 +1,10 @@
 import { memo } from "preact/compat";
-import { useEffect, useRef, useState } from "preact/hooks";
-import { xhrMain } from "../utils/xhr";
+import { useEffect, useState } from "preact/hooks";
+import xhr from "../utils/xhr";
 import { Cms } from "../utils/matchList";
 import { siteList } from "../utils/siteList";
 import Info, { Infos } from "./Info";
 import SiteButton from "./SiteButton";
-import CloseBtn from "./Top";
 import { GM_getValue } from "vite-plugin-monkey/dist/client";
 import Top from "./Top";
 
@@ -26,8 +25,6 @@ const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE:
   // const rbuRef = useRef<HTMLElement>(rbu);
   // rbuRef.current.click();
 
-  // !todo setting.json
-  // GM_registerMenuCommand
   const gmShowPanel = GM_getValue("setting", { gmShowPanel: true }).gmShowPanel;
 
   const [showPanel, setShowPanel] = useState(gmShowPanel);
@@ -44,13 +41,23 @@ const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE:
   );
 
   useEffect(() => {
-    const awaitSiteList = xhrMain(CODE, initSiteList);
-    Promise.all(awaitSiteList).then((list) => {
-      console.log("fulfilled", list);
-      setRenderSiteList(list);
+    initSiteList.forEach(async (siteItem, index) => {
+      const targetLink = siteItem.url.replace("{{code}}", CODE);
+      const result = await xhr(siteItem, targetLink, CODE);
+      renderSiteList[index] = {
+        name: siteItem.name,
+        targetLink,
+        status: {
+          isSuccess: result.isSuccess ? "fulfilled" : "rejected",
+          hasLeakage: result.hasLeakage,
+          hasSubtitle: result.hasSubtitle,
+        },
+      };
+      setRenderSiteList([...renderSiteList]);
     });
-  }, []);
+  }, [xhr, setRenderSiteList]);
 
+  // }, []);
   return (
     <>
       {showPanel && (
