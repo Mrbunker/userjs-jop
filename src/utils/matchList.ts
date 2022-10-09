@@ -41,7 +41,7 @@ export const matchList: Cms[] = [
       colmd4?.classList.remove("col-md-3");
       colmd4?.classList.add("col-md-4");
     },
-  },
+  },  
   {
     name: "javlib",
     enable: true,
