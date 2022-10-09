@@ -26,88 +26,90 @@ const Top = ({
 
   return (
     <div className="jop-top">
-      <div
-        className="jop-top-setting jop-top-item"
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowSettingPanel(!showSettingPanel);
-        }}
-      >
-        <div className="jop-top-setting-svg jop-top-svgicon">
-          <svg
-            width="25"
-            height="25"
-            viewBox="0 0 48 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M41.5 10H35.5"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M27.5 6V14"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M27.5 10L5.5 10"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M13.5 24H5.5"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M21.5 20V28"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M43.5 24H21.5"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M41.5 38H35.5"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M27.5 34V42"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M27.5 38H5.5"
-              stroke="#333"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+      {showPanel && (
+        <div
+          className="jop-top-setting jop-top-item"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowSettingPanel(!showSettingPanel);
+          }}
+        >
+          <div className="jop-top-setting-svg jop-top-svgicon">
+            <svg
+              width="25"
+              height="25"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M41.5 10H35.5"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M27.5 6V14"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M27.5 10L5.5 10"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M13.5 24H5.5"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M21.5 20V28"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M43.5 24H21.5"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M41.5 38H35.5"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M27.5 34V42"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M27.5 38H5.5"
+                stroke="#333"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
-      {showSettingPanel && (
+      )}
+      {showSettingPanel && showPanel && (
         <div className="jop-top-settingPanel">
           <h4 className="jop-top-setting-title">脚本设置</h4>
           <div className="jop-top-settingPanel-item">
@@ -117,7 +119,9 @@ const Top = ({
               className="jop-top-checkbox"
               checked={gmShowPanel}
               onChange={(e: any) => {
-                GM_setValue("setting", { gmShowPanel: e.target.checked });
+                const checked: boolean = e.target.checked;
+                GM_setValue("setting", { gmShowPanel: checked });
+                setShowPanel(checked);
               }}
             />
           </div>

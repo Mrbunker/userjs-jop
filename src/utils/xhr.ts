@@ -67,7 +67,7 @@ function serachPageParser(
   return query();
 }
 
-async function xhrPage(siteItem: SiteItem, targetLink: string, CODE: string) {
+async function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
   const xhrPromise: Promise<xhrResult> = new Promise((resolve) => {
     GM_xmlhttpRequest({
       method: "GET",
@@ -78,7 +78,7 @@ async function xhrPage(siteItem: SiteItem, targetLink: string, CODE: string) {
           if (response.status === 404) {
             resolve({
               isSuccess: false,
-              targetLink: targetLink,
+              targetLink,
               hasSubtitle: false,
               hasLeakage: false,
               msg: "应该是没有资源",
@@ -90,13 +90,7 @@ async function xhrPage(siteItem: SiteItem, targetLink: string, CODE: string) {
               response.responseText,
               siteItem.domQuery,
             );
-            resolve({
-              isSuccess,
-              targetLink: targetLink,
-              hasSubtitle,
-              hasLeakage,
-              msg: "[get]，存在资源",
-            });
+            resolve({ isSuccess, targetLink, hasSubtitle, hasLeakage, msg: "[get]，存在资源" });
           }
         }
         // 需要解析 searchPage
@@ -130,19 +124,4 @@ async function xhrPage(siteItem: SiteItem, targetLink: string, CODE: string) {
   return xhrPromise;
 }
 
-export function xhrMain(CODE: string, initSiteList: SiteItem[]) {
-  return initSiteList.map(async (siteItem): Promise<RenderSiteItem> => {
-    const targetLink = siteItem.url.replace("{{code}}", CODE);
-    const result = await xhrPage(siteItem, targetLink, CODE);
-
-    return {
-      name: siteItem.name,
-      targetLink,
-      status: {
-        isSuccess: result.isSuccess ? "fulfilled" : "rejected",
-        hasLeakage: result.hasLeakage,
-        hasSubtitle: result.hasSubtitle,
-      },
-    };
-  });
-}
+export default xhr;

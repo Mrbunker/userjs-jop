@@ -16,26 +16,24 @@ export interface DomQuery_get {
   leakQuery?: string;
 }
 
-export interface SiteItem_get {
+interface SiteItemBase {
   name: string;
+  /** 针对 matchList 的 hostname */
   disable?: string;
   hostname: string;
   url: string;
-  fetcher: "get";
-  domQuery: DomQuery_get;
   codeFormater?: (arg0: string) => string;
   method?: Function;
 }
 
-export interface SiteItem_parser {
-  name: string;
-  disable?: string;
-  hostname: string;
-  url: string;
+export interface SiteItem_get extends SiteItemBase {
+  fetcher: "get";
+  domQuery: DomQuery_get;
+}
+
+export interface SiteItem_parser extends SiteItemBase {
   fetcher: "parser";
   domQuery: DomQuery_parser;
-  codeFormater?: (arg0: string) => string;
-  method?: Function;
 }
 
 export type SiteItem = SiteItem_get | SiteItem_parser;
@@ -134,6 +132,15 @@ export const siteList: SiteItem[] = [
     },
     method: print,
   },
+  {
+    name: "HAYAV",
+    hostname: "hayav.com",
+    url: "https://hayav.com/video/{{code}}/",
+    fetcher: "get",
+    domQuery: {},
+    method: print,
+  },
+
   {
     name: "JAVFC2",
     hostname: "javfc2.net",

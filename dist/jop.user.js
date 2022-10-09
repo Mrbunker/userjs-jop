@@ -1,42 +1,37 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看 三合一
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.0.3
+// @version      1.0.4
 // @author       mission522
 // @description  在 JavDB、JavBus、JavLibrart 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕
 // @license      MIT
 // @icon         https://javdb.com/favicon-32x32.png
-// @include      /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/
-// @match        *://*.javdb.com/*
-// @match        *://*.javbus.com/*
-// @match        *://*.seejav.com/*
-// @match        *://*.seejav.cc/*
-// @match        *://*.javsee.com/*
-// @match        *://*.javlib.com/*
+// @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/
+// @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/
+// @include      /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/
 // @match        *://*/cn/?v=jav*
-// @match        *://*.javlibrary.com/*
 // @require      https://cdn.jsdelivr.net/npm/preact@10.11.0/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
-// @connect      javhhh.com
 // @connect      netflav.com
 // @connect      avgle.com
+// @connect      javhhh.com
 // @connect      bestjavporn.com
+// @connect      javmenu.com
 // @connect      jav.guru
 // @connect      javmost.cx
-// @connect      hpjav.tv
-// @connect      av01.tv
-// @connect      javbus.com
-// @connect      javmenu.com
+// @connect      hayav.com
 // @connect      javfc2.net
 // @connect      paipancon.com
 // @connect      ggjav.com
+// @connect      av01.tv
+// @connect      javbus.com
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // ==/UserScript==
 
-(t=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=t,document.head.appendChild(o)})(".jop-panelParent{position:relative}.jop-panel{box-sizing:border-box;position:absolute;top:0;right:-3px;width:100%;height:100%;z-index:1;padding:17.5px;background-color:#fff;transition:right .2s ease-in-out}.jop-top{position:absolute;width:100%;z-index:1}.jop-top-item{position:absolute;top:20px;width:40px;height:40px;cursor:pointer}.jop-top-close{right:10px}.jop-top-setting{position:absolute;right:50px}.jop-top-settingPanel{position:absolute;top:60px;right:20px;width:230px;height:150px;padding:20px;border-radius:4px;box-shadow:#00000042 0 -3px 8px;background:white}.jop-top-settingPanel-item{display:flex;align-items:center;justify-content:space-between}.jop-top-setting-title{font-size:20px;font-weight:700;margin-bottom:10px}.jop-top-checkbox{margin-left:20px;width:14px;height:14px}.jop-info{color:#000;height:30px}.jop-info-code{margin-bottom:20px;color:#3272dc;font-size:30px;cursor:pointer;font-family:system-ui,-apple-system;font-weight:bolder;font-style:italic}.jop-info-actor{margin-top:6px}.jop-info-actor-item{padding:3px 6px;color:#409eff;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-list{position:absolute;top:115px;width:90%;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:12px}.jop-button{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:120px;padding:3px 10px;border-radius:4px;font-family:Roboto,Helvetica,Arial,sans-serif;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}");
+(t=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=t,document.head.appendChild(o)})(".jop-panelParent{position:relative}.jop-panel{box-sizing:border-box;position:absolute;top:0;right:-3px;width:100%;height:100%;z-index:1;padding:17.5px;background-color:#fff;transition:right .2s ease-in-out}.jop-top{position:absolute;width:100%;z-index:1}.jop-top-item{position:absolute;top:20px;width:40px;height:40px;cursor:pointer}.jop-top-close{right:10px}.jop-top-setting{position:absolute;right:50px}.jop-top-settingPanel{position:absolute;top:60px;right:20px;width:230px;height:150px;padding:20px;border-radius:4px;box-shadow:#00000042 0 -3px 8px;background:white}.jop-top-settingPanel-item{display:flex;align-items:center;justify-content:space-between}.jop-top-setting-title{font-size:20px;font-weight:700;margin-bottom:10px}.jop-top-checkbox{margin-left:20px;width:14px;height:14px}.jop-info{color:#000;height:30px}.jop-info-code{margin-bottom:20px;color:#3272dc;font-size:30px;cursor:pointer;font-family:system-ui,-apple-system;font-weight:bolder;font-style:italic}.jop-info-actor{margin-top:6px}.jop-info-actor-item{padding:3px 6px;color:#409eff;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-list{position:absolute;top:115px;width:80%;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:12px}.jop-button{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-family:Roboto,Helvetica,Arial,sans-serif;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}");
 
 (function(preact2) {
   var _a, _b;
@@ -44,7 +39,7 @@
   const matchList = [{
     name: "javdb",
     enable: true,
-    hostname: ["javdb.com"],
+    href: /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
     panelParentQueryStr: ".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)",
     codeQueryStr: `[data-clipboard-text]`,
     actorQueryStr: `span.value>a[href^="/actors"]`,
@@ -53,7 +48,7 @@
   }, {
     name: "javbus",
     enable: true,
-    hostname: ["www.javbus.com", "www.seejav.one", "www.seejav.cc", "www.javsee.me", "www.javsee.in"],
+    href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/,
     panelParentQueryStr: ".movie>div.info",
     codeQueryStr: `span[style="color:#CC0000;"]`,
     actorQueryStr: `.genre>a`,
@@ -68,7 +63,7 @@
   }, {
     name: "javlib",
     enable: true,
-    hostname: ["www.javlibrary.com", "www.javlib.com"],
+    href: /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/,
     panelParentQueryStr: "#video_jacket_info #video_info",
     codeQueryStr: `#video_id td.text`,
     actorQueryStr: `.cast>.star>a`,
@@ -432,7 +427,7 @@
     }
     return query();
   }
-  async function xhrPage(siteItem, targetLink, CODE) {
+  async function xhr(siteItem, targetLink, CODE) {
     const xhrPromise = new Promise((resolve) => {
       b({
         method: "GET",
@@ -489,21 +484,6 @@
       });
     });
     return xhrPromise;
-  }
-  function xhrMain(CODE, initSiteList) {
-    return initSiteList.map(async (siteItem) => {
-      const targetLink = siteItem.url.replace("{{code}}", CODE);
-      const result = await xhrPage(siteItem, targetLink, CODE);
-      return {
-        name: siteItem.name,
-        targetLink,
-        status: {
-          isSuccess: result.isSuccess ? "fulfilled" : "rejected",
-          hasLeakage: result.hasLeakage,
-          hasSubtitle: result.hasSubtitle
-        }
-      };
-    });
   }
   const print = (name) => {
     console.log(name);
@@ -604,6 +584,14 @@
         linkQuery: "#content .card a#MyImage",
         titleQuery: "#content .card-block .card-title"
       },
+      method: print
+    },
+    {
+      name: "HAYAV",
+      hostname: "hayav.com",
+      url: "https://hayav.com/video/{{code}}/",
+      fetcher: "get",
+      domQuery: {},
       method: print
     },
     {
@@ -721,9 +709,6 @@
         }), hasLeakage && o("span", {
           children: " \u65E0\u7801"
         })]
-      }), isSuccess === "pedding" && o("span", {
-        className: "jop-loading",
-        children: " "
       }), o("span", {
         children: name
       })]
@@ -739,7 +724,7 @@
     }).gmShowPanel;
     return o("div", {
       className: "jop-top",
-      children: [o("div", {
+      children: [showPanel && o("div", {
         className: "jop-top-setting jop-top-item",
         onClick: (e2) => {
           e2.stopPropagation();
@@ -810,7 +795,7 @@
             })]
           })
         })
-      }), showSettingPanel && o("div", {
+      }), showSettingPanel && showPanel && o("div", {
         className: "jop-top-settingPanel",
         children: [o("h4", {
           className: "jop-top-setting-title",
@@ -822,9 +807,11 @@
             className: "jop-top-checkbox",
             checked: gmShowPanel,
             onChange: (e2) => {
+              const checked = e2.target.checked;
               u("setting", {
-                gmShowPanel: e2.target.checked
+                gmShowPanel: checked
               });
+              setShowPanel(checked);
             }
           })]
         })]
@@ -902,12 +889,21 @@
       }
     })));
     s(() => {
-      const awaitSiteList = xhrMain(CODE, initSiteList);
-      Promise.all(awaitSiteList).then((list) => {
-        console.log("fulfilled", list);
-        setRenderSiteList(list);
+      initSiteList.forEach(async (siteItem, index) => {
+        const targetLink = siteItem.url.replace("{{code}}", CODE);
+        const result = await xhr(siteItem, targetLink, CODE);
+        renderSiteList[index] = {
+          name: siteItem.name,
+          targetLink,
+          status: {
+            isSuccess: result.isSuccess ? "fulfilled" : "rejected",
+            hasLeakage: result.hasLeakage,
+            hasSubtitle: result.hasSubtitle
+          }
+        };
+        setRenderSiteList([...renderSiteList]);
       });
-    }, []);
+    }, [xhr, setRenderSiteList]);
     return o(preact2.Fragment, {
       children: [showPanel && o("div", {
         className: "jop-panel",
@@ -928,7 +924,7 @@
     });
   });
   function main() {
-    const cms = matchList.find((item) => item.hostname.includes(window.location.hostname));
+    const cms = matchList.find((item) => item.href.test(window.location.href));
     const infos = getInfos(cms);
     const CODE = infos.codeText;
     if (CODE === void 0)
