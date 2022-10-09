@@ -18,7 +18,7 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment"
   },
-  "include": ["src"],
+  "include": ["./src/**/*.ts"],
   "exclude": ["src/buckup"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

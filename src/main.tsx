@@ -1,3 +1,4 @@
+import React from "preact/compat";
 import { render } from "preact";
 import { Cms, matchList } from "./utils/matchList";
 import { getInfos } from "./utils/getInfos";
@@ -10,7 +11,7 @@ import App from "./components/App";
 
 function main() {
   /** 当前 macth 站点对象 */
-  const cms = matchList.find((item) => item.hostname.includes(window.location.hostname)) as Cms;
+  const cms = matchList.find((item) => item.href.test(window.location.href)) as Cms;
   const infos = getInfos(cms);
   const CODE = infos.codeText;
   if (CODE === undefined) return;
@@ -18,6 +19,7 @@ function main() {
 
   const panelParent = document.querySelector(cms.panelParentQueryStr) as Element;
   panelParent?.classList.add("jop-panelParent");
+
   render(
     <App
       cms={cms}
