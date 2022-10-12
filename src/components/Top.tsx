@@ -1,19 +1,6 @@
 import { GM_getValue, GM_setValue } from "$";
 import { useState } from "preact/hooks";
 
-// const Setting = () => {
-
-// };
-// const CloseBtn = ({
-//   showPanel,
-//   setShowPanel,
-// }: {
-//   showPanel: boolean;
-//   setShowPanel: (showPanel: boolean) => void;
-// }) => {
-//   return
-// };
-
 const Top = ({
   showPanel,
   setShowPanel,

@@ -1,11 +1,13 @@
 import { memo } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
-import xhr from "../utils/xhr";
-import { Cms } from "../utils/matchList";
-import { siteList } from "../utils/siteList";
+
+import xhr from "@/utils/xhr";
+import { siteList } from "@/utils/siteList";
+import { GM_getValue } from "$";
+import type { Cms } from "@/utils/matchList";
+
 import Info, { Infos } from "./Info";
 import SiteButton from "./SiteButton";
-import { GM_getValue } from "vite-plugin-monkey/dist/client";
 import Top from "./Top";
 
 export type RenderSiteItem = {

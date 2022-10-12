@@ -1,7 +1,7 @@
-import React from "preact/compat";
 import { render } from "preact";
-import { Cms, matchList } from "./utils/matchList";
-import { getInfos } from "./utils/getInfos";
+import { Cms, matchList } from "@/utils/matchList";
+import { getInfos } from "@/utils/getInfos";
+
 import "./style.css";
 
 import App from "./components/App";
@@ -16,8 +16,7 @@ function main() {
   const CODE = infos.codeText;
   if (CODE === undefined) return;
   cms.method();
-  const panelParent = document.querySelector<HTMLElement>(cms.panelParentQueryStr);
-
+  const panelParent = document.querySelector<HTMLElement>(cms.querys.panelParentQueryStr);
   if (panelParent === null) return;
   panelParent.style.position = "relative";
 

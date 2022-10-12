@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
-import monkey, { cdn } from "vite-plugin-monkey";
+import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
-import type { MonkeyUserScript } from "vite-plugin-monkey";
 
 import { siteList } from "./src/utils/siteList";
 const connectList = siteList.map((site) => site.hostname);
@@ -28,6 +27,9 @@ const UserscriptConfig: MonkeyUserScript = {
 };
 
 export default defineConfig({
+  resolve: {
+    alias: { "@": "/src/" },
+  },
   plugins: [
     preact(),
     monkey({

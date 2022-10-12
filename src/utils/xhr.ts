@@ -1,5 +1,4 @@
 import { GM_xmlhttpRequest } from "$";
-import { RenderSiteItem } from "../components/App";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type xhrResult = {
@@ -122,6 +121,31 @@ async function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
     });
   });
   return xhrPromise;
+}
+
+/** 获取 javdb 的分数 */
+export function getDbScore(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    GM_xmlhttpRequest({
+      method: "GET",
+      url,
+      onload: (response) => {
+        const doc = new DOMParser().parseFromString(response.responseText, "text/html");
+        const plist = doc.querySelector<HTMLElement>(`.panel.movie-panel-info`);
+        const innerHtml = plist?.innerHTML;
+        const matchResult = innerHtml?.match(/\d\.\d分/);
+        if (!innerHtml || !matchResult) {
+          reject("无评分");
+          return;
+        } else {
+          resolve(matchResult[0]);
+        }
+      },
+      onerror(error) {
+        reject(error);
+      },
+    });
+  });
 }
 
 export default xhr;

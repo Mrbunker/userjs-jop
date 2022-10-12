@@ -15,10 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["src/buckup"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
