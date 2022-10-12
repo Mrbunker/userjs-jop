@@ -23,7 +23,7 @@ const UserscriptConfig: MonkeyUserScript = {
   icon: "https://javdb.com/favicon-32x32.png",
   namespace: "https://greasyfork.org/zh-CN/scripts/429173",
   description:
-    "在 JavDB、JavBus、JavLibrart 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕",
+    "在 JavDB、JavBus、JavLibrary 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕",
   connect: connectList,
 };
 
