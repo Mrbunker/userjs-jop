@@ -1,6 +1,4 @@
-.jop-panelParent {
-  position: relative;
-}
+/*  */
 .jop-panel {
   box-sizing: border-box;
   position: absolute;
@@ -52,6 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 5px;
 }
 .jop-top-setting-title {
   font-size: 20px;

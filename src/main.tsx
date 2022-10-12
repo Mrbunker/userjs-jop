@@ -16,9 +16,10 @@ function main() {
   const CODE = infos.codeText;
   if (CODE === undefined) return;
   cms.method();
+  const panelParent = document.querySelector<HTMLElement>(cms.panelParentQueryStr);
 
-  const panelParent = document.querySelector(cms.panelParentQueryStr) as Element;
-  panelParent?.classList.add("jop-panelParent");
+  if (panelParent === null) return;
+  panelParent.style.position = "relative";
 
   render(
     <App

@@ -1,3 +1,5 @@
+import { GM_getValue } from "$";
+
 /** 当前 macth 站点对象 */
 export type Cms = {
   name: "javdb" | "javbus" | "javlib";
@@ -34,14 +36,18 @@ export const matchList: Cms[] = [
     actorQueryStr: `.genre>a`,
     method() {
       // panel 加宽
-      const colmd8 = document.querySelector(".movie>.col-md-9.screencap");
-      colmd8?.classList.remove("col-md-9");
-      colmd8?.classList.add("col-md-8");
-      const colmd4 = document.querySelector(".movie>.col-md-3.info");
-      colmd4?.classList.remove("col-md-3");
-      colmd4?.classList.add("col-md-4");
+      /** 适配 jav 老司机 */
+      const lsjCompatible = GM_getValue("lsjCompatible", false);
+      if (lsjCompatible) return;
+
+      const colmd9 = document.querySelector<HTMLElement>(".movie>.col-md-9.screencap");
+      const colmd3 = document.querySelector<HTMLElement>(".movie>.col-md-3.info");
+      colmd9?.classList.remove("col-md-9");
+      colmd9?.classList.add("col-md-8");
+      colmd3?.classList.remove("col-md-3");
+      colmd3?.classList.add("col-md-4");
     },
-  },  
+  },
   {
     name: "javlib",
     enable: true,

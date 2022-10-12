@@ -53,12 +53,9 @@
     codeQueryStr: `span[style="color:#CC0000;"]`,
     actorQueryStr: `.genre>a`,
     method() {
-      const colmd8 = document.querySelector(".movie>.col-md-9.screencap");
-      colmd8 == null ? void 0 : colmd8.classList.remove("col-md-9");
-      colmd8 == null ? void 0 : colmd8.classList.add("col-md-8");
-      const colmd4 = document.querySelector(".movie>.col-md-3.info");
-      colmd4 == null ? void 0 : colmd4.classList.remove("col-md-3");
-      colmd4 == null ? void 0 : colmd4.classList.add("col-md-4");
+      document.querySelector(".movie>.col-md-9.screencap");
+      document.querySelector(".movie>.col-md-3.info");
+      return;
     }
   }, {
     name: "javlib",
@@ -80,7 +77,7 @@
       };
     });
     return {
-      codeText: cms.name === "javdb" ? codeNode == null ? void 0 : codeNode.dataset.clipboardText : codeNode.innerText.replace("\u590D\u5236", ""),
+      codeText: cms.name === "javdb" ? codeNode == null ? void 0 : codeNode.dataset.clipboardText : codeNode == null ? void 0 : codeNode.innerText.replace("\u590D\u5236", ""),
       actorList
     };
   }
@@ -669,18 +666,22 @@
       children: [o("span", {
         className: "jop-info-code",
         title: "\u70B9\u51FB\u590D\u5236",
-        onClick: () => navigator.clipboard.writeText(infos.codeText),
-        children: infos.codeText
+        onClick: () => infos.codeText && navigator.clipboard.writeText(infos.codeText),
+        children: infos.codeText ? infos.codeText : "\u6682\u65E0"
       }), o("div", {
         class: "jop-info-actor",
-        children: [o("a", {
-          class: "jop-info-actor-item",
-          target: "_blank",
-          href: infos.actorList[0].link,
-          children: infos.actorList[0].text
-        }), o("span", {
-          children: " \u7B49"
-        })]
+        children: infos.actorList.length !== 0 ? o(preact2.Fragment, {
+          children: [o("a", {
+            class: "jop-info-actor-item",
+            target: "_blank",
+            href: infos.actorList[0].link,
+            children: infos.actorList[0].text
+          }), o("span", {
+            children: " \u7B49"
+          })]
+        }) : o("div", {
+          children: "\u65E0\u6F14\u5458\u4FE1\u606F"
+        })
       })]
     });
   });

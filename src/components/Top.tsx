@@ -22,7 +22,8 @@ const Top = ({
   setShowPanel: (showPanel: boolean) => void;
 }) => {
   const [showSettingPanel, setShowSettingPanel] = useState(false);
-  const gmShowPanel = GM_getValue("setting", { gmShowPanel: true }).gmShowPanel;
+  const gmShowPanel = GM_getValue("gmShowPanel", true);
+  const lsjCompatible = GM_getValue("lsjCompatible", false);
 
   return (
     <div className="jop-top">
@@ -120,8 +121,20 @@ const Top = ({
               checked={gmShowPanel}
               onChange={(e: any) => {
                 const checked: boolean = e.target.checked;
-                GM_setValue("setting", { gmShowPanel: checked });
+                GM_setValue("gmShowPanel", checked);
                 setShowPanel(checked);
+              }}
+            />
+          </div>
+          <div className="jop-top-settingPanel-item">
+            适配 jav 老司机
+            <input
+              type="checkbox"
+              className="jop-top-checkbox"
+              checked={lsjCompatible}
+              onChange={(e: any) => {
+                const checked: boolean = e.target.checked;
+                GM_setValue("lsjCompatible", checked);
               }}
             />
           </div>

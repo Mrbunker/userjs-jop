@@ -25,7 +25,7 @@ const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE:
   // const rbuRef = useRef<HTMLElement>(rbu);
   // rbuRef.current.click();
 
-  const gmShowPanel = GM_getValue("setting", { gmShowPanel: true }).gmShowPanel;
+  const gmShowPanel = GM_getValue("gmShowPanel", true);
 
   const [showPanel, setShowPanel] = useState(gmShowPanel);
 
