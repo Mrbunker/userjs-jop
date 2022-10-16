@@ -123,7 +123,9 @@ async function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
   return xhrPromise;
 }
 
-/** 获取 javdb 的分数 */
+/** 获取 javdb 的分数
+ * 没用了，白写
+ */
 export function getDbScore(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
@@ -148,4 +150,40 @@ export function getDbScore(url: string): Promise<string> {
   });
 }
 
+interface dbResult {
+  score: string;
+  release: string;
+}
+export function parserJavdb(code?: string): Promise<dbResult> {
+  return new Promise((resolve, reject) => {
+    if (!code) reject("没找到");
+    GM_xmlhttpRequest({
+      url: `https://javdb005.com/search?q=${code}`,
+      method: "GET",
+      onload: (response) => {
+        const doc = new DOMParser().parseFromString(response.responseText, "text/html");
+        const firstItem = doc.querySelectorAll<HTMLElement>(`.movie-list>.item`)[0];
+        const titleString = firstItem.querySelector<HTMLElement>(`.video-title>strong`)?.innerHTML;
+        const releaseString = firstItem.querySelector<HTMLElement>(`.meta`)?.innerHTML.trim();
+
+        if (titleString !== code || !releaseString) {
+          reject("没找到");
+        } else {
+          const fullScoreText = firstItem.querySelector<HTMLElement>(`.score .value`)?.innerHTML;
+          const matchResult = fullScoreText?.match(/\d\.\d分/);
+          if (!matchResult) reject("没找到");
+          else
+            resolve({
+              // score: matchResult[0],
+              score: matchResult[0].replace("分", ""),
+              release: releaseString,
+            });
+        }
+      },
+      onerror(error) {
+        reject(error);
+      },
+    });
+  });
+}
 export default xhr;

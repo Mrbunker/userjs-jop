@@ -3,6 +3,7 @@ import { memo } from "preact/compat";
 /** 从原 info panel 抄一点精简的信息 */
 export type Infos = {
   codeText?: string;
+  score?: string;
   actorList: {
     text: string;
     link: string;
@@ -11,34 +12,36 @@ export type Infos = {
 };
 
 const Info = memo(({ infos }: { infos: Infos }) => {
+  const { codeText, score, actorList } = infos;
   return (
     <div className="jop-info">
       <span
         className="jop-info-code"
         title="点击复制"
-        onClick={() => infos.codeText && navigator.clipboard.writeText(infos.codeText)}
+        onClick={() => codeText && navigator.clipboard.writeText(codeText)}
       >
-        {infos.codeText ? infos.codeText : "暂无"}
+        {codeText ? codeText : "暂无"}
       </span>
 
-      <div class="jop-info-actor">
-        {infos.actorList.length !== 0 ? (
-          <>
-            <a
-              class="jop-info-actor-item"
-              target="_blank"
-              href={infos.actorList[0].link}
-            >
-              {infos.actorList[0].text}
-            </a>
-            <span> 等</span>
-          </>
-        ) : (
-          <div>无演员信息</div>
-        )}
+      <div className="jop-info-more">
+        <span className="jop-info-actor-item">
+          {actorList.length !== 0 ? (
+            <>
+              <a
+                className=" jop-tag"
+                target="_blank"
+                href={actorList[0].link}
+              >
+                {actorList[0].text}
+              </a>
+              <span> 等</span>
+            </>
+          ) : (
+            <div>无演员信息</div>
+          )}
+        </span>
+        {score && <span className="jop-tag">{score} 分</span>}
       </div>
-
-      {/* {info.actorList.map((item, index) => { const length = info.actorList.length; return ( <a href={item.link} style={{ paddingRight: length !== 1 && index !== length - 1 ? 16 : 0 }} > {item.text} </a> ); })} */}
     </div>
   );
 });

@@ -1,8 +1,8 @@
-import { getDbScore } from "@/utils/xhr";
+import { parserJavdb } from "@/utils/xhr";
 import { Infos } from "@/components/Info";
 import { Cms } from "./matchList";
 
-export function getInfos(cms: Cms): Infos {
+export async function getInfos(cms: Cms): Promise<Infos> {
   const { codeQueryStr, actorQueryStr } = cms.querys;
   const codeNode = document.querySelector<HTMLElement>(codeQueryStr);
   const actorNodeList = document.querySelectorAll<HTMLAnchorElement>(actorQueryStr);
@@ -10,14 +10,16 @@ export function getInfos(cms: Cms): Infos {
     return { text: item.innerHTML, link: item.href };
   });
 
-  // !todo 需要写一个 jdb parser ,来填下面的 url
-  const score = getDbScore("https://javdb.com/v/RwRw4");
+  const codeText =
+    cms.name === "javdb"
+      ? (codeNode?.dataset.clipboardText as string)
+      : codeNode?.innerText.replace("复制", "");
 
+  const { score, release } = await parserJavdb(codeText);
+  console.log("| ", score, release);
   return {
-    codeText:
-      cms.name === "javdb"
-        ? (codeNode?.dataset.clipboardText as string)
-        : codeNode?.innerText.replace("复制", ""),
+    codeText,
     actorList,
+    score,
   };
 }

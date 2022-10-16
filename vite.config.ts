@@ -3,7 +3,7 @@ import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
 
 import { siteList } from "./src/utils/siteList";
-const connectList = siteList.map((site) => site.hostname);
+const connectList = siteList.map((site) => site.hostname).concat("javdb005.com");
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",

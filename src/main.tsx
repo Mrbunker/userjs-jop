@@ -9,10 +9,10 @@ import App from "./components/App";
 // !debugger 图片关
 // document.querySelectorAll("img").forEach((item) => (item.style.display = "none"));
 
-function main() {
+async function main() {
   /** 当前 macth 站点对象 */
   const cms = matchList.find((item) => item.href.test(window.location.href)) as Cms;
-  const infos = getInfos(cms);
+  const infos = await getInfos(cms);
   const CODE = infos.codeText;
   if (CODE === undefined) return;
   cms.method();
