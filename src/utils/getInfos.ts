@@ -16,7 +16,6 @@ export async function getInfos(cms: Cms): Promise<Infos> {
       : codeNode?.innerText.replace("复制", "");
 
   const { score, release } = await parserJavdb(codeText);
-  console.log("| ", score, release);
   return {
     codeText,
     actorList,

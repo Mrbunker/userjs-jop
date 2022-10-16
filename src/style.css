@@ -42,22 +42,22 @@
   top: 60px;
   right: 20px;
   width: 230px;
-  height: 150px;
-  padding: 20px;
+  padding: 30px 20px;
   border-radius: 4px;
   box-shadow: rgb(0 0 0 / 26%) 0px -3px 8px;
   background: white;
 }
-.jop-top-settingPanel-item {
+.jop-settingPanel-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 5px;
 }
-.jop-top-setting-title {
+
+.jop-setting-title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0 !important;
 }
 .jop-top-checkbox {
   margin-left: 20px;
@@ -89,12 +89,13 @@
   /* position: absolute; */
   /* top: 115px; */
   width: 85%;
-  min-width: 226px;
+  min-width: 230px;
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 6px;
+  /* gap: 6px; */
+  gap: 10px;
   margin-top: 20px;
 }
 
@@ -177,7 +178,7 @@
 /*  */
 .jop-tag {
   padding: 3px 6px;
-  color: #409eff;
+  color: #409eff !important;
   background: #ecf5ff;
   border: 1px solid #d9ecff;
   border-radius: 4px;

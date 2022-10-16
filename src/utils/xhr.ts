@@ -165,12 +165,11 @@ export function parserJavdb(code?: string): Promise<dbResult> {
         const firstItem = doc.querySelectorAll<HTMLElement>(`.movie-list>.item`)[0];
         const titleString = firstItem.querySelector<HTMLElement>(`.video-title>strong`)?.innerHTML;
         const releaseString = firstItem.querySelector<HTMLElement>(`.meta`)?.innerHTML.trim();
-
         if (titleString !== code || !releaseString) {
           reject("没找到");
         } else {
           const fullScoreText = firstItem.querySelector<HTMLElement>(`.score .value`)?.innerHTML;
-          const matchResult = fullScoreText?.match(/\d\.\d分/);
+          const matchResult = fullScoreText?.match(/\d\.\d*分/);
           if (!matchResult) reject("没找到");
           else
             resolve({

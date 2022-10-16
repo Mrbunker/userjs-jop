@@ -1,13 +1,13 @@
 import { defineConfig } from "vite";
 import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
-
 import { siteList } from "./src/utils/siteList";
-const connectList = siteList.map((site) => site.hostname).concat("javdb005.com");
+
+const connectList = siteList.map((site) => site.hostname).concat(["javdb005.com"]);
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.0.4",
+  version: "1.0.5",
   license: "MIT",
   name: "JAV 添加跳转在线观看 三合一",
   match: [

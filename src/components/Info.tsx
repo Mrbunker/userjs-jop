@@ -28,7 +28,7 @@ const Info = memo(({ infos }: { infos: Infos }) => {
           {actorList.length !== 0 ? (
             <>
               <a
-                className=" jop-tag"
+                className="jop-tag"
                 target="_blank"
                 href={actorList[0].link}
               >
@@ -37,7 +37,7 @@ const Info = memo(({ infos }: { infos: Infos }) => {
               <span> 等</span>
             </>
           ) : (
-            <div>无演员信息</div>
+            <span>无演员信息</span>
           )}
         </span>
         {score && <span className="jop-tag">{score} 分</span>}

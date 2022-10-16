@@ -1,12 +1,18 @@
 import { GM_getValue, GM_setValue } from "$";
-import { useState } from "preact/hooks";
+import { StateUpdater, useState } from "preact/hooks";
+import { RenderSiteItem } from "./App";
+import { ListSetting } from "./ListSetting";
 
 const Top = ({
   showPanel,
   setShowPanel,
+  siteLists,
+  setSiteLists,
 }: {
   showPanel: boolean;
   setShowPanel: (showPanel: boolean) => void;
+  siteLists: RenderSiteItem[];
+  setSiteLists: StateUpdater<RenderSiteItem[]>;
 }) => {
   const [showSettingPanel, setShowSettingPanel] = useState(false);
   const gmShowPanel = GM_getValue("gmShowPanel", true);
@@ -97,10 +103,11 @@ const Top = ({
           </div>
         </div>
       )}
+      {/* setting */}
       {showSettingPanel && showPanel && (
         <div className="jop-top-settingPanel">
-          <h4 className="jop-top-setting-title">脚本设置</h4>
-          <div className="jop-top-settingPanel-item">
+          <h4 className="jop-setting-title">脚本设置</h4>
+          <div className="jop-settingPanel-item">
             默认显示脚本界面
             <input
               type="checkbox"
@@ -113,7 +120,7 @@ const Top = ({
               }}
             />
           </div>
-          <div className="jop-top-settingPanel-item">
+          <div className="jop-settingPanel-item">
             适配 jav 老司机
             <input
               type="checkbox"
@@ -125,6 +132,10 @@ const Top = ({
               }}
             />
           </div>
+          {/* <ListSetting
+            siteLists={siteLists}
+            setSiteLists={setSiteLists}
+          /> */}
         </div>
       )}
 
