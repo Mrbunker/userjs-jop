@@ -5,7 +5,9 @@ pnpm build
 
 ### todo
 
-- 删减列表
+- ListSetting 删减列表
+
+- dbParser 从 getInfo 中抽出来
 
 - 演员头像，偷 bus
   
