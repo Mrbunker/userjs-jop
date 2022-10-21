@@ -66,7 +66,6 @@ const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE:
     <>
       {showPanel && (
         <div className="jop-panel">
-          <Info infos={infos} />
           <div className="jop-list">
             {siteLists.map((item) => (
               <SiteButton itemData={item} />
@@ -74,12 +73,6 @@ const App = memo(function ({ cms, infos, CODE }: { cms: Cms; infos: Infos; CODE:
           </div>
         </div>
       )}
-      <Top
-        showPanel={showPanel}
-        setShowPanel={setShowPanel}
-        siteLists={siteLists}
-        setSiteLists={setSiteLists}
-      />
     </>
   );
 });
