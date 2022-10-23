@@ -3,7 +3,6 @@ import { memo } from "preact/compat";
 /** 从原 info panel 抄一点精简的信息 */
 export type Infos = {
   codeText?: string;
-  score?: string;
   actorList: {
     text: string;
     link: string;
@@ -12,7 +11,7 @@ export type Infos = {
 };
 
 const Info = memo(({ infos }: { infos: Infos }) => {
-  const { codeText, score, actorList } = infos;
+  const { codeText, actorList } = infos;
   return (
     <div className="jop-info">
       <span
@@ -27,11 +26,7 @@ const Info = memo(({ infos }: { infos: Infos }) => {
         <span className="jop-info-actor-item">
           {actorList.length !== 0 ? (
             <>
-              <a
-                className="jop-tag"
-                target="_blank"
-                href={actorList[0].link}
-              >
+              <a className="jop-tag" target="_blank" href={actorList[0].link}>
                 {actorList[0].text}
               </a>
               <span> 等</span>
@@ -40,7 +35,6 @@ const Info = memo(({ infos }: { infos: Infos }) => {
             <span>无演员信息</span>
           )}
         </span>
-        {score && <span className="jop-tag">{score} 分</span>}
       </div>
     </div>
   );
