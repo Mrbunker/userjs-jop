@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看 三合一
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.0
+// @version      1.1.1
 // @author       mission522
 // @description  在 JavDB、JavBus、JavLibrary 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕
 // @license      MIT
@@ -13,6 +13,7 @@
 // @require      https://cdn.jsdelivr.net/npm/preact@10.11.0/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
+// @connect      supjav.com
 // @connect      netflav.com
 // @connect      avgle.com
 // @connect      javhhh.com
@@ -21,6 +22,7 @@
 // @connect      jav.guru
 // @connect      javmost.cx
 // @connect      hayav.com
+// @connect      avjoy.me
 // @connect      javfc2.net
 // @connect      paipancon.com
 // @connect      ggjav.com
@@ -28,10 +30,11 @@
 // @connect      javbus.com
 // @connect      javdb005.com
 // @grant        GM_getValue
+// @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(e=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=e,document.head.appendChild(o)})(".jopApp{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jopApp{padding:15px 12px}.lib-panel .jopApp{padding:20px 30px}");
+(t=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=t,document.head.appendChild(o)})(".jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap;background-color:#fff}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px}");
 
 (function(preact2, client) {
   "use strict";
@@ -397,6 +400,18 @@
       method: print
     },
     {
+      name: "Supjav",
+      disable: false,
+      hostname: "supjav.com",
+      url: "https://supjav.com/zh/?s={{code}}",
+      fetcher: "parser",
+      domQuery: {
+        linkQuery: `.posts.clearfix>.post>a.img[title]`,
+        titleQuery: `h3>a[rel="bookmark"][itemprop="url"]`
+      },
+      method: print
+    },
+    {
       name: "NETFLAV",
       disable: false,
       hostname: "netflav.com",
@@ -486,6 +501,18 @@
       url: "https://hayav.com/video/{{code}}/",
       fetcher: "get",
       domQuery: {},
+      method: print
+    },
+    {
+      name: "AvJoy",
+      disable: false,
+      hostname: "avjoy.me",
+      url: "https://avjoy.me/search/video/{{code}}",
+      fetcher: "parser",
+      domQuery: {
+        titleQuery: `.content-info>.content-title`,
+        linkQuery: `.content-row>a`
+      },
       method: print
     },
     {
@@ -676,8 +703,9 @@
       isSuccess: "pedding",
       hasSubtitle: false,
       hasLeakage: false,
-      targetLink: siteItem.url.replace("{{code}}", CODE)
+      targetLink: ""
     });
+    const link = siteItem.url.replace("{{code}}", CODE);
     const {
       isSuccess,
       hasSubtitle,
@@ -685,20 +713,20 @@
       targetLink
     } = status;
     s(() => {
-      xhr(siteItem, targetLink, CODE).then((res) => {
+      xhr(siteItem, link, CODE).then((res) => {
         setStatus({
           isSuccess: res.isSuccess ? "fulfilled" : "rejected",
           hasSubtitle: res.hasSubtitle,
           hasLeakage: res.hasLeakage,
-          targetLink
+          targetLink: res.targetLink
         });
       });
-    }, [xhr, siteItem, CODE, targetLink]);
+    }, [xhr, siteItem, CODE, link]);
     const colorClass = isSuccess === "pedding" ? " " : isSuccess === "fulfilled" ? "jop-button_green " : "jop-button_red ";
     return o("a", {
       className: "jop-button " + colorClass,
       target: "_blank",
-      href: targetLink,
+      href: targetLink === "" ? link : targetLink,
       children: [(hasSubtitle || hasLeakage) && o("div", {
         className: "jop-button_label",
         children: [hasSubtitle && o("span", {
@@ -711,17 +739,84 @@
       })]
     });
   });
+  const Setting = ({
+    sites,
+    setSites,
+    disable
+  }) => {
+    const [showSetting, setShowSetting] = y(false);
+    return o(preact2.Fragment, {
+      children: [!showSetting ? o("div", {
+        className: "jop-button_def",
+        onClick: (e2) => {
+          setShowSetting(!showSetting);
+        },
+        children: "\u8BBE\u7F6E"
+      }) : o("h4", {
+        className: "jop-setting-title",
+        children: "\u52FE\u9009\u9ED8\u8BA4\u663E\u793A\u7684\u7F51\u7AD9"
+      }), showSetting && o(preact2.Fragment, {
+        children: [o("div", {
+          className: "jop-setting",
+          children: o("div", {
+            className: "jop-setting-list",
+            children: sites.map((item, index) => o("div", {
+              className: "jop-setting-item",
+              children: [item.name, o("input", {
+                type: "checkbox",
+                className: "jop-setting-checkbox",
+                checked: !disable.includes(item.name),
+                onChange: (e2) => {
+                  var _a;
+                  const checked = (_a = e2.target) == null ? void 0 : _a.checked;
+                  sites[index].disable = !checked;
+                }
+              })]
+            }))
+          })
+        }), o("div", {
+          className: "jop-button_def",
+          onClick: (e2) => {
+            setShowSetting(!showSetting);
+            const newDisable = sites.map((item) => {
+              if (item.disable)
+                return item.name;
+            });
+            client.GM_setValue("disable", newDisable);
+            setSites([...sites]);
+          },
+          children: "\u4FDD\u5B58"
+        })]
+      })]
+    });
+  };
   const App = w(function({
     current,
     CODE
   }) {
-    const gmSiteList = client.GM_getValue("gmSiteList", siteList);
-    const siteListFilter = gmSiteList.filter((item) => item.disableHostname !== current.name && !item.disable);
+    const disable = client.GM_getValue("disable", ["AvJoy", "baihuse", "AV01"]);
+    const [sites, setSites] = y(siteList);
+    const siteListFilter = sites.filter((item) => item.disableHostname !== current.name && !item.disable);
+    let filter = [];
+    disable.forEach((disItem) => {
+      filter = siteListFilter.filter((jtem) => {
+        return disItem !== jtem.name;
+      });
+    });
     return o(preact2.Fragment, {
-      children: siteListFilter.map((item) => o(SiteButton, {
-        siteItem: item,
-        CODE
-      }))
+      children: [o("div", {
+        class: "jop-list",
+        children: filter.map((item) => o(SiteButton, {
+          siteItem: item,
+          CODE
+        }))
+      }), o("div", {
+        children: o(Setting, {
+          sites,
+          setSites,
+          disable
+        })
+      })]
     });
   });
   function main() {
@@ -734,7 +829,7 @@
     if (panel === null)
       return;
     const app = document.createElement("div");
-    app.classList.add("jopApp");
+    app.classList.add("jop-app");
     panel.append(app);
     preact2.render(o(App, {
       current,

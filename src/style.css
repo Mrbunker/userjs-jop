@@ -1,5 +1,5 @@
 /*  */
-.jopApp {
+.jop-list {
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -15,8 +15,8 @@
 }
 
 /*  */
-
-.jop-button {
+.jop-button,
+.jop-button_def {
   position: relative;
   display: flex;
   align-items: center;
@@ -29,6 +29,11 @@
   font-size: 14px;
   border: 1px solid #dcdfe6;
   color: #606266;
+  cursor: pointer;
+}
+.jop-button_def {
+  margin: 10px 0;
+  width: 100px;
 }
 .jop-button:visited {
   color: #606266;
@@ -101,17 +106,44 @@
   border-radius: 4px;
 }
 
+/*  */
+.jop-setting-list {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: white;
+}
+.jop-setting-title {
+  margin: 10px 0 5px 0;
+}
+.jop-setting-item {
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+}
+/*  */
+
 /* db */
 .db-panel .movie-panel-info div.panel-block {
   padding: 5.5px 12px;
 }
-.db-panel .jopApp {
+.db-panel .jop-app {
   padding: 15px 12px;
 }
 /*  */
 
 /* lib */
-.lib-panel .jopApp {
+.lib-panel .jop-app {
   padding: 20px 30px;
+  margin-top: 10px;
+}
+
+/*  */
+
+/*  */
+input[type="checkbox"],
+input[type="radio"] {
+  margin: 0 0 0 5px;
 }
 /*  */

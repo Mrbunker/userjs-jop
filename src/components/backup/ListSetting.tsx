@@ -1,6 +1,6 @@
 import { StateUpdater } from "preact/hooks";
 import { GM_setValue } from "vite-plugin-monkey/dist/client";
-import { RenderSiteItem } from "./App";
+import { RenderSiteItem } from "../App";
 
 export const ListSetting = ({
   siteLists,

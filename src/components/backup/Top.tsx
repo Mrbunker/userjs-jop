@@ -1,6 +1,6 @@
 import { GM_getValue, GM_setValue } from "$";
 import { StateUpdater, useState } from "preact/hooks";
-import { RenderSiteItem } from "./App";
+import { RenderSiteItem } from "../App";
 import { ListSetting } from "./ListSetting";
 
 const Top = ({

@@ -5,8 +5,6 @@ export interface DomQuery_parser {
   spaceCode?: boolean;
   linkQuery: string;
   titleQuery: string;
-  /** 确定返回颜色，暂未启用 */
-  certainColor?: string;
 }
 
 export interface DomQuery_get {
@@ -18,8 +16,9 @@ export interface DomQuery_get {
 
 interface SiteItemBase {
   name: string;
-  /** 针对 matchList 的 hostname */
+  /** 用户定义的 disable */
   disable: boolean;
+  /** 针对 matchList 的 hostname */
   disableHostname?: string;
   hostname: string;
   url: string;
@@ -69,12 +68,28 @@ export const siteList: SiteItem[] = [
     method: print,
   },
   {
+    // 有可能搜出仨：leakage subtitle 4k
+    name: "Supjav",
+    disable: false,
+    hostname: "supjav.com",
+    url: "https://supjav.com/zh/?s={{code}}",
+    fetcher: "parser",
+    domQuery: {
+      linkQuery: `.posts.clearfix>.post>a.img[title]`,
+      titleQuery: `h3>a[rel="bookmark"][itemprop="url"]`,
+    },
+    method: print,
+  },
+  {
     name: "NETFLAV",
     disable: false,
     hostname: "netflav.com",
     url: "https://netflav.com/search?type=title&keyword={{code}}",
     fetcher: "parser",
-    domQuery: { linkQuery: ".grid_cell>a", titleQuery: ".grid_cell>a>.grid_title" },
+    domQuery: {
+      linkQuery: ".grid_cell>a",
+      titleQuery: ".grid_cell>a>.grid_title",
+    },
     method: print,
   },
   {
@@ -148,10 +163,23 @@ export const siteList: SiteItem[] = [
     hostname: "hayav.com",
     url: "https://hayav.com/video/{{code}}/",
     fetcher: "get",
-    domQuery: {},
+    domQuery: {
+      // subQuery: `.site__col>.entry-header>h1.entry-title`,
+    },
     method: print,
   },
-
+  {
+    name: "AvJoy",
+    disable: false,
+    hostname: "avjoy.me",
+    url: "https://avjoy.me/search/video/{{code}}",
+    fetcher: "parser",
+    domQuery: {
+      titleQuery: `.content-info>.content-title`,
+      linkQuery: `.content-row>a`,
+    },
+    method: print,
+  },
   {
     name: "JAVFC2",
     disable: false,

@@ -1,7 +1,6 @@
 import { SiteItem } from "@/utils/siteList";
 import xhr from "@/utils/xhr";
 import { memo, useEffect, useState } from "preact/compat";
-
 interface Status {
   isSuccess: "pedding" | "rejected" | "fulfilled";
   hasSubtitle: boolean;
@@ -14,20 +13,21 @@ const SiteButton = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string 
     isSuccess: "pedding",
     hasSubtitle: false,
     hasLeakage: false,
-    targetLink: siteItem.url.replace("{{code}}", CODE),
+    targetLink: "",
   });
+  const link = siteItem.url.replace("{{code}}", CODE);
   const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
 
   useEffect(() => {
-    xhr(siteItem, targetLink, CODE).then((res) => {
+    xhr(siteItem, link, CODE).then((res) => {
       setStatus({
         isSuccess: res.isSuccess ? "fulfilled" : "rejected",
         hasSubtitle: res.hasSubtitle,
         hasLeakage: res.hasLeakage,
-        targetLink,
+        targetLink: res.targetLink,
       });
     });
-  }, [xhr, siteItem, CODE, targetLink]);
+  }, [xhr, siteItem, CODE, link]);
   const colorClass =
     isSuccess === "pedding"
       ? " "
@@ -36,7 +36,11 @@ const SiteButton = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string 
       : "jop-button_red ";
 
   return (
-    <a className={"jop-button " + colorClass} target="_blank" href={targetLink}>
+    <a
+      className={"jop-button " + colorClass}
+      target="_blank"
+      href={targetLink === "" ? link : targetLink}
+    >
       {(hasSubtitle || hasLeakage) && (
         <div className="jop-button_label">
           {hasSubtitle && <span>字幕 </span>}

@@ -19,7 +19,6 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
   // 部分网站收录视频，但是未提供播放资源，所以需要使用 videoQuery 进一步检测是否存在在线播放
   /** videoQuery 为 undefine 时，不需要查找 video */
   const videoNode = videoQuery ? doc.querySelector<HTMLElement>(videoQuery) : true;
-
   return {
     isSuccess: !!videoNode,
     hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
@@ -122,67 +121,68 @@ async function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
   });
   return xhrPromise;
 }
+export default xhr;
 
 /** 获取 javdb 的分数
  * 没用了，白写
  */
-export function getDbScore(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    GM_xmlhttpRequest({
-      method: "GET",
-      url,
-      onload: (response) => {
-        const doc = new DOMParser().parseFromString(response.responseText, "text/html");
-        const plist = doc.querySelector<HTMLElement>(`.panel.movie-panel-info`);
-        const innerHtml = plist?.innerHTML;
-        const matchResult = innerHtml?.match(/\d\.\d分/);
-        if (!innerHtml || !matchResult) {
-          reject("无评分");
-          return;
-        } else {
-          resolve(matchResult[0]);
-        }
-      },
-      onerror(error) {
-        reject(error);
-      },
-    });
-  });
-}
+// export function getDbScore(url: string): Promise<string> {
+//   return new Promise((resolve, reject) => {
+//     GM_xmlhttpRequest({
+//       method: "GET",
+//       url,
+//       onload: (response) => {
+//         const doc = new DOMParser().parseFromString(response.responseText, "text/html");
+//         const plist = doc.querySelector<HTMLElement>(`.panel.movie-panel-info`);
+//         const innerHtml = plist?.innerHTML;
+//         const matchResult = innerHtml?.match(/\d\.\d分/);
+//         if (!innerHtml || !matchResult) {
+//           reject("无评分");
+//           return;
+//         } else {
+//           resolve(matchResult[0]);
+//         }
+//       },
+//       onerror(error) {
+//         reject(error);
+//       },
+//     });
+//   });
+// }
 
-interface dbResult {
-  score: string;
-  release: string;
-}
-export function parserJavdb(code?: string): Promise<dbResult> {
-  return new Promise((resolve, reject) => {
-    if (!code) reject("没找到");
-    GM_xmlhttpRequest({
-      url: `https://javdb005.com/search?q=${code}`,
-      method: "GET",
-      onload: (response) => {
-        const doc = new DOMParser().parseFromString(response.responseText, "text/html");
-        const firstItem = doc.querySelectorAll<HTMLElement>(`.movie-list>.item`)[0];
-        const titleString = firstItem.querySelector<HTMLElement>(`.video-title>strong`)?.innerHTML;
-        const releaseString = firstItem.querySelector<HTMLElement>(`.meta`)?.innerHTML.trim();
-        if (titleString !== code || !releaseString) {
-          reject("没找到");
-        } else {
-          const fullScoreText = firstItem.querySelector<HTMLElement>(`.score .value`)?.innerHTML;
-          const matchResult = fullScoreText?.match(/\d\.\d*分/);
-          if (!matchResult) reject("没找到");
-          else
-            resolve({
-              // score: matchResult[0],
-              score: matchResult[0].replace("分", ""),
-              release: releaseString,
-            });
-        }
-      },
-      onerror(error) {
-        reject(error);
-      },
-    });
-  });
-}
-export default xhr;
+// interface dbResult {
+//   score: string;
+//   release: string;
+// }
+/** 没用了，白写 */
+// export function parserJavdb(code?: string): Promise<dbResult> {
+//   return new Promise((resolve, reject) => {
+//     if (!code) reject("没找到");
+//     GM_xmlhttpRequest({
+//       url: `https://javdb005.com/search?q=${code}`,
+//       method: "GET",
+//       onload: (response) => {
+//         const doc = new DOMParser().parseFromString(response.responseText, "text/html");
+//         const firstItem = doc.querySelectorAll<HTMLElement>(`.movie-list>.item`)[0];
+//         const titleString = firstItem.querySelector<HTMLElement>(`.video-title>strong`)?.innerHTML;
+//         const releaseString = firstItem.querySelector<HTMLElement>(`.meta`)?.innerHTML.trim();
+//         if (titleString !== code || !releaseString) {
+//           reject("没找到");
+//         } else {
+//           const fullScoreText = firstItem.querySelector<HTMLElement>(`.score .value`)?.innerHTML;
+//           const matchResult = fullScoreText?.match(/\d\.\d*分/);
+//           if (!matchResult) reject("没找到");
+//           else
+//             resolve({
+//               // score: matchResult[0],
+//               score: matchResult[0].replace("分", ""),
+//               release: releaseString,
+//             });
+//         }
+//       },
+//       onerror(error) {
+//         reject(error);
+//       },
+//     });
+//   });
+// }

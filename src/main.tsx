@@ -21,7 +21,7 @@ function main() {
   if (panel === null) return;
 
   const app = document.createElement("div");
-  app.classList.add("jopApp");
+  app.classList.add("jop-app");
   panel.append(app);
 
   render(<App current={current} CODE={CODE} />, app);
