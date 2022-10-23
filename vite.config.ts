@@ -7,13 +7,10 @@ const connectList = siteList.map((site) => site.hostname).concat(["javdb005.com"
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.0.5",
+  version: "1.1.0",
   license: "MIT",
   name: "JAV 添加跳转在线观看 三合一",
-  match: [
-    "*://*/cn/?v=jav*",
-    // "*://*.javdb.com/*", "*://*.javbus.com/*", "*://*.seejav.com/*", "*://*.seejav.cc/*", "*://*.javsee.com/*", "*://*.javlib.com/*", "*://*.javlibrary.com/*",
-  ],
+  match: ["*://*/cn/?v=jav*"],
   include: [
     /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
     /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/,
@@ -27,9 +24,7 @@ const UserscriptConfig: MonkeyUserScript = {
 };
 
 export default defineConfig({
-  resolve: {
-    alias: { "@": "/src/" },
-  },
+  resolve: { alias: { "@": "/src/" } },
   plugins: [
     preact(),
     monkey({

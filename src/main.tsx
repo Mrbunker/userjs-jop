@@ -1,33 +1,30 @@
 import { render } from "preact";
-import { Cms, matchList } from "@/utils/matchList";
-import { getInfos } from "@/utils/getInfos";
+import { Current, matchList } from "@/utils/matchList";
+import { getCode } from "@/utils/getCode";
 
-import "./style.css";
-
+import "@/style.css";
 import App from "./components/App";
 
 // !debugger 图片关
 // document.querySelectorAll("img").forEach((item) => (item.style.display = "none"));
 
-async function main() {
+function main() {
   /** 当前 macth 站点对象 */
-  const cms = matchList.find((item) => item.href.test(window.location.href)) as Cms;
-  const infos = await getInfos(cms);
-  const CODE = infos.codeText;
-  if (CODE === undefined) return;
-  cms.method();
-  const panelParent = document.querySelector<HTMLElement>(cms.querys.panelParentQueryStr);
-  if (panelParent === null) return;
-  panelParent.style.position = "relative";
+  const current = matchList.find((item) => item.href.test(window.location.href)) as Current;
 
-  render(
-    <App
-      cms={cms}
-      CODE={CODE}
-      infos={infos}
-    />,
-    panelParent,
-  );
+  const CODE = getCode(current);
+  if (CODE === undefined) return;
+
+  current.method();
+
+  const panel = document.querySelector<HTMLElement>(current.querys.panelQueryStr);
+  if (panel === null) return;
+
+  const app = document.createElement("div");
+  app.classList.add("jopApp");
+  panel.append(app);
+
+  render(<App current={current} CODE={CODE} />, app);
 }
 
 main();

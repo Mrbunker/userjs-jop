@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看 三合一
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.0.5
+// @version      1.1.0
 // @author       mission522
 // @description  在 JavDB、JavBus、JavLibrary 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕
 // @license      MIT
@@ -28,232 +28,57 @@
 // @connect      javbus.com
 // @connect      javdb005.com
 // @grant        GM_getValue
-// @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-(t=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=t,document.head.appendChild(o)})(".jop-panel{box-sizing:border-box;position:absolute;top:0;right:-3px;width:100%;height:100%;z-index:1;padding:17.5px;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-top{position:absolute;width:100%;z-index:1}.jop-top-item{position:absolute;top:20px;width:40px;height:40px;cursor:pointer}.jop-top-close{right:10px}.jop-top-setting{position:absolute;right:50px}.jop-top-settingPanel{position:absolute;top:60px;right:20px;width:230px;padding:30px 20px;border-radius:4px;box-shadow:#00000042 0 -3px 8px;background:white}.jop-settingPanel-item{display:flex;align-items:center;justify-content:space-between;margin:5px}.jop-setting-title{font-size:20px;font-weight:700;margin:0 0 10px!important}.jop-top-checkbox{margin-left:20px;width:14px;height:14px}.jop-info{font-size:16px}.jop-info-code{margin-bottom:20px;color:#3272dc;font-size:30px;cursor:pointer;font-family:system-ui,-apple-system;font-weight:bolder;font-style:italic}.jop-info-more{margin:14px 0}.jop-info-actor-item{margin-right:13px}.jop-list{width:85%;min-width:230px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;margin-top:20px}.jop-button{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}");
+(e=>{const o=document.createElement("style");o.dataset.source="vite-plugin-monkey",o.innerText=e,document.head.appendChild(o)})(".jopApp{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jopApp{padding:15px 12px}.lib-panel .jopApp{padding:20px 30px}");
 
-(function(preact2) {
-  var _a, _b;
+(function(preact2, client) {
   "use strict";
-  var r$1 = (_a = document.__monkeyWindow) != null ? _a : window;
-  r$1.GM;
-  r$1.unsafeWindow = (_b = r$1.unsafeWindow) != null ? _b : window;
-  r$1.unsafeWindow;
-  r$1.GM_info;
-  r$1.GM_cookie;
-  var u$1 = (...e2) => r$1.GM_setValue(...e2), b = (...e2) => r$1.GM_xmlhttpRequest(...e2), h$1 = (...e2) => r$1.GM_getValue(...e2);
   const matchList = [{
     name: "javdb",
     enable: true,
     href: /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
     querys: {
-      panelParentQueryStr: ".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)",
-      codeQueryStr: `[data-clipboard-text]`,
-      actorQueryStr: `span.value>a[href^="/actors"]`,
-      releaseDateQuerystr: "string",
-      durationQuerystr: "string"
+      panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
+      codeQueryStr: `[data-clipboard-text]`
     },
     method() {
+      const columnVideoCover = document.querySelector(".column-video-cover");
+      columnVideoCover.style.width = "60%";
+      const panel = document.querySelector(".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)");
+      panel.classList.add("db-panel");
     }
   }, {
     name: "javbus",
     enable: true,
     href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/,
     querys: {
-      panelParentQueryStr: ".movie>div.info",
-      codeQueryStr: `span[style="color:#CC0000;"]`,
-      actorQueryStr: `.genre>a`,
-      releaseDateQuerystr: "string",
-      durationQuerystr: "string"
+      panelQueryStr: ".movie>div.info",
+      codeQueryStr: `span[style="color:#CC0000;"]`
     },
     method() {
-      const lsjCompatible = h$1("lsjCompatible", false);
-      if (lsjCompatible)
-        return;
-      const colmd9 = document.querySelector(".movie>.col-md-9.screencap");
-      const colmd3 = document.querySelector(".movie>.col-md-3.info");
-      colmd9 == null ? void 0 : colmd9.classList.remove("col-md-9");
-      colmd9 == null ? void 0 : colmd9.classList.add("col-md-8");
-      colmd3 == null ? void 0 : colmd3.classList.remove("col-md-3");
-      colmd3 == null ? void 0 : colmd3.classList.add("col-md-4");
     }
   }, {
     name: "javlib",
     enable: true,
     href: /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/,
     querys: {
-      panelParentQueryStr: "#video_jacket_info #video_info",
-      codeQueryStr: `#video_id td.text`,
-      actorQueryStr: `.cast>.star>a`,
-      releaseDateQuerystr: "string",
-      durationQuerystr: "string"
+      panelQueryStr: "#video_jacket_info #video_info",
+      codeQueryStr: `#video_id td.text`
     },
     method() {
+      const panel = document.querySelector("#video_info");
+      panel.classList.add("lib-panel");
     }
   }];
-  function videoPageParser(responseText, {
-    subQuery,
-    leakQuery,
-    videoQuery
-  }) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const subNode = subQuery ? doc.querySelector(subQuery) : "";
-    const subNodeText = subNode ? subNode.innerHTML : "";
-    const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
-    const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
-    return {
-      isSuccess: !!videoNode,
-      hasSubtitle: subNodeText.includes("\u5B57\u5E55") || subNodeText.includes("subtitle"),
-      hasLeakage: !!leakNode
-    };
-  }
-  function serachPageParser(responseText, {
-    linkQuery,
-    titleQuery,
-    listIndex = 0,
-    spaceCode = false
-  }, siteHostName, CODE) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
-    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
-    const titleNodeText = titleNode ? titleNode == null ? void 0 : titleNode.outerHTML : "";
-    function query() {
-      const envCodeWithSpace = spaceCode ? CODE.replace("-", " ") : CODE;
-      const condition = linkNode && titleNode && (titleNodeText.includes(envCodeWithSpace) || titleNodeText.includes(CODE));
-      if (condition) {
-        return {
-          isSuccess: true,
-          targetLink: linkNode.href.replace(linkNode.hostname, siteHostName),
-          hasLeakage: titleNodeText.includes("\u65E0\u7801") || titleNodeText.includes("Uncensored"),
-          hasSubtitle: titleNodeText.includes("\u5B57\u5E55") || titleNodeText.includes("subtitle")
-        };
-      } else {
-        return {
-          targetLink: "",
-          isSuccess: false,
-          hasSubtitle: false,
-          hasLeakage: false
-        };
-      }
-    }
-    return query();
-  }
-  async function xhr(siteItem, targetLink, CODE) {
-    const xhrPromise = new Promise((resolve) => {
-      b({
-        method: "GET",
-        url: targetLink,
-        onload: (response) => {
-          if (siteItem.fetcher === "get") {
-            if (response.status === 404) {
-              resolve({
-                isSuccess: false,
-                targetLink,
-                hasSubtitle: false,
-                hasLeakage: false,
-                msg: "\u5E94\u8BE5\u662F\u6CA1\u6709\u8D44\u6E90"
-              });
-            } else {
-              const {
-                hasSubtitle,
-                hasLeakage,
-                isSuccess
-              } = videoPageParser(response.responseText, siteItem.domQuery);
-              resolve({
-                isSuccess,
-                targetLink,
-                hasSubtitle,
-                hasLeakage,
-                msg: "[get]\uFF0C\u5B58\u5728\u8D44\u6E90"
-              });
-            }
-          } else if (siteItem.fetcher === "parser") {
-            const {
-              targetLink: targetLink2,
-              isSuccess,
-              hasLeakage,
-              hasSubtitle
-            } = serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE);
-            resolve({
-              isSuccess,
-              targetLink: isSuccess ? targetLink2 : targetLink2,
-              hasSubtitle,
-              hasLeakage,
-              msg: "[parser]\u5B58\u5728\u8D44\u6E90"
-            });
-          }
-        },
-        onerror: (error) => {
-          resolve({
-            isSuccess: false,
-            targetLink,
-            hasSubtitle: false,
-            hasLeakage: false,
-            msg: error.error
-          });
-        }
-      });
-    });
-    return xhrPromise;
-  }
-  function parserJavdb(code) {
-    return new Promise((resolve, reject) => {
-      if (!code)
-        reject("\u6CA1\u627E\u5230");
-      b({
-        url: `https://javdb005.com/search?q=${code}`,
-        method: "GET",
-        onload: (response) => {
-          var _a2, _b2, _c;
-          const doc = new DOMParser().parseFromString(response.responseText, "text/html");
-          const firstItem = doc.querySelectorAll(`.movie-list>.item`)[0];
-          const titleString = (_a2 = firstItem.querySelector(`.video-title>strong`)) == null ? void 0 : _a2.innerHTML;
-          const releaseString = (_b2 = firstItem.querySelector(`.meta`)) == null ? void 0 : _b2.innerHTML.trim();
-          if (titleString !== code || !releaseString) {
-            reject("\u6CA1\u627E\u5230");
-          } else {
-            const fullScoreText = (_c = firstItem.querySelector(`.score .value`)) == null ? void 0 : _c.innerHTML;
-            const matchResult = fullScoreText == null ? void 0 : fullScoreText.match(/\d\.\d*分/);
-            if (!matchResult)
-              reject("\u6CA1\u627E\u5230");
-            else
-              resolve({
-                score: matchResult[0].replace("\u5206", ""),
-                release: releaseString
-              });
-          }
-        },
-        onerror(error) {
-          reject(error);
-        }
-      });
-    });
-  }
-  async function getInfos(cms) {
+  function getCode(cms) {
     const {
-      codeQueryStr,
-      actorQueryStr
+      codeQueryStr
     } = cms.querys;
     const codeNode = document.querySelector(codeQueryStr);
-    const actorNodeList = document.querySelectorAll(actorQueryStr);
-    const actorList = [...actorNodeList].map((item) => {
-      return {
-        text: item.innerHTML,
-        link: item.href
-      };
-    });
     const codeText = cms.name === "javdb" ? codeNode == null ? void 0 : codeNode.dataset.clipboardText : codeNode == null ? void 0 : codeNode.innerText.replace("\u590D\u5236", "");
-    const {
-      score,
-      release
-    } = await parserJavdb(codeText);
-    return {
-      codeText,
-      actorList,
-      score
-    };
+    return codeText;
   }
   const style = "";
   var r, u, i, o$1, f = 0, c = [], e = [], a = preact2.options.__b, v = preact2.options.__r, l = preact2.options.diffed, m = preact2.options.__c, d = preact2.options.unmount;
@@ -724,6 +549,111 @@
       method: print
     }
   ];
+  function videoPageParser(responseText, {
+    subQuery,
+    leakQuery,
+    videoQuery
+  }) {
+    const doc = new DOMParser().parseFromString(responseText, "text/html");
+    const subNode = subQuery ? doc.querySelector(subQuery) : "";
+    const subNodeText = subNode ? subNode.innerHTML : "";
+    const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
+    const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
+    return {
+      isSuccess: !!videoNode,
+      hasSubtitle: subNodeText.includes("\u5B57\u5E55") || subNodeText.includes("subtitle"),
+      hasLeakage: !!leakNode
+    };
+  }
+  function serachPageParser(responseText, {
+    linkQuery,
+    titleQuery,
+    listIndex = 0,
+    spaceCode = false
+  }, siteHostName, CODE) {
+    const doc = new DOMParser().parseFromString(responseText, "text/html");
+    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
+    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
+    const titleNodeText = titleNode ? titleNode == null ? void 0 : titleNode.outerHTML : "";
+    function query() {
+      const envCodeWithSpace = spaceCode ? CODE.replace("-", " ") : CODE;
+      const condition = linkNode && titleNode && (titleNodeText.includes(envCodeWithSpace) || titleNodeText.includes(CODE));
+      if (condition) {
+        return {
+          isSuccess: true,
+          targetLink: linkNode.href.replace(linkNode.hostname, siteHostName),
+          hasLeakage: titleNodeText.includes("\u65E0\u7801") || titleNodeText.includes("Uncensored"),
+          hasSubtitle: titleNodeText.includes("\u5B57\u5E55") || titleNodeText.includes("subtitle")
+        };
+      } else {
+        return {
+          targetLink: "",
+          isSuccess: false,
+          hasSubtitle: false,
+          hasLeakage: false
+        };
+      }
+    }
+    return query();
+  }
+  async function xhr(siteItem, targetLink, CODE) {
+    const xhrPromise = new Promise((resolve) => {
+      client.GM_xmlhttpRequest({
+        method: "GET",
+        url: targetLink,
+        onload: (response) => {
+          if (siteItem.fetcher === "get") {
+            if (response.status === 404) {
+              resolve({
+                isSuccess: false,
+                targetLink,
+                hasSubtitle: false,
+                hasLeakage: false,
+                msg: "\u5E94\u8BE5\u662F\u6CA1\u6709\u8D44\u6E90"
+              });
+            } else {
+              const {
+                hasSubtitle,
+                hasLeakage,
+                isSuccess
+              } = videoPageParser(response.responseText, siteItem.domQuery);
+              resolve({
+                isSuccess,
+                targetLink,
+                hasSubtitle,
+                hasLeakage,
+                msg: "[get]\uFF0C\u5B58\u5728\u8D44\u6E90"
+              });
+            }
+          } else if (siteItem.fetcher === "parser") {
+            const {
+              targetLink: targetLink2,
+              isSuccess,
+              hasLeakage,
+              hasSubtitle
+            } = serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE);
+            resolve({
+              isSuccess,
+              targetLink: isSuccess ? targetLink2 : targetLink2,
+              hasSubtitle,
+              hasLeakage,
+              msg: "[parser]\u5B58\u5728\u8D44\u6E90"
+            });
+          }
+        },
+        onerror: (error) => {
+          resolve({
+            isSuccess: false,
+            targetLink,
+            hasSubtitle: false,
+            hasLeakage: false,
+            msg: error.error
+          });
+        }
+      });
+    });
+    return xhrPromise;
+  }
   var _ = 0;
   function o(o2, e2, n, t, f2) {
     var l2, s2, u2 = {};
@@ -735,57 +665,35 @@
         void 0 === u2[s2] && (u2[s2] = l2[s2]);
     return preact2.options.vnode && preact2.options.vnode(a2), a2;
   }
-  const Info = w(({
-    infos
-  }) => {
-    const {
-      codeText,
-      score,
-      actorList
-    } = infos;
-    return o("div", {
-      className: "jop-info",
-      children: [o("span", {
-        className: "jop-info-code",
-        title: "\u70B9\u51FB\u590D\u5236",
-        onClick: () => codeText && navigator.clipboard.writeText(codeText),
-        children: codeText ? codeText : "\u6682\u65E0"
-      }), o("div", {
-        className: "jop-info-more",
-        children: [o("span", {
-          className: "jop-info-actor-item",
-          children: actorList.length !== 0 ? o(preact2.Fragment, {
-            children: [o("a", {
-              className: "jop-tag",
-              target: "_blank",
-              href: actorList[0].link,
-              children: actorList[0].text
-            }), o("span", {
-              children: " \u7B49"
-            })]
-          }) : o("span", {
-            children: "\u65E0\u6F14\u5458\u4FE1\u606F"
-          })
-        }), score && o("span", {
-          className: "jop-tag",
-          children: [score, " \u5206"]
-        })]
-      })]
-    });
-  });
   const SiteButton = w(({
-    itemData
+    siteItem,
+    CODE
   }) => {
     const {
-      name,
-      targetLink,
-      status
-    } = itemData;
+      name
+    } = siteItem;
+    const [status, setStatus] = y({
+      isSuccess: "pedding",
+      hasSubtitle: false,
+      hasLeakage: false,
+      targetLink: siteItem.url.replace("{{code}}", CODE)
+    });
     const {
       isSuccess,
       hasSubtitle,
-      hasLeakage
+      hasLeakage,
+      targetLink
     } = status;
+    s(() => {
+      xhr(siteItem, targetLink, CODE).then((res) => {
+        setStatus({
+          isSuccess: res.isSuccess ? "fulfilled" : "rejected",
+          hasSubtitle: res.hasSubtitle,
+          hasLeakage: res.hasLeakage,
+          targetLink
+        });
+      });
+    }, [xhr, siteItem, CODE, targetLink]);
     const colorClass = isSuccess === "pedding" ? " " : isSuccess === "fulfilled" ? "jop-button_green " : "jop-button_red ";
     return o("a", {
       className: "jop-button " + colorClass,
@@ -803,240 +711,35 @@
       })]
     });
   });
-  const Top = ({
-    showPanel,
-    setShowPanel,
-    siteLists,
-    setSiteLists
-  }) => {
-    const [showSettingPanel, setShowSettingPanel] = y(false);
-    const gmShowPanel = h$1("gmShowPanel", true);
-    const lsjCompatible = h$1("lsjCompatible", false);
-    return o("div", {
-      className: "jop-top",
-      children: [showPanel && o("div", {
-        className: "jop-top-setting jop-top-item",
-        onClick: (e2) => {
-          e2.stopPropagation();
-          setShowSettingPanel(!showSettingPanel);
-        },
-        children: o("div", {
-          className: "jop-top-setting-svg jop-top-svgicon",
-          children: o("svg", {
-            width: "25",
-            height: "25",
-            viewBox: "0 0 48 48",
-            fill: "none",
-            xmlns: "http://www.w3.org/2000/svg",
-            children: [o("path", {
-              d: "M41.5 10H35.5",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M27.5 6V14",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M27.5 10L5.5 10",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M13.5 24H5.5",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M21.5 20V28",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M43.5 24H21.5",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M41.5 38H35.5",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M27.5 34V42",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }), o("path", {
-              d: "M27.5 38H5.5",
-              stroke: "#333",
-              "stroke-width": "3",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            })]
-          })
-        })
-      }), showSettingPanel && showPanel && o("div", {
-        className: "jop-top-settingPanel",
-        children: [o("h4", {
-          className: "jop-setting-title",
-          children: "\u811A\u672C\u8BBE\u7F6E"
-        }), o("div", {
-          className: "jop-settingPanel-item",
-          children: ["\u9ED8\u8BA4\u663E\u793A\u811A\u672C\u754C\u9762", o("input", {
-            type: "checkbox",
-            className: "jop-top-checkbox",
-            checked: gmShowPanel,
-            onChange: (e2) => {
-              const checked = e2.target.checked;
-              u$1("gmShowPanel", checked);
-              setShowPanel(checked);
-            }
-          })]
-        }), o("div", {
-          className: "jop-settingPanel-item",
-          children: ["\u9002\u914D jav \u8001\u53F8\u673A", o("input", {
-            type: "checkbox",
-            className: "jop-top-checkbox",
-            checked: lsjCompatible,
-            onChange: (e2) => {
-              const checked = e2.target.checked;
-              u$1("lsjCompatible", checked);
-            }
-          })]
-        })]
-      }), o("div", {
-        className: "jop-top-close jop-top-item jop-top-svgicon",
-        onClick: (e2) => {
-          e2.stopPropagation();
-          setShowPanel(!showPanel);
-        },
-        children: showPanel ? o("svg", {
-          width: "25",
-          height: "25",
-          viewBox: "0 0 48 48",
-          fill: "none",
-          xmlns: "http://www.w3.org/2000/svg",
-          children: [o("path", {
-            d: "M9.85786 18C6.23858 21 4 24 4 24C4 24 12.9543 36 24 36C25.3699 36 26.7076 35.8154 28 35.4921M20.0318 12.5C21.3144 12.1816 22.6414 12 24 12C35.0457 12 44 24 44 24C44 24 41.7614 27 38.1421 30",
-            stroke: "#333",
-            "stroke-width": "3",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          }), o("path", {
-            d: "M20.3142 20.6211C19.4981 21.5109 19 22.6972 19 23.9998C19 26.7612 21.2386 28.9998 24 28.9998C25.3627 28.9998 26.5981 28.4546 27.5 27.5705",
-            stroke: "#333",
-            "stroke-width": "3",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          }), o("path", {
-            d: "M42 42L6 6",
-            stroke: "#333",
-            "stroke-width": "3",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          })]
-        }) : o("svg", {
-          width: "25",
-          height: "25",
-          viewBox: "0 0 48 48",
-          fill: "none",
-          xmlns: "http://www.w3.org/2000/svg",
-          children: [o("path", {
-            d: "M24 36C35.0457 36 44 24 44 24C44 24 35.0457 12 24 12C12.9543 12 4 24 4 24C4 24 12.9543 36 24 36Z",
-            fill: "none",
-            stroke: "#333",
-            "stroke-width": "3",
-            "stroke-linejoin": "round"
-          }), o("path", {
-            d: "M24 29C26.7614 29 29 26.7614 29 24C29 21.2386 26.7614 19 24 19C21.2386 19 19 21.2386 19 24C19 26.7614 21.2386 29 24 29Z",
-            fill: "none",
-            stroke: "#333",
-            "stroke-width": "3",
-            "stroke-linejoin": "round"
-          })]
-        })
-      })]
-    });
-  };
   const App = w(function({
-    cms,
-    infos,
+    current,
     CODE
   }) {
-    const gmShowPanel = h$1("gmShowPanel", true);
-    const [showPanel, setShowPanel] = y(gmShowPanel);
-    const gmSiteList = h$1("gmSiteList", siteList);
-    const siteListFilter = gmSiteList.filter((item) => item.disableHostname !== cms.name && !item.disable);
-    const [siteLists, setSiteLists] = y(siteListFilter.map((item) => ({
-      name: item.name,
-      targetLink: item.url.replace("{{code}}", CODE),
-      status: {
-        isSuccess: "pedding",
-        hasSubtitle: false,
-        hasLeakage: false
-      }
-    })));
-    s(() => {
-      gmSiteList.forEach(async (siteItem, index) => {
-        const targetLink = siteItem.url.replace("{{code}}", CODE);
-        const result = await xhr(siteItem, targetLink, CODE);
-        siteLists[index] = {
-          name: siteItem.name,
-          targetLink,
-          status: {
-            isSuccess: result.isSuccess ? "fulfilled" : "rejected",
-            hasLeakage: result.hasLeakage,
-            hasSubtitle: result.hasSubtitle
-          }
-        };
-        setSiteLists([...siteLists]);
-      });
-    }, [xhr, setSiteLists]);
+    const gmSiteList = client.GM_getValue("gmSiteList", siteList);
+    const siteListFilter = gmSiteList.filter((item) => item.disableHostname !== current.name && !item.disable);
     return o(preact2.Fragment, {
-      children: [showPanel && o("div", {
-        className: "jop-panel",
-        children: [o(Info, {
-          infos
-        }), o("div", {
-          className: "jop-list",
-          children: siteLists.map((item) => o(SiteButton, {
-            itemData: item
-          }))
-        })]
-      }), o(Top, {
-        showPanel,
-        setShowPanel,
-        siteLists,
-        setSiteLists
-      })]
+      children: siteListFilter.map((item) => o(SiteButton, {
+        siteItem: item,
+        CODE
+      }))
     });
   });
-  async function main() {
-    const cms = matchList.find((item) => item.href.test(window.location.href));
-    const infos = await getInfos(cms);
-    const CODE = infos.codeText;
+  function main() {
+    const current = matchList.find((item) => item.href.test(window.location.href));
+    const CODE = getCode(current);
     if (CODE === void 0)
       return;
-    cms.method();
-    const panelParent = document.querySelector(cms.querys.panelParentQueryStr);
-    if (panelParent === null)
+    current.method();
+    const panel = document.querySelector(current.querys.panelQueryStr);
+    if (panel === null)
       return;
-    panelParent.style.position = "relative";
+    const app = document.createElement("div");
+    app.classList.add("jopApp");
+    panel.append(app);
     preact2.render(o(App, {
-      cms,
-      CODE,
-      infos
-    }), panelParent);
+      current,
+      CODE
+    }), app);
   }
   main();
-})(preact);
+})(preact, (window.monkeyWindow = window, window));
