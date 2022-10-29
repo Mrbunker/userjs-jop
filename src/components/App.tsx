@@ -7,18 +7,18 @@ import { Setting } from "./Setting";
 
 const App = memo(function ({ current, CODE }: { current: Current; CODE: string }) {
   const disable = GM_getValue<SiteItem["name"][]>("disable", ["AvJoy", "baihuse", "AV01"]);
+
   // sites 最原始的 siteList.json
   const [sites, setSites] = useState(siteList);
+
   /**  禁用 hostname  */
-  const siteListFilter = sites.filter(
+  const sitesDisHost = sites.filter(
     (item) => item.disableHostname !== current.name && !item.disable,
   );
 
-  let filter: SiteItem[] = [];
-  disable.forEach((disItem) => {
-    filter = siteListFilter.filter((jtem) => {
-      return disItem !== jtem.name;
-    });
+  /** 禁用 用户自定义 */
+  const filter = sitesDisHost.filter((item) => {
+    if (!disable.includes(item.name)) return item;
   });
 
   return (

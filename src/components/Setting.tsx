@@ -12,6 +12,8 @@ export const Setting = ({
   disable: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
+  /** 暂存用户的勾选，最后保存的时候提交 */
+  const newDisable = disable;
   return (
     <>
       {!showSetting ? (
@@ -40,6 +42,13 @@ export const Setting = ({
                     onChange={(e: any) => {
                       const checked: boolean = e.target?.checked;
                       sites[index].disable = !checked;
+                      if (!checked) {
+                        newDisable.push(item.name);
+                      } else {
+                        newDisable.forEach((name, index) => {
+                          if (name === item.name) newDisable.splice(index, 1);
+                        });
+                      }
                     }}
                   />
                 </div>
@@ -50,9 +59,6 @@ export const Setting = ({
             className="jop-button_def"
             onClick={(e) => {
               setShowSetting(!showSetting);
-              const newDisable = sites.map((item) => {
-                if (item.disable) return item.name;
-              });
               GM_setValue("disable", newDisable);
               setSites([...sites]);
             }}

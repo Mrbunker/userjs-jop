@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看 三合一
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.1
+// @version      1.1.2
 // @author       mission522
 // @description  在 JavDB、JavBus、JavLibrary 网站的影片详情页添加跳转在线播放按钮，并在按钮上标注是否支持在线播放、包含无码或包含字幕
 // @license      MIT
@@ -745,6 +745,7 @@
     disable
   }) => {
     const [showSetting, setShowSetting] = y(false);
+    const newDisable = disable;
     return o(preact2.Fragment, {
       children: [!showSetting ? o("div", {
         className: "jop-button_def",
@@ -770,6 +771,14 @@
                   var _a;
                   const checked = (_a = e2.target) == null ? void 0 : _a.checked;
                   sites[index].disable = !checked;
+                  if (!checked) {
+                    newDisable.push(item.name);
+                  } else {
+                    newDisable.forEach((name, index2) => {
+                      if (name === item.name)
+                        newDisable.splice(index2, 1);
+                    });
+                  }
                 }
               })]
             }))
@@ -778,10 +787,6 @@
           className: "jop-button_def",
           onClick: (e2) => {
             setShowSetting(!showSetting);
-            const newDisable = sites.map((item) => {
-              if (item.disable)
-                return item.name;
-            });
             client.GM_setValue("disable", newDisable);
             setSites([...sites]);
           },
@@ -796,12 +801,10 @@
   }) {
     const disable = client.GM_getValue("disable", ["AvJoy", "baihuse", "AV01"]);
     const [sites, setSites] = y(siteList);
-    const siteListFilter = sites.filter((item) => item.disableHostname !== current.name && !item.disable);
-    let filter = [];
-    disable.forEach((disItem) => {
-      filter = siteListFilter.filter((jtem) => {
-        return disItem !== jtem.name;
-      });
+    const sitesDisHost = sites.filter((item) => item.disableHostname !== current.name && !item.disable);
+    const filter = sitesDisHost.filter((item) => {
+      if (!disable.includes(item.name))
+        return item;
     });
     return o(preact2.Fragment, {
       children: [o("div", {

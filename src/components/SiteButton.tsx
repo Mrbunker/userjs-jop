@@ -1,6 +1,7 @@
 import { SiteItem } from "@/utils/siteList";
 import xhr from "@/utils/xhr";
 import { memo, useEffect, useState } from "preact/compat";
+
 interface Status {
   isSuccess: "pedding" | "rejected" | "fulfilled";
   hasSubtitle: boolean;
@@ -9,13 +10,14 @@ interface Status {
 }
 const SiteButton = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) => {
   const { name } = siteItem;
+  const link = siteItem.url.replace("{{code}}", CODE);
+
   const [status, setStatus] = useState<Status>({
     isSuccess: "pedding",
     hasSubtitle: false,
     hasLeakage: false,
     targetLink: "",
   });
-  const link = siteItem.url.replace("{{code}}", CODE);
   const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
 
   useEffect(() => {
@@ -28,6 +30,7 @@ const SiteButton = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string 
       });
     });
   }, [xhr, siteItem, CODE, link]);
+
   const colorClass =
     isSuccess === "pedding"
       ? " "
