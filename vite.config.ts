@@ -25,6 +25,7 @@ const UserscriptConfig: MonkeyUserScript = {
 
 export default defineConfig({
   resolve: { alias: { "@": "/src/" } },
+  esbuild: { charset: "utf8" },
   plugins: [
     preact(),
     monkey({
