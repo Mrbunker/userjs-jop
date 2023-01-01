@@ -13,8 +13,6 @@ function main() {
   const current = matchList.find((item) => item.href.test(window.location.href)) as Current;
 
   const CODE = getCode(current);
-  if (CODE === undefined) return;
-
   current.method();
 
   const panel = document.querySelector<HTMLElement>(current.querys.panelQueryStr);
