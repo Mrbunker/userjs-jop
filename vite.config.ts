@@ -7,7 +7,7 @@ const connectList = siteList.map((site) => site.hostname).concat(["javdb005.com"
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.1.2",
+  version: "1.1.3",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
   match: ["*://*/cn/?v=jav*"],
