@@ -3,7 +3,7 @@ import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
 import { siteList } from "./src/utils/siteList";
 
-const connectList = siteList.map((site) => site.hostname).concat(["javdb005.com"]);
+const connectList = siteList.map((site) => site.hostname).concat(["javdb007.com"]);
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
@@ -24,6 +24,7 @@ const UserscriptConfig: MonkeyUserScript = {
 };
 
 export default defineConfig({
+  build: {},
   resolve: { alias: { "@": "/src/" } },
   esbuild: { charset: "utf8" },
   plugins: [
@@ -36,7 +37,6 @@ export default defineConfig({
           preact: cdn.jsdelivr("preact", "dist/preact.min.js"),
         },
       },
-
       userscript: UserscriptConfig,
     }),
   ],
