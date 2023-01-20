@@ -1,7 +1,0 @@
-name: vite build
-on: [push]
-jobs:
-  vite build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm build
