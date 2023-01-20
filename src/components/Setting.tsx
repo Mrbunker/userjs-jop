@@ -5,11 +5,11 @@ import { GM_setValue } from "vite-plugin-monkey/dist/client";
 export const Setting = ({
   sites,
   setSites,
-  disable,
+  disables: disable,
 }: {
   sites: SiteItem[];
   setSites: StateUpdater<SiteItem[]>;
-  disable: SiteItem["name"][];
+  disables: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
   /** 暂存用户的勾选，最后保存的时候提交 */

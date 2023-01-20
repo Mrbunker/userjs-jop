@@ -6,7 +6,7 @@ import SiteButton from "./SiteButton";
 import { Setting } from "./Setting";
 
 const App = memo(function ({ current, CODE }: { current: Current; CODE: string }) {
-  const disable = GM_getValue<SiteItem["name"][]>("disable", ["AvJoy", "baihuse", "AV01"]);
+  const disables = GM_getValue<SiteItem["name"][]>("disable", ["AvJoy", "baihuse", "AV01"]);
 
   // sites 最原始的 siteList.json
   const [sites, setSites] = useState(siteList);
@@ -18,7 +18,7 @@ const App = memo(function ({ current, CODE }: { current: Current; CODE: string }
 
   /** 禁用 用户自定义 */
   const filter = sitesDisHost.filter((item) => {
-    if (!disable.includes(item.name)) return item;
+    if (!disables.includes(item.name)) return item;
   });
 
   return (
@@ -29,7 +29,7 @@ const App = memo(function ({ current, CODE }: { current: Current; CODE: string }
         ))}
       </div>
       <div>
-        <Setting sites={sites} setSites={setSites} disable={disable} />
+        <Setting sites={sites} setSites={setSites} disables={disables} />
       </div>
     </>
   );

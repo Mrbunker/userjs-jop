@@ -22,7 +22,9 @@ interface SiteItemBase {
   disableHostname?: string;
   hostname: string;
   url: string;
+  /** 没用 */
   codeFormater?: (arg0: string) => string;
+  /** 没用 */
   method?: Function;
 }
 
@@ -239,13 +241,17 @@ export const siteList: SiteItem[] = [
     domQuery: {},
     method: print,
   },
-  // {
-  //   name: "JavDB",
-  //   disable:"javdb",
-  //   hostname: "javbus.com",
-  //   url: "https://javbus.com/{{code}}",
-  //   fetcher: "get",
-  //   domQuery: {},
-  //   method: print,
-  // },
+  {
+    name: "JavDB",
+    disableHostname: "javdb",
+    disable: false,
+    hostname: "javdb.com",
+    url: "https://javdb.com/search?q={{code}}",
+    fetcher: "parser",
+    domQuery: {
+      linkQuery: ".movie-list>.item:first-child>a",
+      titleQuery: ".video-title",
+    },
+    method: print,
+  },
 ];

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.3
+// @version      1.1.4
 // @author       mission522
 // @description  [高效寻找最佳的在线资源] 在影片详情页添加跳转在线播放的按钮，并注是否提供在线播放资源或无码资源、字幕资源等信息。支持 JavDB、JavBus 以及 JavLibrary
 // @license      MIT
@@ -28,6 +28,7 @@
 // @connect      ggjav.com
 // @connect      av01.tv
 // @connect      javbus.com
+// @connect      javdb.com
 // @connect      javdb007.com
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -746,6 +747,19 @@
       domQuery: {},
       method: print,
     },
+    {
+      name: "JavDB",
+      disableHostname: "javdb",
+      disable: false,
+      hostname: "javdb.com",
+      url: "https://javdb.com/search?q={{code}}",
+      fetcher: "parser",
+      domQuery: {
+        linkQuery: ".movie-list>.item:first-child>a",
+        titleQuery: ".video-title",
+      },
+      method: print,
+    },
   ];
   var monkeyWindow = window;
   var GM_setValue = /* @__PURE__ */ (() => monkeyWindow.GM_setValue)();
@@ -932,7 +946,7 @@
       ],
     });
   });
-  const Setting = ({ sites, setSites, disable }) => {
+  const Setting = ({ sites, setSites, disables: disable }) => {
     const [showSetting, setShowSetting] = p(false);
     const newDisable = disable;
     return o(preact2.Fragment, {
@@ -998,13 +1012,13 @@
     });
   };
   const App = R(function ({ current, CODE }) {
-    const disable = GM_getValue("disable", ["AvJoy", "baihuse", "AV01"]);
+    const disables = GM_getValue("disable", ["AvJoy", "baihuse", "AV01"]);
     const [sites, setSites] = p(siteList);
     const sitesDisHost = sites.filter(
       (item) => item.disableHostname !== current.name && !item.disable,
     );
     const filter = sitesDisHost.filter((item) => {
-      if (!disable.includes(item.name)) return item;
+      if (!disables.includes(item.name)) return item;
     });
     return o(preact2.Fragment, {
       children: [
@@ -1021,7 +1035,7 @@
           children: o(Setting, {
             sites,
             setSites,
-            disable,
+            disables,
           }),
         }),
       ],
