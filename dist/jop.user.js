@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         JAV 添加跳转在线观看
+// @name         JAV 图书馆添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.6
+// @version      1.1.7
 // @author       mission522
 // @description  [高效寻找最佳的在线资源] 在影片详情页添加跳转在线播放的按钮，并注是否提供在线播放资源或无码资源、字幕资源等信息。支持 JavDB、JavBus 以及 JavLibrary
 // @license      MIT
