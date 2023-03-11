@@ -1,25 +1,46 @@
 export interface DomQuery_parser {
-  /** 部分网站搜索页结果第一个是广告，所以要加一个 index  */
+  /** 部分网站搜索页结果第一个是广告，加入一个 index，来指定到固定的位置。
+   * 点名：GGJAV
+   */
   listIndex?: number;
-  /** code 是用空格分割的 */
+
+  /** 大部分 code 格式是 `xxx-000`，还有一部分用空格 `xxx 000`。
+   * 点名：GGJAV
+   */
   spaceCode?: boolean;
+
+  /** a 标签 href 的 query */
   linkQuery: string;
+  /** 在 title 里检测是否包含「字幕」等文本 */
   titleQuery: string;
+
+  /** 检测有无字幕的方法
+   * 点名：Jable
+   */
+  checkFn?: (arg: any) => boolean;
 }
 
 export interface DomQuery_get {
-  /** 收录视频，但是未提供在线播放资源 */
+  /** 收录视频，但是未提供在线播放资源。加入这个 query 来检测是否提供播放。
+   * 点名：JAVMENU
+   */
   videoQuery?: string;
+
   subQuery?: string;
   leakQuery?: string;
 }
 
 interface SiteItemBase {
   name: string;
+
   /** 用户定义的 disable */
   disable: boolean;
-  /** 针对 matchList 的 hostname */
+
+  /** 在指定 hostname 下不显示
+   * 点名：都是针对的 matchList 里的三个，防止出现自己检索自己站。
+   */
   disableHostname?: string;
+
   hostname: string;
   url: string;
   /** 没用 */
@@ -50,9 +71,13 @@ export const siteList: SiteItem[] = [
     name: "Jable",
     disable: false,
     hostname: "jable.tv",
-    url: "https://jable.tv/videos/{{code}}/",
-    fetcher: "get",
-    domQuery: { subQuery: ".header-right>h6" },
+    url: "https://jable.tv/search/{{code}}/",
+    fetcher: "parser",
+    domQuery: {
+      linkQuery: `.container .detail>.title>a`,
+      titleQuery: `.container .detail>.title>a`,
+      checkFn: (linkResult: string) => /-c\/$/.test(linkResult),
+    },
     method: print,
   },
   {
@@ -254,7 +279,6 @@ export const siteList: SiteItem[] = [
     },
     method: print,
   },
-
   {
     name: "JAVLib",
     disableHostname: "javlibrary",

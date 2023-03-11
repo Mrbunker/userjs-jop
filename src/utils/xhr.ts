@@ -27,13 +27,19 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
 }
 
 /** 针对 fetcher==="parser" 时的搜索结果页进行解析，寻找是否存在视频资源。
- * linkQuery、titleQuery 都是必须，
- * linkQuery 有结果且 titleQuery 结果包含 code，返回 isSuccess。
+ * linkQuery & titleQuery 都是必须，
+ * linkQuery 有结果且 titleQuery 有结果包含 code，返回 isSuccess。
  * 再检查下 title 中是否含有字幕信息等
  */
 function serachPageParser(
   responseText: string,
-  { linkQuery, titleQuery, listIndex = 0, spaceCode = false }: DomQuery_parser,
+  {
+    linkQuery,
+    titleQuery,
+    listIndex = 0,
+    spaceCode = false,
+    checkFn: checkTextFn,
+  }: DomQuery_parser,
   siteHostName: string,
   CODE: string,
 ) {
@@ -43,29 +49,28 @@ function serachPageParser(
   const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
   const titleNodeText = titleNode ? titleNode?.outerHTML : "";
 
-  function query() {
-    /** 空格版本的 code */
-    const envCodeWithSpace = spaceCode ? CODE.replace("-", " ") : CODE;
-    const condition =
-      linkNode &&
-      titleNode &&
-      (titleNodeText.includes(envCodeWithSpace) || titleNodeText.includes(CODE));
+  /** 空格版本的 code */
+  const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
 
-    if (condition) {
-      return {
-        isSuccess: true,
-        targetLink: linkNode.href.replace(linkNode.hostname, siteHostName),
-        hasLeakage: titleNodeText.includes("无码") || titleNodeText.includes("Uncensored"),
-        hasSubtitle: titleNodeText.includes("字幕") || titleNodeText.includes("subtitle"),
-      };
-    } else {
-      return { targetLink: "", isSuccess: false, hasSubtitle: false, hasLeakage: false };
-    }
+  const isSuccess = linkNode && titleNode && titleNodeText.includes(formatCode);
+
+  if (isSuccess) {
+    const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+    const meSub = checkTextFn ? checkTextFn(targetLinkText) : false;
+    const hasSubtitle =
+      titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || meSub;
+    return {
+      isSuccess: true,
+      targetLink: targetLinkText,
+      hasLeakage: titleNodeText.includes("无码") || titleNodeText.includes("Uncensored"),
+      hasSubtitle,
+    };
+  } else {
+    return { targetLink: "", isSuccess: false, hasSubtitle: false, hasLeakage: false };
   }
-  return query();
 }
 
-async function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
+function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
   const xhrPromise: Promise<xhrResult> = new Promise((resolve) => {
     GM_xmlhttpRequest({
       method: "GET",
