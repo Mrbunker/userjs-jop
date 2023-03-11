@@ -1,12 +1,14 @@
 import { memo, useState } from "preact/compat";
-import { SiteItem, siteList } from "@/utils/siteList";
-import { GM_getValue } from "$";
-import type { Current } from "@/utils/matchList";
+import Setting from "./Setting";
 import SiteButton from "./SiteButton";
-import { Setting } from "./Setting";
+import { GM_getValue } from "$";
+import { SiteItem, siteList } from "@/utils/siteList";
+import type { Current } from "@/utils/matchList";
 
 const App = memo(function ({ current, CODE }: { current: Current; CODE: string }) {
-  const disables = GM_getValue<SiteItem["name"][]>("disable", ["AvJoy", "baihuse", "AV01"]);
+  const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
+  /** 默认不显示的站 */
+  const disables = GM_getValue<SiteItem["name"][]>("disable", defDisables);
 
   // sites 最原始的 siteList.json
   const [sites, setSites] = useState(siteList);

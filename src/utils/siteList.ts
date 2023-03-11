@@ -254,4 +254,15 @@ export const siteList: SiteItem[] = [
     },
     method: print,
   },
+
+  {
+    name: "JAVLib",
+    disableHostname: "javlibrary",
+    disable: false,
+    hostname: "javlibrary.com",
+    url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
+    fetcher: "get",
+    domQuery: {},
+    method: print,
+  },
 ];

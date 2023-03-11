@@ -1,8 +1,8 @@
+import { StateUpdater, useRef, useState } from "preact/hooks";
 import { SiteItem } from "@/utils/siteList";
-import { StateUpdater, useState } from "preact/hooks";
 import { GM_setValue } from "vite-plugin-monkey/dist/client";
 
-export const Setting = ({
+const Setting = ({
   sites,
   setSites,
   disables: disable,
@@ -13,13 +13,13 @@ export const Setting = ({
 }) => {
   const [showSetting, setShowSetting] = useState(false);
   /** 暂存用户的勾选，最后保存的时候提交 */
-  const newDisable = disable;
+  const newDisable = useRef(disable);
   return (
     <>
       {!showSetting ? (
         <div
           className="jop-button_def"
-          onClick={(e) => {
+          onClick={() => {
             setShowSetting(!showSetting);
           }}
         >
@@ -39,14 +39,14 @@ export const Setting = ({
                     type="checkbox"
                     className="jop-setting-checkbox"
                     checked={!disable.includes(item.name)}
-                    onChange={(e: any) => {
-                      const checked: boolean = e.target?.checked;
+                    onChange={(e) => {
+                      const checked = (e.target as HTMLInputElement).checked;
                       sites[index].disable = !checked;
                       if (!checked) {
-                        newDisable.push(item.name);
+                        newDisable.current.push(item.name);
                       } else {
-                        newDisable.forEach((name, index) => {
-                          if (name === item.name) newDisable.splice(index, 1);
+                        newDisable.current = newDisable.current.filter((disableItem) => {
+                          return disableItem !== item.name;
                         });
                       }
                     }}
@@ -59,7 +59,7 @@ export const Setting = ({
             className="jop-button_def"
             onClick={(e) => {
               setShowSetting(!showSetting);
-              GM_setValue("disable", newDisable);
+              GM_setValue("disable", newDisable.current);
               setSites([...sites]);
             }}
           >
@@ -70,3 +70,5 @@ export const Setting = ({
     </>
   );
 };
+
+export default Setting;
