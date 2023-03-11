@@ -1,5 +1,5 @@
-import { SiteItem } from "@/utils/siteList";
 import xhr from "@/utils/xhr";
+import { SiteItem } from "@/utils/siteList";
 import { memo, useEffect, useState } from "preact/compat";
 
 interface Status {

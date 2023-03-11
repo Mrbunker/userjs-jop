@@ -26,7 +26,7 @@ const App = memo(function ({ current, CODE }: { current: Current; CODE: string }
     <>
       <div class="jop-list">
         {filter.map((item) => (
-          <SiteBtn siteItem={item} CODE={CODE} />
+          <SiteBtn siteItem={item} CODE={CODE} key={item.name} />
         ))}
       </div>
       <div>
