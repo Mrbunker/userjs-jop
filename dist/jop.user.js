@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.4
+// @version      1.1.5
 // @author       mission522
 // @description  [高效寻找最佳的在线资源] 在影片详情页添加跳转在线播放的按钮，并注是否提供在线播放资源或无码资源、字幕资源等信息。支持 JavDB、JavBus 以及 JavLibrary
 // @license      MIT
@@ -29,6 +29,7 @@
 // @connect      av01.tv
 // @connect      javbus.com
 // @connect      javdb.com
+// @connect      javlibrary.com
 // @connect      javdb007.com
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -164,6 +165,18 @@
   function h(u2, i2) {
     var o2 = d(t++, 3);
     !preact2.options.__s && z$1(o2.__H, i2) && ((o2.__ = u2), (o2.i = i2), r.__H.__h.push(o2));
+  }
+  function _$1(n) {
+    return (
+      (o$1 = 5),
+      F$1(function () {
+        return { current: n };
+      }, [])
+    );
+  }
+  function F$1(n, r2) {
+    var u2 = d(t++, 7);
+    return z$1(u2.__H, r2) ? ((u2.__V = n()), (u2.i = r2), (u2.__h = n), u2.__V) : u2.__;
   }
   function b() {
     for (var t2; (t2 = f.shift()); )
@@ -544,6 +557,253 @@
   preact2.options.__r = function (n) {
     en && en(n), n.__c;
   };
+  var monkeyWindow = window;
+  var GM_setValue = /* @__PURE__ */ (() => monkeyWindow.GM_setValue)();
+  var GM_xmlhttpRequest = /* @__PURE__ */ (() => monkeyWindow.GM_xmlhttpRequest)();
+  var GM_getValue = /* @__PURE__ */ (() => monkeyWindow.GM_getValue)();
+  var _ = 0;
+  function o(o2, e2, n, t2, f2) {
+    var l2,
+      s,
+      u2 = {};
+    for (s in e2) "ref" == s ? (l2 = e2[s]) : (u2[s] = e2[s]);
+    var a2 = {
+      type: o2,
+      props: u2,
+      key: n,
+      ref: l2,
+      __k: null,
+      __: null,
+      __b: 0,
+      __e: null,
+      __d: void 0,
+      __c: null,
+      __h: null,
+      constructor: void 0,
+      __v: --_,
+      __source: f2,
+      __self: t2,
+    };
+    if ("function" == typeof o2 && (l2 = o2.defaultProps))
+      for (s in l2) void 0 === u2[s] && (u2[s] = l2[s]);
+    return preact2.options.vnode && preact2.options.vnode(a2), a2;
+  }
+  const Setting = ({ sites, setSites, disables: disable }) => {
+    const [showSetting, setShowSetting] = p(false);
+    const newDisable = _$1(disable);
+    return o(preact2.Fragment, {
+      children: [
+        !showSetting
+          ? o("div", {
+              className: "jop-button_def",
+              onClick: () => {
+                setShowSetting(!showSetting);
+              },
+              children: "设置",
+            })
+          : o("h4", {
+              className: "jop-setting-title",
+              children: "勾选默认显示的网站",
+            }),
+        showSetting &&
+          o(preact2.Fragment, {
+            children: [
+              o("div", {
+                className: "jop-setting",
+                children: o("div", {
+                  className: "jop-setting-list",
+                  children: sites.map((item, index) =>
+                    o("div", {
+                      className: "jop-setting-item",
+                      children: [
+                        item.name,
+                        o("input", {
+                          type: "checkbox",
+                          className: "jop-setting-checkbox",
+                          checked: !disable.includes(item.name),
+                          onChange: (e2) => {
+                            const checked = e2.target.checked;
+                            sites[index].disable = !checked;
+                            if (!checked) {
+                              newDisable.current.push(item.name);
+                            } else {
+                              newDisable.current = newDisable.current.filter((disableItem) => {
+                                return disableItem !== item.name;
+                              });
+                            }
+                          },
+                        }),
+                      ],
+                    }),
+                  ),
+                }),
+              }),
+              o("div", {
+                className: "jop-button_def",
+                onClick: (e2) => {
+                  setShowSetting(!showSetting);
+                  GM_setValue("disable", newDisable.current);
+                  setSites([...sites]);
+                },
+                children: "保存",
+              }),
+            ],
+          }),
+      ],
+    });
+  };
+  function videoPageParser(responseText, { subQuery, leakQuery, videoQuery }) {
+    const doc = new DOMParser().parseFromString(responseText, "text/html");
+    const subNode = subQuery ? doc.querySelector(subQuery) : "";
+    const subNodeText = subNode ? subNode.innerHTML : "";
+    const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
+    const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
+    return {
+      isSuccess: !!videoNode,
+      hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
+      hasLeakage: !!leakNode,
+    };
+  }
+  function serachPageParser(
+    responseText,
+    { linkQuery, titleQuery, listIndex = 0, spaceCode = false, checkFn: checkTextFn },
+    siteHostName,
+    CODE,
+  ) {
+    const doc = new DOMParser().parseFromString(responseText, "text/html");
+    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
+    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
+    const titleNodeText = titleNode ? (titleNode == null ? void 0 : titleNode.outerHTML) : "";
+    const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
+    const isSuccess = linkNode && titleNode && titleNodeText.includes(formatCode);
+    if (isSuccess) {
+      const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+      const meSub = checkTextFn ? checkTextFn(targetLinkText) : false;
+      const hasSubtitle =
+        titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || meSub;
+      return {
+        isSuccess: true,
+        targetLink: targetLinkText,
+        hasLeakage: titleNodeText.includes("无码") || titleNodeText.includes("Uncensored"),
+        hasSubtitle,
+      };
+    } else {
+      return {
+        targetLink: "",
+        isSuccess: false,
+        hasSubtitle: false,
+        hasLeakage: false,
+      };
+    }
+  }
+  function xhr(siteItem, targetLink, CODE) {
+    const xhrPromise = new Promise((resolve) => {
+      GM_xmlhttpRequest({
+        method: "GET",
+        url: targetLink,
+        onload: (response) => {
+          if (siteItem.fetcher === "get") {
+            if (response.status === 404) {
+              resolve({
+                isSuccess: false,
+                targetLink,
+                hasSubtitle: false,
+                hasLeakage: false,
+                msg: "应该是没有资源",
+              });
+            } else {
+              const { hasSubtitle, hasLeakage, isSuccess } = videoPageParser(
+                response.responseText,
+                siteItem.domQuery,
+              );
+              resolve({
+                isSuccess,
+                targetLink,
+                hasSubtitle,
+                hasLeakage,
+                msg: "[get]，存在资源",
+              });
+            }
+          } else if (siteItem.fetcher === "parser") {
+            const {
+              targetLink: targetLink2,
+              isSuccess,
+              hasLeakage,
+              hasSubtitle,
+            } = serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE);
+            resolve({
+              isSuccess,
+              targetLink: isSuccess ? targetLink2 : targetLink2,
+              hasSubtitle,
+              hasLeakage,
+              msg: "[parser]存在资源",
+            });
+          }
+        },
+        onerror: (error) => {
+          resolve({
+            isSuccess: false,
+            targetLink,
+            hasSubtitle: false,
+            hasLeakage: false,
+            msg: error.error,
+          });
+        },
+      });
+    });
+    return xhrPromise;
+  }
+  const SiteButton = R(({ siteItem, CODE }) => {
+    const { name } = siteItem;
+    const link = siteItem.url.replace("{{code}}", CODE);
+    const [status, setStatus] = p({
+      isSuccess: "pedding",
+      hasSubtitle: false,
+      hasLeakage: false,
+      targetLink: "",
+    });
+    const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
+    h(() => {
+      xhr(siteItem, link, CODE).then((res) => {
+        setStatus({
+          isSuccess: res.isSuccess ? "fulfilled" : "rejected",
+          hasSubtitle: res.hasSubtitle,
+          hasLeakage: res.hasLeakage,
+          targetLink: res.targetLink,
+        });
+      });
+    }, [xhr, siteItem, CODE, link]);
+    const colorClass =
+      isSuccess === "pedding"
+        ? " "
+        : isSuccess === "fulfilled"
+        ? "jop-button_green "
+        : "jop-button_red ";
+    return o("a", {
+      className: "jop-button " + colorClass,
+      target: "_blank",
+      href: targetLink === "" ? link : targetLink,
+      children: [
+        (hasSubtitle || hasLeakage) &&
+          o("div", {
+            className: "jop-button_label",
+            children: [
+              hasSubtitle &&
+                o("span", {
+                  children: "字幕 ",
+                }),
+              hasLeakage &&
+                o("span", {
+                  children: " 无码",
+                }),
+            ],
+          }),
+        o("span", {
+          children: name,
+        }),
+      ],
+    });
+  });
   const print = (name) => {
     console.log(name);
   };
@@ -552,10 +812,12 @@
       name: "Jable",
       disable: false,
       hostname: "jable.tv",
-      url: "https://jable.tv/videos/{{code}}/",
-      fetcher: "get",
+      url: "https://jable.tv/search/{{code}}/",
+      fetcher: "parser",
       domQuery: {
-        subQuery: ".header-right>h6",
+        linkQuery: `.container .detail>.title>a`,
+        titleQuery: `.container .detail>.title>a`,
+        checkFn: (linkResult) => /-c\/$/.test(linkResult),
       },
       method: print,
     },
@@ -760,259 +1022,20 @@
       },
       method: print,
     },
+    {
+      name: "JAVLib",
+      disableHostname: "javlibrary",
+      disable: false,
+      hostname: "javlibrary.com",
+      url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
+      fetcher: "get",
+      domQuery: {},
+      method: print,
+    },
   ];
-  var monkeyWindow = window;
-  var GM_setValue = /* @__PURE__ */ (() => monkeyWindow.GM_setValue)();
-  var GM_xmlhttpRequest = /* @__PURE__ */ (() => monkeyWindow.GM_xmlhttpRequest)();
-  var GM_getValue = /* @__PURE__ */ (() => monkeyWindow.GM_getValue)();
-  function videoPageParser(responseText, { subQuery, leakQuery, videoQuery }) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const subNode = subQuery ? doc.querySelector(subQuery) : "";
-    const subNodeText = subNode ? subNode.innerHTML : "";
-    const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
-    const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
-    return {
-      isSuccess: !!videoNode,
-      hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
-      hasLeakage: !!leakNode,
-    };
-  }
-  function serachPageParser(
-    responseText,
-    { linkQuery, titleQuery, listIndex = 0, spaceCode = false },
-    siteHostName,
-    CODE,
-  ) {
-    const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
-    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
-    const titleNodeText = titleNode ? (titleNode == null ? void 0 : titleNode.outerHTML) : "";
-    function query() {
-      const envCodeWithSpace = spaceCode ? CODE.replace("-", " ") : CODE;
-      const condition =
-        linkNode &&
-        titleNode &&
-        (titleNodeText.includes(envCodeWithSpace) || titleNodeText.includes(CODE));
-      if (condition) {
-        return {
-          isSuccess: true,
-          targetLink: linkNode.href.replace(linkNode.hostname, siteHostName),
-          hasLeakage: titleNodeText.includes("无码") || titleNodeText.includes("Uncensored"),
-          hasSubtitle: titleNodeText.includes("字幕") || titleNodeText.includes("subtitle"),
-        };
-      } else {
-        return {
-          targetLink: "",
-          isSuccess: false,
-          hasSubtitle: false,
-          hasLeakage: false,
-        };
-      }
-    }
-    return query();
-  }
-  async function xhr(siteItem, targetLink, CODE) {
-    const xhrPromise = new Promise((resolve) => {
-      GM_xmlhttpRequest({
-        method: "GET",
-        url: targetLink,
-        onload: (response) => {
-          if (siteItem.fetcher === "get") {
-            if (response.status === 404) {
-              resolve({
-                isSuccess: false,
-                targetLink,
-                hasSubtitle: false,
-                hasLeakage: false,
-                msg: "应该是没有资源",
-              });
-            } else {
-              const { hasSubtitle, hasLeakage, isSuccess } = videoPageParser(
-                response.responseText,
-                siteItem.domQuery,
-              );
-              resolve({
-                isSuccess,
-                targetLink,
-                hasSubtitle,
-                hasLeakage,
-                msg: "[get]，存在资源",
-              });
-            }
-          } else if (siteItem.fetcher === "parser") {
-            const {
-              targetLink: targetLink2,
-              isSuccess,
-              hasLeakage,
-              hasSubtitle,
-            } = serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE);
-            resolve({
-              isSuccess,
-              targetLink: isSuccess ? targetLink2 : targetLink2,
-              hasSubtitle,
-              hasLeakage,
-              msg: "[parser]存在资源",
-            });
-          }
-        },
-        onerror: (error) => {
-          resolve({
-            isSuccess: false,
-            targetLink,
-            hasSubtitle: false,
-            hasLeakage: false,
-            msg: error.error,
-          });
-        },
-      });
-    });
-    return xhrPromise;
-  }
-  var _ = 0;
-  function o(o2, e2, n, t2, f2) {
-    var l2,
-      s,
-      u2 = {};
-    for (s in e2) "ref" == s ? (l2 = e2[s]) : (u2[s] = e2[s]);
-    var a2 = {
-      type: o2,
-      props: u2,
-      key: n,
-      ref: l2,
-      __k: null,
-      __: null,
-      __b: 0,
-      __e: null,
-      __d: void 0,
-      __c: null,
-      __h: null,
-      constructor: void 0,
-      __v: --_,
-      __source: f2,
-      __self: t2,
-    };
-    if ("function" == typeof o2 && (l2 = o2.defaultProps))
-      for (s in l2) void 0 === u2[s] && (u2[s] = l2[s]);
-    return preact2.options.vnode && preact2.options.vnode(a2), a2;
-  }
-  const SiteButton = R(({ siteItem, CODE }) => {
-    const { name } = siteItem;
-    const link = siteItem.url.replace("{{code}}", CODE);
-    const [status, setStatus] = p({
-      isSuccess: "pedding",
-      hasSubtitle: false,
-      hasLeakage: false,
-      targetLink: "",
-    });
-    const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
-    h(() => {
-      xhr(siteItem, link, CODE).then((res) => {
-        setStatus({
-          isSuccess: res.isSuccess ? "fulfilled" : "rejected",
-          hasSubtitle: res.hasSubtitle,
-          hasLeakage: res.hasLeakage,
-          targetLink: res.targetLink,
-        });
-      });
-    }, [xhr, siteItem, CODE, link]);
-    const colorClass =
-      isSuccess === "pedding"
-        ? " "
-        : isSuccess === "fulfilled"
-        ? "jop-button_green "
-        : "jop-button_red ";
-    return o("a", {
-      className: "jop-button " + colorClass,
-      target: "_blank",
-      href: targetLink === "" ? link : targetLink,
-      children: [
-        (hasSubtitle || hasLeakage) &&
-          o("div", {
-            className: "jop-button_label",
-            children: [
-              hasSubtitle &&
-                o("span", {
-                  children: "字幕 ",
-                }),
-              hasLeakage &&
-                o("span", {
-                  children: " 无码",
-                }),
-            ],
-          }),
-        o("span", {
-          children: name,
-        }),
-      ],
-    });
-  });
-  const Setting = ({ sites, setSites, disables: disable }) => {
-    const [showSetting, setShowSetting] = p(false);
-    const newDisable = disable;
-    return o(preact2.Fragment, {
-      children: [
-        !showSetting
-          ? o("div", {
-              className: "jop-button_def",
-              onClick: (e2) => {
-                setShowSetting(!showSetting);
-              },
-              children: "设置",
-            })
-          : o("h4", {
-              className: "jop-setting-title",
-              children: "勾选默认显示的网站",
-            }),
-        showSetting &&
-          o(preact2.Fragment, {
-            children: [
-              o("div", {
-                className: "jop-setting",
-                children: o("div", {
-                  className: "jop-setting-list",
-                  children: sites.map((item, index) =>
-                    o("div", {
-                      className: "jop-setting-item",
-                      children: [
-                        item.name,
-                        o("input", {
-                          type: "checkbox",
-                          className: "jop-setting-checkbox",
-                          checked: !disable.includes(item.name),
-                          onChange: (e2) => {
-                            var _a;
-                            const checked = (_a = e2.target) == null ? void 0 : _a.checked;
-                            sites[index].disable = !checked;
-                            if (!checked) {
-                              newDisable.push(item.name);
-                            } else {
-                              newDisable.forEach((name, index2) => {
-                                if (name === item.name) newDisable.splice(index2, 1);
-                              });
-                            }
-                          },
-                        }),
-                      ],
-                    }),
-                  ),
-                }),
-              }),
-              o("div", {
-                className: "jop-button_def",
-                onClick: (e2) => {
-                  setShowSetting(!showSetting);
-                  GM_setValue("disable", newDisable);
-                  setSites([...sites]);
-                },
-                children: "保存",
-              }),
-            ],
-          }),
-      ],
-    });
-  };
   const App = R(function ({ current, CODE }) {
-    const disables = GM_getValue("disable", ["AvJoy", "baihuse", "AV01"]);
+    const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
+    const disables = GM_getValue("disable", defDisables);
     const [sites, setSites] = p(siteList);
     const sitesDisHost = sites.filter(
       (item) => item.disableHostname !== current.name && !item.disable,
