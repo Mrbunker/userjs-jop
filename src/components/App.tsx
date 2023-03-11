@@ -1,7 +1,7 @@
 import { memo, useState } from "preact/compat";
 import Setting from "./Setting";
 import SiteBtn from "./SiteBtn";
-import { GM_getValue } from "$";
+import { GM_getValue, GM_setValue } from "$";
 import { SiteItem, siteList } from "@/utils/siteList";
 import type { Current } from "@/utils/matchList";
 
@@ -10,30 +10,26 @@ const App = memo(function ({ current, CODE }: { current: Current; CODE: string }
   /** 默认不显示的站 */
   const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", defDisables));
 
-  // sites 最原始的 siteList.json
-  const [sites, setSites] = useState(siteList);
-  /**  禁用 hostname  */
-  const sitesDisHost = sites.filter(
-    (item) => item.disableHostname !== current.name && !item.disable,
-  );
-
-  /** 禁用 用户自定义 */
-  const filter = sitesDisHost.filter((item) => {
-    if (!disables.includes(item.name)) return item;
-  });
-
   return (
     <>
       <div class="jop-list">
-        {filter.map((item) => (
-          <SiteBtn siteItem={item} CODE={CODE} key={item.name} />
-        ))}
+        {siteList.map((item) => {
+          const hidden = disables.find((disItem) => disItem === item.name) === undefined;
+          if (hidden && current.name !== item.disableHostname) {
+            return <SiteBtn siteItem={item} CODE={CODE} key={item.name} />;
+          } else {
+            return <></>;
+          }
+        })}
       </div>
+
       <div>
         <Setting
-          sites={sites}
-          setDisables={setDisables}
-          // setSites={setSites}
+          siteList={siteList}
+          setDisables={(disable) => {
+            setDisables(disable);
+            GM_setValue("disable", disable);
+          }}
           disables={disables}
         />
       </div>

@@ -2,26 +2,23 @@ import { StateUpdater, useState, useCallback } from "preact/hooks";
 import { SiteItem } from "@/utils/siteList";
 
 const Setting = ({
-  sites,
+  siteList,
   setDisables,
   disables,
 }: {
-  sites: SiteItem[];
+  siteList: SiteItem[];
   setDisables: StateUpdater<string[]>;
   disables: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
 
-  const changeCheck = useCallback(
-    (item: SiteItem, isHidden: boolean) => {
-      if (isHidden) {
-        setDisables(disables.filter((disItem) => disItem !== item.name));
-      } else {
-        setDisables([...disables, item.name]);
-      }
-    },
-    [sites],
-  );
+  const changeCheck = (item: SiteItem, isHidden: boolean) => {
+    if (isHidden) {
+      setDisables(disables.filter((disItem) => disItem !== item.name));
+    } else {
+      setDisables([...disables, item.name]);
+    }
+  };
 
   return (
     <>
@@ -41,7 +38,7 @@ const Setting = ({
         <>
           <div className="jop-setting">
             <div className="jop-setting-list">
-              {sites.map((item) => {
+              {siteList.map((item) => {
                 const isHidden = disables.includes(item.name);
                 return (
                   <div
@@ -63,7 +60,7 @@ const Setting = ({
               setShowSetting(!showSetting);
             }}
           >
-            保存
+            收起设置
           </div>
         </>
       )}
