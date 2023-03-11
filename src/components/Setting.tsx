@@ -1,19 +1,28 @@
-import { StateUpdater, useRef, useState } from "preact/hooks";
+import { StateUpdater, useState, useCallback } from "preact/hooks";
 import { SiteItem } from "@/utils/siteList";
-import { GM_setValue } from "vite-plugin-monkey/dist/client";
 
 const Setting = ({
   sites,
-  setSites,
-  disables: disable,
+  setDisables,
+  disables,
 }: {
   sites: SiteItem[];
-  setSites: StateUpdater<SiteItem[]>;
+  setDisables: StateUpdater<string[]>;
   disables: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
-  /** 暂存用户的勾选，最后保存的时候提交 */
-  const newDisable = useRef(disable);
+
+  const changeCheck = useCallback(
+    (item: SiteItem, isHidden: boolean) => {
+      if (isHidden) {
+        setDisables(disables.filter((disItem) => disItem !== item.name));
+      } else {
+        setDisables([...disables, item.name]);
+      }
+    },
+    [sites],
+  );
+
   return (
     <>
       {!showSetting ? (
@@ -32,35 +41,26 @@ const Setting = ({
         <>
           <div className="jop-setting">
             <div className="jop-setting-list">
-              {sites.map((item, index) => (
-                <div className="jop-setting-item">
-                  {item.name}
-                  <input
-                    type="checkbox"
-                    className="jop-setting-checkbox"
-                    checked={!disable.includes(item.name)}
-                    onChange={(e) => {
-                      const checked = (e.target as HTMLInputElement).checked;
-                      sites[index].disable = !checked;
-                      if (!checked) {
-                        newDisable.current.push(item.name);
-                      } else {
-                        newDisable.current = newDisable.current.filter((disableItem) => {
-                          return disableItem !== item.name;
-                        });
-                      }
+              {sites.map((item) => {
+                const isHidden = disables.includes(item.name);
+                return (
+                  <div
+                    className="jop-setting-item"
+                    onClick={() => {
+                      changeCheck(item, isHidden);
                     }}
-                  />
-                </div>
-              ))}
+                  >
+                    {item.name}
+                    <input type="checkbox" className="jop-setting-checkbox" checked={!isHidden} />
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div
             className="jop-button_def"
-            onClick={(e) => {
+            onClick={() => {
               setShowSetting(!showSetting);
-              GM_setValue("disable", newDisable.current);
-              setSites([...sites]);
             }}
           >
             保存

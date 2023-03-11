@@ -56,9 +56,9 @@ function serachPageParser(
 
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
-    const meSub = checkTextFn ? checkTextFn(targetLinkText) : false;
+    const checkResult = checkTextFn ? checkTextFn(targetLinkText) : false;
     const hasSubtitle =
-      titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || meSub;
+      titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || checkResult;
     return {
       isSuccess: true,
       targetLink: targetLinkText,
