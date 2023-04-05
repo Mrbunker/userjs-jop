@@ -5,7 +5,7 @@ export interface DomQuery_parser {
   listIndex?: number;
 
   /** 大部分 code 格式是 `xxx-000`，还有一部分用空格 `xxx 000`。
-   * 点名：GGJAV
+   * 原来是点名 GGJAV 的
    */
   spaceCode?: boolean;
 
@@ -240,7 +240,7 @@ export const siteList: SiteItem[] = [
     fetcher: "parser",
     domQuery: {
       listIndex: 1,
-      spaceCode: true,
+      // spaceCode: true,
       titleQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
       linkQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
     },
