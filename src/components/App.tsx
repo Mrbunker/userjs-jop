@@ -7,14 +7,19 @@ import type { Current } from "@/utils/matchList";
 
 const App = memo(function ({ current, CODE }: { current: Current; CODE: string }) {
   const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
+
+  const defDis: Set<SiteItem["name"]> = new Set(defDisables);
+
   /** 默认不显示的站 */
-  const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", defDisables));
+  const [disables, setDisables] = useState(GM_getValue("disable", defDis));
 
   return (
     <>
       <div class="jop-list">
         {siteList.map((item) => {
-          const hidden = disables.find((disItem) => disItem === item.name) === undefined;
+          // const hidden = disables.find((disItem) => disItem === item.name) === undefined;
+          const hidden = !disables.has(item.name);
+
           if (hidden && current.name !== item.disableHostname) {
             return <SiteBtn siteItem={item} CODE={CODE} key={item.name} />;
           } else {

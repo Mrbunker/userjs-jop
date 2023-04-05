@@ -9,7 +9,7 @@ const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
   version: "1.1.7",
   license: "MIT",
-  name: "JAV 图书馆添加跳转在线观看",
+  name: "JAV 添加跳转在线观看",
   match: ["*://*/cn/?v=jav*"],
   include: [
     /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
@@ -24,7 +24,11 @@ const UserscriptConfig: MonkeyUserScript = {
 };
 
 export default defineConfig({
-  build: {},
+  build: {
+    rollupOptions: {},
+    // target:''
+  },
+
   resolve: { alias: { "@": "/src/" } },
   esbuild: { charset: "utf8" },
   plugins: [

@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         JAV 图书馆添加跳转在线观看
+// @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
 // @version      1.1.7
 // @author       mission522
@@ -576,10 +576,12 @@
     const [showSetting, setShowSetting] = p(false);
     const changeCheck = (item, isHidden) => {
       if (isHidden) {
-        setDisables(disables.filter((disItem) => disItem !== item.name));
+        disables.delete(item.name);
       } else {
-        setDisables([...disables, item.name]);
+        disables.add(item.name);
       }
+      const newDis = new Set(disables);
+      setDisables(newDis);
     };
     return o(preact2.Fragment, {
       children: [
@@ -603,7 +605,7 @@
                 children: o("div", {
                   className: "jop-setting-list",
                   children: siteList2.map((item) => {
-                    const isHidden = disables.includes(item.name);
+                    const isHidden = disables.has(item.name);
                     return o("div", {
                       className: "jop-setting-item",
                       onClick: () => {
@@ -1020,13 +1022,14 @@
   ];
   const App = R(function ({ current, CODE }) {
     const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
-    const [disables, setDisables] = p(GM_getValue("disable", defDisables));
+    const defDis = new Set(defDisables);
+    const [disables, setDisables] = p(GM_getValue("disable", defDis));
     return o(preact2.Fragment, {
       children: [
         o("div", {
           class: "jop-list",
           children: siteList.map((item) => {
-            const hidden = disables.find((disItem) => disItem === item.name) === void 0;
+            const hidden = !disables.has(item.name);
             if (hidden && current.name !== item.disableHostname) {
               return o(
                 SiteBtn,

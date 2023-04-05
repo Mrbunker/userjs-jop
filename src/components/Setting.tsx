@@ -1,4 +1,4 @@
-import { StateUpdater, useState, useCallback } from "preact/hooks";
+import { StateUpdater, useState } from "preact/hooks";
 import { SiteItem } from "@/utils/siteList";
 
 const Setting = ({
@@ -7,17 +7,19 @@ const Setting = ({
   disables,
 }: {
   siteList: SiteItem[];
-  setDisables: StateUpdater<string[]>;
-  disables: SiteItem["name"][];
+  setDisables: StateUpdater<Set<string>>;
+  disables: Set<string>;
 }) => {
   const [showSetting, setShowSetting] = useState(false);
 
   const changeCheck = (item: SiteItem, isHidden: boolean) => {
     if (isHidden) {
-      setDisables(disables.filter((disItem) => disItem !== item.name));
+      disables.delete(item.name);
     } else {
-      setDisables([...disables, item.name]);
+      disables.add(item.name);
     }
+    const newDis = new Set(disables);
+    setDisables(newDis);
   };
 
   return (
@@ -39,7 +41,7 @@ const Setting = ({
           <div className="jop-setting">
             <div className="jop-setting-list">
               {siteList.map((item) => {
-                const isHidden = disables.includes(item.name);
+                const isHidden = disables.has(item.name);
                 return (
                   <div
                     className="jop-setting-item"
