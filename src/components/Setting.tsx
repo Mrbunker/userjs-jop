@@ -7,19 +7,17 @@ const Setting = ({
   disables,
 }: {
   siteList: SiteItem[];
-  setDisables: StateUpdater<Set<string>>;
-  disables: Set<string>;
+  setDisables: StateUpdater<string[]>;
+  disables: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);
 
   const changeCheck = (item: SiteItem, isHidden: boolean) => {
     if (isHidden) {
-      disables.delete(item.name);
+      setDisables(disables.filter((disItem) => disItem !== item.name));
     } else {
-      disables.add(item.name);
+      setDisables([...disables, item.name]);
     }
-    const newDis = new Set(disables);
-    setDisables(newDis);
   };
 
   return (
@@ -41,7 +39,7 @@ const Setting = ({
           <div className="jop-setting">
             <div className="jop-setting-list">
               {siteList.map((item) => {
-                const isHidden = disables.has(item.name);
+                const isHidden = disables.includes(item.name);
                 return (
                   <div
                     className="jop-setting-item"

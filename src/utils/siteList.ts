@@ -36,10 +36,10 @@ interface SiteItemBase {
   /** 用户定义的 disable */
   disable: boolean;
 
-  /** 在指定 hostname 下不显示
+  /** 在指定 LibItem.name 下不显示
    * 点名：都是针对的 matchList 里的三个，防止出现自己检索自己站。
    */
-  disableHostname?: string;
+  disableLibItemName?: string;
 
   hostname: string;
   url: string;
@@ -65,7 +65,7 @@ const print = (name: string) => {
   console.log(name);
 };
 
-/** 网站列表 */
+/** 在线网站列表 */
 export const siteList: SiteItem[] = [
   {
     name: "Jable",
@@ -258,7 +258,7 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JavBus",
-    disableHostname: "javbus",
+    disableLibItemName: "javbus",
     disable: false,
     hostname: "javbus.com",
     url: "https://javbus.com/{{code}}",
@@ -268,7 +268,7 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JavDB",
-    disableHostname: "javdb",
+    disableLibItemName: "javdb",
     disable: false,
     hostname: "javdb.com",
     url: "https://javdb.com/search?q={{code}}",
@@ -281,7 +281,7 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVLib",
-    disableHostname: "javlibrary",
+    disableLibItemName: "javlibrary",
     disable: false,
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",

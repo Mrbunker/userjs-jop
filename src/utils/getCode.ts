@@ -1,6 +1,6 @@
-import { Current } from "./matchList";
+import { LibItem } from "./libSites";
 
-export function getCode(cms: Current): string {
+export function getCode(cms: LibItem): string {
   const { codeQueryStr } = cms.querys;
   const codeNode = document.querySelector<HTMLElement>(codeQueryStr);
   if (!codeNode) return "";
