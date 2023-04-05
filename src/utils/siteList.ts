@@ -281,7 +281,7 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVLib",
-    disableLibItemName: "javlibrary",
+    disableLibItemName: "javlib",
     disable: false,
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
