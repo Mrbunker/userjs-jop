@@ -33,13 +33,7 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
  */
 function serachPageParser(
   responseText: string,
-  {
-    linkQuery,
-    titleQuery,
-    listIndex = 0,
-    spaceCode = false,
-    checkFn: checkTextFn,
-  }: DomQuery_parser,
+  { linkQuery, titleQuery, listIndex = 0, checkTextFn }: DomQuery_parser,
   siteHostName: string,
   CODE: string,
 ) {
@@ -50,12 +44,13 @@ function serachPageParser(
   const titleNodeText = titleNode ? titleNode?.outerHTML : "";
 
   /** 空格版本的 code */
-  const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
+  // const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
 
-  const isSuccess = linkNode && titleNode && titleNodeText.includes(formatCode);
+  const isSuccess = linkNode && titleNode && titleNodeText.includes(CODE);
 
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+
     const checkResult = checkTextFn ? checkTextFn(targetLinkText) : false;
     const hasSubtitle =
       titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || checkResult;

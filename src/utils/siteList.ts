@@ -17,7 +17,7 @@ export interface DomQuery_parser {
   /** 检测有无字幕的方法
    * 点名：Jable
    */
-  checkFn?: (arg: any) => boolean;
+  checkTextFn?: (arg: any) => boolean;
 }
 
 export interface DomQuery_get {
@@ -76,7 +76,7 @@ export const siteList: SiteItem[] = [
     domQuery: {
       linkQuery: `.container .detail>.title>a`,
       titleQuery: `.container .detail>.title>a`,
-      checkFn: (linkResult: string) => /-c\/$/.test(linkResult),
+      checkTextFn: (linkResult: string) => /-c\/$/.test(linkResult),
     },
     method: print,
   },
@@ -285,8 +285,11 @@ export const siteList: SiteItem[] = [
     disable: false,
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
-    fetcher: "get",
-    domQuery: {},
+    fetcher: "parser",
+    domQuery: {
+      linkQuery: ".videothumblist .video[id]:first-child>a",
+      titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
+    },
     method: print,
   },
 ];
