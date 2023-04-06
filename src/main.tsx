@@ -10,14 +10,18 @@ import App from "./components/App";
 
 function main() {
   /** 当前匹配的图书馆站点对象 */
-  const libItem = libSites.find((item) => item.href.test(window.location.href)) as LibItem;
+  const libItem = libSites.find((item) => item.href.test(window.location.href));
+  if (!libItem) {
+    console.error("脚本挂载错误");
+    return;
+  }
   const CODE = getCode(libItem);
 
   // 执行对于当前图书馆站的特殊适配，如单独的样式改动
   libItem.method();
 
   const panel = document.querySelector<HTMLElement>(libItem.querys.panelQueryStr);
-  if (panel === null) {
+  if (!panel) {
     console.error("脚本挂载错误");
     return;
   }

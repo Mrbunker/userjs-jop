@@ -1,12 +1,12 @@
-import { LibItem } from "./libSites";
+import { type LibItem } from "./libSites";
 
-export function getCode(cms: LibItem): string {
-  const { codeQueryStr } = cms.querys;
+export function getCode(libItem: LibItem): string {
+  const { codeQueryStr } = libItem.querys;
   const codeNode = document.querySelector<HTMLElement>(codeQueryStr);
   if (!codeNode) return "";
 
   const codeText =
-    cms.name === "javdb"
+    libItem.name === "javdb"
       ? (codeNode.dataset.clipboardText as string)
       : codeNode.innerText.replace("复制", "");
 

@@ -15,7 +15,7 @@ export const libSites: LibItem[] = [
   {
     name: "javdb",
     enable: true,
-    href: /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
+    href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
     querys: {
       panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
       codeQueryStr: `[data-clipboard-text]`,
@@ -34,7 +34,7 @@ export const libSites: LibItem[] = [
   {
     name: "javbus",
     enable: true,
-    href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/,
+    href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/,
     querys: {
       panelQueryStr: ".movie>div.info",
       codeQueryStr: `span[style="color:#CC0000;"]`,
