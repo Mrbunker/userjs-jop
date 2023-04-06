@@ -7,7 +7,7 @@ const connectList = siteList.map((site) => site.hostname).concat(["javdb008.com"
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.1.8",
+  version: "1.1.9",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
   match: ["*://*/cn/?v=jav*"],
@@ -18,8 +18,7 @@ const UserscriptConfig: MonkeyUserScript = {
   ],
   icon: "https://javdb.com/favicon-32x32.png",
   namespace: "https://greasyfork.org/zh-CN/scripts/429173",
-  description:
-    "[高效寻找最佳的在线资源] 在影片详情页添加跳转在线播放的按钮，并注是否提供在线播放资源或无码资源、字幕资源等信息。支持 JavDB、JavBus 以及 JavLibrary",
+  description: "为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接",
   connect: connectList,
 };
 
