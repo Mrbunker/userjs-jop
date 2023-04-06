@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.9
+// @version      1.1.10
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
 // @icon         https://javdb.com/favicon-32x32.png
 // @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/
-// @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/
+// @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/
 // @match        *://*/cn/?v=jav*
 // @require      https://cdn.jsdelivr.net/npm/preact@10.11.3/dist/preact.min.js
@@ -51,7 +51,7 @@
     {
       name: "javdb",
       enable: true,
-      href: /^https:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
+      href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
       querys: {
         panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
         codeQueryStr: `[data-clipboard-text]`,
@@ -68,7 +68,7 @@
     {
       name: "javbus",
       enable: true,
-      href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life).*$/,
+      href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/,
       querys: {
         panelQueryStr: ".movie>div.info",
         codeQueryStr: `span[style="color:#CC0000;"]`,
@@ -89,12 +89,12 @@
       },
     },
   ];
-  function getCode(cms) {
-    const { codeQueryStr } = cms.querys;
+  function getCode(libItem) {
+    const { codeQueryStr } = libItem.querys;
     const codeNode = document.querySelector(codeQueryStr);
     if (!codeNode) return "";
     const codeText =
-      cms.name === "javdb"
+      libItem.name === "javdb"
         ? codeNode.dataset.clipboardText
         : codeNode.innerText.replace("复制", "");
     if (codeText == null ? void 0 : codeText.includes("FC2")) return codeText.split("-")[1];
@@ -821,7 +821,9 @@
       hostname: "njav.tv",
       url: "https://njav.tv/zh/v/{{code}}",
       fetcher: "get",
-      domQuery: {},
+      domQuery: {
+        videoQuery: "#player",
+      },
       method: print,
     },
     {
@@ -1048,10 +1050,14 @@
   });
   function main() {
     const libItem = libSites.find((item) => item.href.test(window.location.href));
+    if (!libItem) {
+      console.error("脚本挂载错误");
+      return;
+    }
     const CODE = getCode(libItem);
     libItem.method();
     const panel = document.querySelector(libItem.querys.panelQueryStr);
-    if (panel === null) {
+    if (!panel) {
       console.error("脚本挂载错误");
       return;
     }
