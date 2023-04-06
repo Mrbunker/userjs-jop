@@ -33,8 +33,8 @@ export interface DomQuery_get {
 interface SiteItemBase {
   name: string;
 
-  /** 用户定义的 disable */
-  disable: boolean;
+  /** [废弃] 用户定义的 disable */
+  // disable: boolean;
 
   /** 在指定 LibItem.name 下不显示
    * 点名：都是针对的 matchList 里的三个，防止出现自己检索自己站。
@@ -69,7 +69,6 @@ const print = (name: string) => {
 export const siteList: SiteItem[] = [
   {
     name: "Jable",
-    disable: false,
     hostname: "jable.tv",
     url: "https://jable.tv/search/{{code}}/",
     fetcher: "parser",
@@ -82,7 +81,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "MISSAV",
-    disable: false,
     hostname: "missav.com",
     url: "https://missav.com/{{code}}/",
     fetcher: "get",
@@ -95,9 +93,16 @@ export const siteList: SiteItem[] = [
     method: print,
   },
   {
+    name: "njav",
+    hostname: "njav.tv",
+    url: "https://njav.tv/zh/v/{{code}}",
+    fetcher: "get",
+    domQuery: { leakQuery: "div.d-flex>.mr-3" },
+    method: print,
+  },
+  {
     // 有可能搜出仨：leakage subtitle 4k
     name: "Supjav",
-    disable: false,
     hostname: "supjav.com",
     url: "https://supjav.com/zh/?s={{code}}",
     fetcher: "parser",
@@ -109,7 +114,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "NETFLAV",
-    disable: false,
     hostname: "netflav.com",
     url: "https://netflav.com/search?type=title&keyword={{code}}",
     fetcher: "parser",
@@ -121,7 +125,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "Avgle",
-    disable: false,
     hostname: "avgle.com",
     url: "https://avgle.com/search/videos?search_query={{code}}&search_type=videos",
     fetcher: "parser",
@@ -133,7 +136,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVHHH",
-    disable: false,
     hostname: "javhhh.com",
     url: "https://javhhh.com/v/?wd={{code}}",
     fetcher: "parser",
@@ -145,7 +147,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "BestJP",
-    disable: false,
     hostname: "bestjavporn.com",
     url: "https://www3.bestjavporn.com/search/{{code}}",
     fetcher: "parser",
@@ -154,7 +155,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVMENU",
-    disable: false,
     hostname: "javmenu.com",
     url: "https://javmenu.com/{{code}}",
     fetcher: "get",
@@ -165,7 +165,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "Jav.Guru",
-    disable: false,
     hostname: "jav.guru",
     url: "https://jav.guru/?s={{code}}",
     fetcher: "parser",
@@ -174,7 +173,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVMOST",
-    disable: false,
     hostname: "javmost.cx",
     url: "https://javmost.cx/search/{{code}}/",
     fetcher: "parser",
@@ -186,7 +184,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "HAYAV",
-    disable: false,
     hostname: "hayav.com",
     url: "https://hayav.com/video/{{code}}/",
     fetcher: "get",
@@ -197,7 +194,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "AvJoy",
-    disable: false,
     hostname: "avjoy.me",
     url: "https://avjoy.me/search/video/{{code}}",
     fetcher: "parser",
@@ -209,7 +205,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVFC2",
-    disable: false,
     hostname: "javfc2.net",
     url: "https://javfc2.net/?s={{code}}",
     fetcher: "parser",
@@ -221,7 +216,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "baihuse",
-    disable: false,
     hostname: "paipancon.com",
     url: "https://paipancon.com/search/{{code}}",
     fetcher: "parser",
@@ -234,7 +228,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "GGJAV",
-    disable: false,
     hostname: "ggjav.com",
     url: "https://ggjav.com/main/search?string={{code}}",
     fetcher: "parser",
@@ -249,7 +242,6 @@ export const siteList: SiteItem[] = [
 
   {
     name: "AV01",
-    disable: false,
     hostname: "av01.tv",
     url: "https://www.av01.tv/search/videos?search_query={{code}}",
     fetcher: "parser",
@@ -259,7 +251,6 @@ export const siteList: SiteItem[] = [
   {
     name: "JavBus",
     disableLibItemName: "javbus",
-    disable: false,
     hostname: "javbus.com",
     url: "https://javbus.com/{{code}}",
     fetcher: "get",
@@ -269,7 +260,6 @@ export const siteList: SiteItem[] = [
   {
     name: "JavDB",
     disableLibItemName: "javdb",
-    disable: false,
     hostname: "javdb.com",
     url: "https://javdb.com/search?q={{code}}",
     fetcher: "parser",
@@ -282,7 +272,6 @@ export const siteList: SiteItem[] = [
   {
     name: "JAVLib",
     disableLibItemName: "javlib",
-    disable: false,
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
     fetcher: "parser",
