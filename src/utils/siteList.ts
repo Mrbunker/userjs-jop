@@ -17,7 +17,7 @@ export interface DomQuery_parser {
   /** 检测有无字幕的方法
    * 点名：Jable
    */
-  checkTextFn?: (arg: any) => boolean;
+  // checkMethod?: (pageDoc: Document) => { hasSubtitle?: boolean; hasLeakage?: boolean };
 }
 
 export interface DomQuery_get {
@@ -75,7 +75,7 @@ export const siteList: SiteItem[] = [
     domQuery: {
       linkQuery: `.container .detail>.title>a`,
       titleQuery: `.container .detail>.title>a`,
-      checkTextFn: (linkResult: string) => /-c\/$/.test(linkResult),
+      // checkMethod: () => ({}),
     },
     method: print,
   },
@@ -85,9 +85,9 @@ export const siteList: SiteItem[] = [
     url: "https://missav.com/{{code}}/",
     fetcher: "get",
     domQuery: {
-      /** 标签区的第一个一般是字幕标签 */
+      // 标签区的第一个一般是字幕标签
       subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
-      /** videoPage 有个跳转按钮 */
+      // 有个「切換無碼」按钮，藏在分享按钮旁边……
       leakQuery: ".order-first div.rounded-md a[href]:last-child",
     },
     method: print,
@@ -97,7 +97,7 @@ export const siteList: SiteItem[] = [
     hostname: "njav.tv",
     url: "https://njav.tv/zh/v/{{code}}",
     fetcher: "get",
-    domQuery: { leakQuery: "div.d-flex>.mr-3" },
+    domQuery: {},
     method: print,
   },
   {

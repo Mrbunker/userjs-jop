@@ -9,6 +9,8 @@ export type xhrResult = {
   msg: string;
 };
 
+const leakReg = /(无码|無碼|泄漏|Uncensored)/;
+
 /** 针对视频播放页进行解析，寻找字幕等信息 */
 function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery }: DomQuery_get) {
   const doc = new DOMParser().parseFromString(responseText, "text/html");
@@ -16,13 +18,16 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
   const subNode = subQuery ? doc.querySelector<HTMLElement>(subQuery) : "";
   const subNodeText = subNode ? subNode.innerHTML : "";
   const leakNode = leakQuery ? doc.querySelector<HTMLElement>(leakQuery) : null;
-  // 部分网站收录视频，但是未提供播放资源，所以需要使用 videoQuery 进一步检测是否存在在线播放
-  /** videoQuery 为 undefine 时，不需要查找 video */
+  const linkNodeText = leakNode ? leakNode.innerHTML : "";
+
+  /** 部分网站收录视频，但是未提供播放资源，所以需要使用 videoQuery 进一步检测是否存在在线播放。
+   * videoQuery 为 undefine 时，不需要查找 video
+   */
   const videoNode = videoQuery ? doc.querySelector<HTMLElement>(videoQuery) : true;
   return {
     isSuccess: !!videoNode,
     hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
-    hasLeakage: !!leakNode,
+    hasLeakage: leakReg.test(linkNodeText),
   };
 }
 
@@ -33,7 +38,7 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
  */
 function serachPageParser(
   responseText: string,
-  { linkQuery, titleQuery, listIndex = 0, checkTextFn }: DomQuery_parser,
+  { linkQuery, titleQuery, listIndex = 0 }: DomQuery_parser,
   siteHostName: string,
   CODE: string,
 ) {
@@ -51,13 +56,11 @@ function serachPageParser(
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
 
-    const checkResult = checkTextFn ? checkTextFn(targetLinkText) : false;
-    const hasSubtitle =
-      titleNodeText.includes("字幕") || titleNodeText.includes("subtitle") || checkResult;
+    const hasSubtitle = titleNodeText.includes("字幕") || titleNodeText.includes("subtitle");
     return {
       isSuccess: true,
       targetLink: targetLinkText,
-      hasLeakage: titleNodeText.includes("无码") || titleNodeText.includes("Uncensored"),
+      hasLeakage: leakReg.test(titleNodeText),
       hasSubtitle,
     };
   } else {
