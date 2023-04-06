@@ -21,8 +21,9 @@ export interface DomQuery_parser {
 }
 
 export interface DomQuery_get {
-  /** 收录视频，但是未提供在线播放资源。加入这个 query 来检测是否提供播放。
-   * 点名：JAVMENU
+  /** 检测是否提供播放
+   * 点名：JAVMENU  收录视频，但是未提供在线播放资源。
+   * 点名：njav  资源没有但是非要返回 404
    */
   videoQuery?: string;
 
@@ -97,7 +98,9 @@ export const siteList: SiteItem[] = [
     hostname: "njav.tv",
     url: "https://njav.tv/zh/v/{{code}}",
     fetcher: "get",
-    domQuery: {},
+    domQuery: {
+      videoQuery: "#player",
+    },
     method: print,
   },
   {
