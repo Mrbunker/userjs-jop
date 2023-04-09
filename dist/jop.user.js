@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.10
+// @version      1.1.11
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -28,6 +28,8 @@
 // @connect      paipancon.com
 // @connect      ggjav.com
 // @connect      av01.tv
+// @connect      18sex.org
+// @connect      highporn.net
 // @connect      javbus.com
 // @connect      javdb.com
 // @connect      javlibrary.com
@@ -978,6 +980,28 @@
       method: print,
     },
     {
+      name: "18sex",
+      hostname: "18sex.org",
+      url: "https://www.18sex.org/cn/search/{{code}}/",
+      fetcher: "parser",
+      domQuery: {
+        linkQuery: ".white_link[href]",
+        titleQuery: ".white_link>.card-title",
+      },
+      method: print,
+    },
+    {
+      name: "highporn",
+      hostname: "highporn.net",
+      url: "https://highporn.net/search/videos?search_query={{code}}",
+      fetcher: "parser",
+      domQuery: {
+        linkQuery: ".well>a[href]",
+        titleQuery: ".well>a[href]>span.video-title",
+      },
+      method: print,
+    },
+    {
       name: "JavBus",
       disableLibItemName: "javbus",
       hostname: "javbus.com",
@@ -1012,8 +1036,11 @@
     },
   ];
   const App = R(function ({ libItem, CODE }) {
-    const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
-    const [disables, setDisables] = p(GM_getValue("disable", defDisables));
+    const defDis = [
+      ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
+      ...["JavBus", "JavDB", "JAVLib"],
+    ];
+    const [disables, setDisables] = p(GM_getValue("disable", defDis));
     return o(preact2.Fragment, {
       children: [
         o("div", {
