@@ -252,6 +252,22 @@ export const siteList: SiteItem[] = [
     method: print,
   },
   {
+    name: "18sex",
+    hostname: "18sex.org",
+    url: "https://www.18sex.org/cn/search/{{code}}/",
+    fetcher: "parser",
+    domQuery: { linkQuery: ".white_link[href]", titleQuery: ".white_link>.card-title" },
+    method: print,
+  },
+  {
+    name: "highporn",
+    hostname: "highporn.net",
+    url: "https://highporn.net/search/videos?search_query={{code}}",
+    fetcher: "parser",
+    domQuery: { linkQuery: ".well>a[href]", titleQuery: ".well>a[href]>span.video-title" },
+    method: print,
+  },
+  {
     name: "JavBus",
     disableLibItemName: "javbus",
     hostname: "javbus.com",

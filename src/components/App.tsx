@@ -6,10 +6,12 @@ import { SiteItem, siteList } from "@/utils/siteList";
 import type { LibItem } from "@/utils/libSites";
 
 const App = memo(function ({ libItem, CODE }: { libItem: LibItem; CODE: string }) {
-  const defDisables = ["AvJoy", "baihuse", "GGJAV", "AV01", "JavBus", "JavDB", "JAVLib"];
-
+  const defDis = [
+    ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
+    ...["JavBus", "JavDB", "JAVLib"],
+  ];
   // 默认不显示
-  const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", defDisables));
+  const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", defDis));
 
   return (
     <>
