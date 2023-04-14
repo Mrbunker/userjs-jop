@@ -51,7 +51,9 @@ function serachPageParser(
   /** 空格版本的 code */
   // const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
 
-  const isSuccess = linkNode && titleNode && titleNodeText.includes(CODE);
+  const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
+  const matchCode = titleNodeText.match(codeRegex);
+  const isSuccess = linkNode && titleNode && matchCode && matchCode[0] === CODE;
 
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
