@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.11
+// @version      1.1.12
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -665,7 +665,9 @@
     const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
     const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
     const titleNodeText = titleNode ? (titleNode == null ? void 0 : titleNode.outerHTML) : "";
-    const isSuccess = linkNode && titleNode && titleNodeText.includes(CODE);
+    const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
+    const matchCode = titleNodeText.match(codeRegex);
+    const isSuccess = linkNode && titleNode && matchCode && matchCode[0] === CODE;
     if (isSuccess) {
       const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
       const hasSubtitle = titleNodeText.includes("字幕") || titleNodeText.includes("subtitle");
@@ -1078,14 +1080,14 @@
   function main() {
     const libItem = libSites.find((item) => item.href.test(window.location.href));
     if (!libItem) {
-      console.error("脚本挂载错误");
+      console.error("||脚本挂载错误");
       return;
     }
     const CODE = getCode(libItem);
     libItem.method();
     const panel = document.querySelector(libItem.querys.panelQueryStr);
     if (!panel) {
-      console.error("脚本挂载错误");
+      console.error("||脚本挂载错误");
       return;
     }
     const app = document.createElement("div");
@@ -1098,6 +1100,7 @@
       }),
       app,
     );
+    console.log("||脚本挂载成功", CODE);
   }
   main();
 })(preact);
