@@ -44,7 +44,7 @@ interface SiteItemBase {
 
   hostname: string;
   url: string;
-  /** 没用 */
+  /** 部分站 CODE 格式不一样 */
   codeFormater?: (arg0: string) => string;
   /** 没用 */
   method?: Function;
@@ -88,6 +88,20 @@ export const siteList: SiteItem[] = [
     domQuery: {
       // 标签区的第一个一般是字幕标签
       subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
+      // 有个「切換無碼」按钮，藏在分享按钮旁边……
+      leakQuery: ".order-first div.rounded-md a[href]:last-child",
+    },
+    method: print,
+  },
+
+  {
+    name: "MISSAV_",
+    hostname: "missav123.com",
+    url: "https://missav123.com/{{code}}/",
+    fetcher: "get",
+    domQuery: {
+      // 标签区的第一个一般是字幕标签
+      subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
       // 有个「切換無碼」按钮，藏在分享按钮旁边……
       leakQuery: ".order-first div.rounded-md a[href]:last-child",
     },
