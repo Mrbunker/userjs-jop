@@ -9,8 +9,10 @@ interface Status {
   targetLink: string;
 }
 const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) => {
-  const { name } = siteItem;
-  const link = siteItem.url.replace("{{code}}", CODE);
+  const { name, codeFormater } = siteItem;
+  /** 格式化 CODE */
+  const formatCode = codeFormater ? codeFormater(CODE) : CODE;
+  const link = siteItem.url.replace("{{code}}", formatCode);
 
   const [status, setStatus] = useState<Status>({
     isSuccess: "pedding",
@@ -21,7 +23,7 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
   const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
 
   useEffect(() => {
-    xhr(siteItem, link, CODE).then((res) => {
+    xhr(siteItem, link, formatCode).then((res) => {
       setStatus({
         isSuccess: res.isSuccess ? "fulfilled" : "rejected",
         hasSubtitle: res.hasSubtitle,

@@ -45,7 +45,7 @@ interface SiteItemBase {
   hostname: string;
   url: string;
   /** 部分站 CODE 格式不一样 */
-  codeFormater?: (arg0: string) => string;
+  codeFormater?: (preCode: string) => string;
   /** 没用 */
   method?: Function;
 }
@@ -93,7 +93,6 @@ export const siteList: SiteItem[] = [
     },
     method: print,
   },
-
   {
     name: "MISSAV_",
     hostname: "missav123.com",
@@ -179,6 +178,7 @@ export const siteList: SiteItem[] = [
       videoQuery: "a.nav-link[aria-controls='pills-0']",
     },
     method: print,
+    codeFormater: (preCode) => preCode.replace("-", ""),
   },
   {
     name: "Jav.Guru",
