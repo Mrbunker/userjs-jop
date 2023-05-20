@@ -53,7 +53,8 @@ function serachPageParser(
 
   const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
   const matchCode = titleNodeText.match(codeRegex);
-  const isSuccess = linkNode && titleNode && matchCode && matchCode[0] === CODE;
+  const isSuccess =
+    linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
 
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
@@ -127,6 +128,10 @@ function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
   return xhrPromise;
 }
 export default xhr;
+
+function isCaseInsensitiveEqual(str1: string, str2: string) {
+  return str1.toLowerCase() === str2.toLowerCase();
+}
 
 /** 获取 javdb 的分数
  * 没用了，白写
