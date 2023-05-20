@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.12
+// @version      1.1.13
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -13,6 +13,7 @@
 // @require      https://cdn.jsdelivr.net/npm/preact@10.11.3/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
+// @connect      missav123.com
 // @connect      njav.tv
 // @connect      supjav.com
 // @connect      netflav.com
@@ -667,7 +668,8 @@
     const titleNodeText = titleNode ? (titleNode == null ? void 0 : titleNode.outerHTML) : "";
     const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
     const matchCode = titleNodeText.match(codeRegex);
-    const isSuccess = linkNode && titleNode && matchCode && matchCode[0] === CODE;
+    const isSuccess =
+      linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
     if (isSuccess) {
       const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
       const hasSubtitle = titleNodeText.includes("字幕") || titleNodeText.includes("subtitle");
@@ -743,9 +745,13 @@
     });
     return xhrPromise;
   }
+  function isCaseInsensitiveEqual(str1, str2) {
+    return str1.toLowerCase() === str2.toLowerCase();
+  }
   const SiteBtn = R(({ siteItem, CODE }) => {
-    const { name } = siteItem;
-    const link = siteItem.url.replace("{{code}}", CODE);
+    const { name, codeFormater } = siteItem;
+    const formatCode = codeFormater ? codeFormater(CODE) : CODE;
+    const link = siteItem.url.replace("{{code}}", formatCode);
     const [status, setStatus] = p({
       isSuccess: "pedding",
       hasSubtitle: false,
@@ -754,7 +760,7 @@
     });
     const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
     h(() => {
-      xhr(siteItem, link, CODE).then((res) => {
+      xhr(siteItem, link, formatCode).then((res) => {
         setStatus({
           isSuccess: res.isSuccess ? "fulfilled" : "rejected",
           hasSubtitle: res.hasSubtitle,
@@ -816,6 +822,17 @@
       fetcher: "get",
       domQuery: {
         subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
+        leakQuery: ".order-first div.rounded-md a[href]:last-child",
+      },
+      method: print,
+    },
+    {
+      name: "MISSAV_",
+      hostname: "missav123.com",
+      url: "https://missav123.com/{{code}}/",
+      fetcher: "get",
+      domQuery: {
+        subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
         leakQuery: ".order-first div.rounded-md a[href]:last-child",
       },
       method: print,
@@ -894,6 +911,7 @@
         videoQuery: "a.nav-link[aria-controls='pills-0']",
       },
       method: print,
+      codeFormater: (preCode) => preCode.replace("-", ""),
     },
     {
       name: "Jav.Guru",
@@ -1040,7 +1058,7 @@
   const App = R(function ({ libItem, CODE }) {
     const defDis = [
       ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
-      ...["JavBus", "JavDB", "JAVLib"],
+      ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
     ];
     const [disables, setDisables] = p(GM_getValue("disable", defDis));
     return o(preact2.Fragment, {
