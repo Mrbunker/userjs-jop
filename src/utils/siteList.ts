@@ -212,11 +212,11 @@ export const siteList: SiteItem[] = [
   {
     name: "AvJoy",
     hostname: "avjoy.me",
-    url: "https://avjoy.me/search/video/{{code}}",
+    url: "https://avjoy.me/search/videos/{{code}}",
     fetcher: "parser",
     domQuery: {
-      titleQuery: `.content-info>.content-title`,
-      linkQuery: `.content-row>a`,
+      titleQuery: `#wrapper .row .content-info span.content-title`,
+      linkQuery: `#wrapper .row a[href^="/video/"]`,
     },
     method: print,
   },
