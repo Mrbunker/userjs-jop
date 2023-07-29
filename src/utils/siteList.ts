@@ -178,7 +178,7 @@ export const siteList: SiteItem[] = [
       videoQuery: "a.nav-link[aria-controls='pills-0']",
     },
     method: print,
-    codeFormater: (preCode) => preCode.replace("-", ""),
+    // codeFormater: (preCode) => preCode.replace("-", ""),
   },
   {
     name: "Jav.Guru",
