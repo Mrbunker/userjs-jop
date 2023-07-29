@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.13
+// @version      1.1.14
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -10,7 +10,7 @@
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/
 // @match        *://*/cn/?v=jav*
-// @require      https://cdn.jsdelivr.net/npm/preact@10.11.3/dist/preact.min.js
+// @require      https://cdn.jsdelivr.net/npm/preact@10.15.1/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
 // @connect      missav123.com
@@ -31,6 +31,7 @@
 // @connect      av01.tv
 // @connect      18sex.org
 // @connect      highporn.net
+// @connect      18av.mm-cg.com
 // @connect      javbus.com
 // @connect      javdb.com
 // @connect      javlibrary.com
@@ -43,13 +44,14 @@
 
 ((t) => {
   const o = document.createElement("style");
-  (o.dataset.source = "vite-plugin-monkey"), (o.innerText = t), document.head.appendChild(o);
+  (o.dataset.source = "vite-plugin-monkey"), (o.textContent = t), document.head.append(o);
 })(
-  ".jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap;background-color:#fff}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer}",
+  " .jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;background-color:#fff;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap;background-color:#fff}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer} ",
 );
 
-(function (preact2) {
+(function (preact) {
   "use strict";
+
   const libSites = [
     {
       name: "javdb",
@@ -92,7 +94,23 @@
       },
     },
   ];
-  function getCode(libItem) {
+  var _GM_getValue = /* @__PURE__ */ (() =>
+    typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_setValue = /* @__PURE__ */ (() =>
+    typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+  var _GM_xmlhttpRequest = /* @__PURE__ */ (() =>
+    typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
+  const isCaseInsensitiveEqual = (str1, str2) => {
+    return str1.toLowerCase() === str2.toLowerCase();
+  };
+  const isErrorCode = (resCode) => {
+    return [404, 403].includes(resCode);
+  };
+  const regEnum = {
+    subtitle: /(中文|字幕|subtitle)/,
+    leakage: /(无码|無碼|泄漏|Uncensored)/,
+  };
+  const getCode = (libItem) => {
     const { codeQueryStr } = libItem.querys;
     const codeNode = document.querySelector(codeQueryStr);
     if (!codeNode) return "";
@@ -102,8 +120,17 @@
         : codeNode.innerText.replace("复制", "");
     if (codeText == null ? void 0 : codeText.includes("FC2")) return codeText.split("-")[1];
     return codeText;
-  }
-  const style = "";
+  };
+  const gmFetch = ({ url }) => {
+    return new Promise((resolve, reject) => {
+      _GM_xmlhttpRequest({
+        method: "GET",
+        url,
+        onload: (response) => resolve(response),
+        onerror: (error) => reject(error),
+      });
+    });
+  };
   var t,
     r,
     u,
@@ -111,20 +138,20 @@
     o$1 = 0,
     f = [],
     c = [],
-    e = preact2.options.__b,
-    a = preact2.options.__r,
-    v = preact2.options.diffed,
-    l = preact2.options.__c,
-    m = preact2.options.unmount;
+    e = preact.options.__b,
+    a = preact.options.__r,
+    v = preact.options.diffed,
+    l = preact.options.__c,
+    m = preact.options.unmount;
   function d(t2, u2) {
-    preact2.options.__h && preact2.options.__h(r, t2, o$1 || u2), (o$1 = 0);
+    preact.options.__h && preact.options.__h(r, t2, o$1 || u2), (o$1 = 0);
     var i2 = r.__H || (r.__H = { __: [], __h: [] });
     return t2 >= i2.__.length && i2.__.push({ __V: c }), i2.__[t2];
   }
-  function p(n) {
-    return (o$1 = 1), y(B$1, n);
+  function h(n) {
+    return (o$1 = 1), s(B$1, n);
   }
-  function y(n, u2, i2) {
+  function s(n, u2, i2) {
     var o2 = d(t++, 2);
     if (
       ((o2.t = n),
@@ -140,9 +167,7 @@
         (o2.__c = r),
         !r.u))
     ) {
-      r.u = true;
-      var f2 = r.shouldComponentUpdate;
-      r.shouldComponentUpdate = function (n2, t2, r2) {
+      var f2 = function (n2, t2, r2) {
         if (!o2.__c.__H) return true;
         var u3 = o2.__c.__H.__.filter(function (n3) {
           return n3.__c;
@@ -152,7 +177,7 @@
             return !n3.__N;
           })
         )
-          return !f2 || f2.call(this, n2, t2, r2);
+          return !c2 || c2.call(this, n2, t2, r2);
         var i3 = false;
         return (
           u3.forEach(function (n3) {
@@ -161,15 +186,26 @@
               (n3.__ = n3.__N), (n3.__N = void 0), t3 !== n3.__[0] && (i3 = true);
             }
           }),
-          !(!i3 && o2.__c.props === n2) && (!f2 || f2.call(this, n2, t2, r2))
+          !(!i3 && o2.__c.props === n2) && (!c2 || c2.call(this, n2, t2, r2))
         );
       };
+      r.u = true;
+      var c2 = r.shouldComponentUpdate,
+        e2 = r.componentWillUpdate;
+      (r.componentWillUpdate = function (n2, t2, r2) {
+        if (this.__e) {
+          var u3 = c2;
+          (c2 = void 0), f2(n2, t2, r2), (c2 = u3);
+        }
+        e2 && e2.call(this, n2, t2, r2);
+      }),
+        (r.shouldComponentUpdate = f2);
     }
     return o2.__N || o2.__;
   }
-  function h(u2, i2) {
+  function p(u2, i2) {
     var o2 = d(t++, 3);
-    !preact2.options.__s && z$1(o2.__H, i2) && ((o2.__ = u2), (o2.i = i2), r.__H.__h.push(o2));
+    !preact.options.__s && z(o2.__H, i2) && ((o2.__ = u2), (o2.i = i2), r.__H.__h.push(o2));
   }
   function b() {
     for (var t2; (t2 = f.shift()); )
@@ -177,13 +213,13 @@
         try {
           t2.__H.__h.forEach(k), t2.__H.__h.forEach(w$1), (t2.__H.__h = []);
         } catch (r2) {
-          (t2.__H.__h = []), preact2.options.__e(r2, t2.__v);
+          (t2.__H.__h = []), preact.options.__e(r2, t2.__v);
         }
   }
-  (preact2.options.__b = function (n) {
+  (preact.options.__b = function (n) {
     (r = null), e && e(n);
   }),
-    (preact2.options.__r = function (n) {
+    (preact.options.__r = function (n) {
       a && a(n), (t = 0);
       var i2 = (r = n.__c).__H;
       i2 &&
@@ -193,23 +229,23 @@
             i2.__.forEach(function (n2) {
               n2.__N && (n2.__ = n2.__N), (n2.__V = c), (n2.__N = n2.i = void 0);
             }))
-          : (i2.__h.forEach(k), i2.__h.forEach(w$1), (i2.__h = []))),
+          : (i2.__h.forEach(k), i2.__h.forEach(w$1), (i2.__h = []), (t = 0))),
         (u = r);
     }),
-    (preact2.options.diffed = function (t2) {
+    (preact.options.diffed = function (t2) {
       v && v(t2);
       var o2 = t2.__c;
       o2 &&
         o2.__H &&
         (o2.__H.__h.length &&
-          ((1 !== f.push(o2) && i === preact2.options.requestAnimationFrame) ||
-            ((i = preact2.options.requestAnimationFrame) || j)(b)),
+          ((1 !== f.push(o2) && i === preact.options.requestAnimationFrame) ||
+            ((i = preact.options.requestAnimationFrame) || j)(b)),
         o2.__H.__.forEach(function (n) {
           n.i && (n.__H = n.i), n.__V !== c && (n.__ = n.__V), (n.i = void 0), (n.__V = c);
         })),
         (u = r = null);
     }),
-    (preact2.options.__c = function (t2, r2) {
+    (preact.options.__c = function (t2, r2) {
       r2.some(function (t3) {
         try {
           t3.__h.forEach(k),
@@ -221,12 +257,12 @@
             n.__h && (n.__h = []);
           }),
             (r2 = []),
-            preact2.options.__e(u2, t3.__v);
+            preact.options.__e(u2, t3.__v);
         }
       }),
         l && l(t2, r2);
     }),
-    (preact2.options.unmount = function (t2) {
+    (preact.options.unmount = function (t2) {
       m && m(t2);
       var r2,
         u2 = t2.__c;
@@ -240,7 +276,7 @@
           }
         }),
         (u2.__H = void 0),
-        r2 && preact2.options.__e(r2, u2.__v));
+        r2 && preact.options.__e(r2, u2.__v));
     });
   var g$1 = "function" == typeof requestAnimationFrame;
   function j(n) {
@@ -260,7 +296,7 @@
     var t2 = r;
     (n.__c = n.__()), (r = t2);
   }
-  function z$1(n, t2) {
+  function z(n, t2) {
     return (
       !n ||
       n.length !== t2.length ||
@@ -284,7 +320,7 @@
   function w(n) {
     this.props = n;
   }
-  function R(n, e2) {
+  function x(n, e2) {
     function r2(n2) {
       var t2 = this.props.ref,
         r3 = t2 == n2.ref;
@@ -294,7 +330,7 @@
       );
     }
     function u2(e3) {
-      return (this.shouldComponentUpdate = r2), preact2.createElement(n, e3);
+      return (this.shouldComponentUpdate = r2), preact.createElement(n, e3);
     }
     return (
       (u2.displayName = "Memo(" + (n.displayName || n.name) + ")"),
@@ -303,16 +339,16 @@
       u2
     );
   }
-  ((w.prototype = new preact2.Component()).isPureReactComponent = true),
+  ((w.prototype = new preact.Component()).isPureReactComponent = true),
     (w.prototype.shouldComponentUpdate = function (n, t2) {
       return C(this.props, n) || C(this.state, t2);
     });
-  var x = preact2.options.__b;
-  preact2.options.__b = function (n) {
-    n.type && n.type.__f && n.ref && ((n.props.ref = n.ref), (n.ref = null)), x && x(n);
+  var R = preact.options.__b;
+  preact.options.__b = function (n) {
+    n.type && n.type.__f && n.ref && ((n.props.ref = n.ref), (n.ref = null)), R && R(n);
   };
-  var T = preact2.options.__e;
-  preact2.options.__e = function (n, t2, e2, r2) {
+  var T = preact.options.__e;
+  preact.options.__e = function (n, t2, e2, r2) {
     if (n.then) {
       for (var u2, o2 = t2; (o2 = o2.__); )
         if ((u2 = o2.__c) && u2.__c)
@@ -320,7 +356,7 @@
     }
     T(n, t2, e2, r2);
   };
-  var I = preact2.options.unmount;
+  var I = preact.options.unmount;
   function L(n, t2, e2) {
     return (
       n &&
@@ -364,11 +400,11 @@
   function V() {
     (this.u = null), (this.o = null);
   }
-  (preact2.options.unmount = function (n) {
+  (preact.options.unmount = function (n) {
     var t2 = n.__c;
     t2 && t2.__R && t2.__R(), t2 && true === n.__h && (n.type = null), I && I(n);
   }),
-    ((D.prototype = new preact2.Component()).__c = function (n, t2) {
+    ((D.prototype = new preact.Component()).__c = function (n, t2) {
       var e2 = t2.__c,
         r2 = this;
       null == r2.t && (r2.t = []), r2.t.push(e2);
@@ -403,10 +439,10 @@
         }
         this.__b = null;
       }
-      var i2 = e2.__a && preact2.createElement(preact2.Fragment, null, n.fallback);
+      var i2 = e2.__a && preact.createElement(preact.Fragment, null, n.fallback);
       return (
         i2 && (i2.__h = null),
-        [preact2.createElement(preact2.Fragment, null, e2.__a ? null : n.children), i2]
+        [preact.createElement(preact.Fragment, null, e2.__a ? null : n.children), i2]
       );
     });
   var W = function (n, t2, e2) {
@@ -420,7 +456,7 @@
         n.u = e2 = e2[2];
       }
   };
-  ((V.prototype = new preact2.Component()).__a = function (n) {
+  ((V.prototype = new preact.Component()).__a = function (n) {
     var t2 = this,
       e2 = F(t2.__v),
       r2 = t2.o.get(n);
@@ -436,7 +472,7 @@
   }),
     (V.prototype.render = function (n) {
       (this.u = null), (this.o = /* @__PURE__ */ new Map());
-      var t2 = preact2.toChildArray(n.children);
+      var t2 = preact.toChildArray(n.children);
       n.revealOrder && "b" === n.revealOrder[0] && t2.reverse();
       for (var e2 = t2.length; e2--; ) this.o.set(t2[e2], (this.u = [1, 0, this.u]));
       return n.children;
@@ -448,20 +484,22 @@
           W(n, e2, t2);
         });
       });
-  var z = ("undefined" != typeof Symbol && Symbol.for && Symbol.for("react.element")) || 60103,
-    B =
-      /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/,
-    H = "undefined" != typeof document,
-    Z = function (n) {
+  var B = ("undefined" != typeof Symbol && Symbol.for && Symbol.for("react.element")) || 60103,
+    H =
+      /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image(!S)|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/,
+    Z = /^on(Ani|Tra|Tou|BeforeInp|Compo)/,
+    Y = /[A-Z0-9]/g,
+    $ = "undefined" != typeof document,
+    q = function (n) {
       return (
-        "undefined" != typeof Symbol && "symbol" == typeof Symbol() ? /fil|che|rad/i : /fil|che|ra/i
+        "undefined" != typeof Symbol && "symbol" == typeof Symbol() ? /fil|che|rad/ : /fil|che|ra/
       ).test(n);
     };
-  (preact2.Component.prototype.isReactComponent = {}),
+  (preact.Component.prototype.isReactComponent = {}),
     ["componentWillMount", "componentWillReceiveProps", "componentWillUpdate"].forEach(function (
       t2,
     ) {
-      Object.defineProperty(preact2.Component.prototype, t2, {
+      Object.defineProperty(preact.Component.prototype, t2, {
         configurable: true,
         get: function () {
           return this["UNSAFE_" + t2];
@@ -471,96 +509,117 @@
         },
       });
     });
-  var G = preact2.options.event;
-  function J() {}
-  function K() {
+  var K = preact.options.event;
+  function Q() {}
+  function X() {
     return this.cancelBubble;
   }
-  function Q() {
+  function nn() {
     return this.defaultPrevented;
   }
-  preact2.options.event = function (n) {
+  preact.options.event = function (n) {
     return (
-      G && (n = G(n)),
-      (n.persist = J),
-      (n.isPropagationStopped = K),
-      (n.isDefaultPrevented = Q),
+      K && (n = K(n)),
+      (n.persist = Q),
+      (n.isPropagationStopped = X),
+      (n.isDefaultPrevented = nn),
       (n.nativeEvent = n)
     );
   };
-  var nn = {
+  var en = {
+      enumerable: false,
       configurable: true,
       get: function () {
         return this.class;
       },
     },
-    tn = preact2.options.vnode;
-  preact2.options.vnode = function (n) {
-    var t2 = n.type,
-      e2 = n.props,
-      u2 = e2;
-    if ("string" == typeof t2) {
-      var o2 = -1 === t2.indexOf("-");
-      for (var i2 in ((u2 = {}), e2)) {
-        var l2 = e2[i2];
-        (H && "children" === i2 && "noscript" === t2) ||
-          ("value" === i2 && "defaultValue" in e2 && null == l2) ||
-          ("defaultValue" === i2 && "value" in e2 && null == e2.value
-            ? (i2 = "value")
-            : "download" === i2 && true === l2
-            ? (l2 = "")
-            : /ondoubleclick/i.test(i2)
-            ? (i2 = "ondblclick")
-            : /^onchange(textarea|input)/i.test(i2 + t2) && !Z(e2.type)
-            ? (i2 = "oninput")
-            : /^onfocus$/i.test(i2)
-            ? (i2 = "onfocusin")
-            : /^onblur$/i.test(i2)
-            ? (i2 = "onfocusout")
-            : /^on(Ani|Tra|Tou|BeforeInp|Compo)/.test(i2)
-            ? (i2 = i2.toLowerCase())
-            : o2 && B.test(i2)
-            ? (i2 = i2.replace(/[A-Z0-9]/g, "-$&").toLowerCase())
-            : null === l2 && (l2 = void 0),
-          /^oninput$/i.test(i2) && ((i2 = i2.toLowerCase()), u2[i2] && (i2 = "oninputCapture")),
-          (u2[i2] = l2));
-      }
-      "select" == t2 &&
-        u2.multiple &&
-        Array.isArray(u2.value) &&
-        (u2.value = preact2.toChildArray(e2.children).forEach(function (n2) {
-          n2.props.selected = -1 != u2.value.indexOf(n2.props.value);
-        })),
-        "select" == t2 &&
-          null != u2.defaultValue &&
-          (u2.value = preact2.toChildArray(e2.children).forEach(function (n2) {
-            n2.props.selected = u2.multiple
-              ? -1 != u2.defaultValue.indexOf(n2.props.value)
-              : u2.defaultValue == n2.props.value;
+    rn = preact.options.vnode;
+  preact.options.vnode = function (n) {
+    "string" == typeof n.type &&
+      (function (n2) {
+        var t2 = n2.props,
+          e2 = n2.type,
+          u2 = {};
+        for (var o2 in t2) {
+          var i2 = t2[o2];
+          if (
+            !(
+              ("value" === o2 && "defaultValue" in t2 && null == i2) ||
+              ($ && "children" === o2 && "noscript" === e2) ||
+              "class" === o2 ||
+              "className" === o2
+            )
+          ) {
+            var l2 = o2.toLowerCase();
+            "defaultValue" === o2 && "value" in t2 && null == t2.value
+              ? (o2 = "value")
+              : "download" === o2 && true === i2
+              ? (i2 = "")
+              : "ondoubleclick" === l2
+              ? (o2 = "ondblclick")
+              : "onchange" !== l2 || ("input" !== e2 && "textarea" !== e2) || q(t2.type)
+              ? "onfocus" === l2
+                ? (o2 = "onfocusin")
+                : "onblur" === l2
+                ? (o2 = "onfocusout")
+                : Z.test(o2)
+                ? (o2 = l2)
+                : -1 === e2.indexOf("-") && H.test(o2)
+                ? (o2 = o2.replace(Y, "-$&").toLowerCase())
+                : null === i2 && (i2 = void 0)
+              : (l2 = o2 = "oninput"),
+              "oninput" === l2 && u2[(o2 = l2)] && (o2 = "oninputCapture"),
+              (u2[o2] = i2);
+          }
+        }
+        "select" == e2 &&
+          u2.multiple &&
+          Array.isArray(u2.value) &&
+          (u2.value = preact.toChildArray(t2.children).forEach(function (n3) {
+            n3.props.selected = -1 != u2.value.indexOf(n3.props.value);
           })),
-        (n.props = u2),
-        e2.class != e2.className &&
-          ((nn.enumerable = "className" in e2),
-          null != e2.className && (u2.class = e2.className),
-          Object.defineProperty(u2, "className", nn));
-    }
-    (n.$$typeof = z), tn && tn(n);
+          "select" == e2 &&
+            null != u2.defaultValue &&
+            (u2.value = preact.toChildArray(t2.children).forEach(function (n3) {
+              n3.props.selected = u2.multiple
+                ? -1 != u2.defaultValue.indexOf(n3.props.value)
+                : u2.defaultValue == n3.props.value;
+            })),
+          t2.class && !t2.className
+            ? ((u2.class = t2.class), Object.defineProperty(u2, "className", en))
+            : ((t2.className && !t2.class) || (t2.class && t2.className)) &&
+              (u2.class = u2.className = t2.className),
+          (n2.props = u2);
+      })(n),
+      (n.$$typeof = B),
+      rn && rn(n);
   };
-  var en = preact2.options.__r;
-  preact2.options.__r = function (n) {
-    en && en(n), n.__c;
+  var un = preact.options.__r;
+  preact.options.__r = function (n) {
+    un && un(n), n.__c;
+  };
+  var on = preact.options.diffed;
+  preact.options.diffed = function (n) {
+    on && on(n);
+    var t2 = n.props,
+      e2 = n.__e;
+    null != e2 &&
+      "textarea" === n.type &&
+      "value" in t2 &&
+      t2.value !== e2.value &&
+      (e2.value = null == t2.value ? "" : t2.value);
   };
   var _ = 0;
-  function o(o2, e2, n, t2, f2) {
-    var l2,
-      s,
-      u2 = {};
-    for (s in e2) "ref" == s ? (l2 = e2[s]) : (u2[s] = e2[s]);
-    var a2 = {
+  function o(o2, e2, n, t2, f2, l2) {
+    var s2,
+      u2,
+      a2 = {};
+    for (u2 in e2) "ref" == u2 ? (s2 = e2[u2]) : (a2[u2] = e2[u2]);
+    var i2 = {
       type: o2,
-      props: u2,
+      props: a2,
       key: n,
-      ref: l2,
+      ref: s2,
       __k: null,
       __: null,
       __b: 0,
@@ -571,14 +630,14 @@
       constructor: void 0,
       __v: --_,
       __source: f2,
-      __self: t2,
+      __self: l2,
     };
-    if ("function" == typeof o2 && (l2 = o2.defaultProps))
-      for (s in l2) void 0 === u2[s] && (u2[s] = l2[s]);
-    return preact2.options.vnode && preact2.options.vnode(a2), a2;
+    if ("function" == typeof o2 && (s2 = o2.defaultProps))
+      for (u2 in s2) void 0 === a2[u2] && (a2[u2] = s2[u2]);
+    return preact.options.vnode && preact.options.vnode(i2), i2;
   }
   const Setting = ({ siteList: siteList2, setDisables, disables }) => {
-    const [showSetting, setShowSetting] = p(false);
+    const [showSetting, setShowSetting] = h(false);
     const changeCheck = (item, isHidden) => {
       if (isHidden) {
         setDisables(disables.filter((disItem) => disItem !== item.name));
@@ -586,7 +645,7 @@
         setDisables([...disables, item.name]);
       }
     };
-    return o(preact2.Fragment, {
+    return o(preact.Fragment, {
       children: [
         !showSetting
           ? o("div", {
@@ -601,7 +660,7 @@
               children: "勾选默认显示的网站",
             }),
         showSetting &&
-          o(preact2.Fragment, {
+          o(preact.Fragment, {
             children: [
               o("div", {
                 className: "jop-setting",
@@ -638,11 +697,6 @@
       ],
     });
   };
-  var monkeyWindow = window;
-  var GM_setValue = /* @__PURE__ */ (() => monkeyWindow.GM_setValue)();
-  var GM_xmlhttpRequest = /* @__PURE__ */ (() => monkeyWindow.GM_xmlhttpRequest)();
-  var GM_getValue = /* @__PURE__ */ (() => monkeyWindow.GM_getValue)();
-  const leakReg = /(无码|無碼|泄漏|Uncensored)/;
   function videoPageParser(responseText, { subQuery, leakQuery, videoQuery }) {
     const doc = new DOMParser().parseFromString(responseText, "text/html");
     const subNode = subQuery ? doc.querySelector(subQuery) : "";
@@ -652,8 +706,8 @@
     const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
     return {
       isSuccess: !!videoNode,
-      hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
-      hasLeakage: leakReg.test(linkNodeText),
+      hasSubtitle: regEnum.subtitle.test(subNodeText),
+      hasLeakage: regEnum.leakage.test(linkNodeText),
     };
   }
   function serachPageParser(
@@ -672,12 +726,11 @@
       linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
     if (isSuccess) {
       const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
-      const hasSubtitle = titleNodeText.includes("字幕") || titleNodeText.includes("subtitle");
       return {
         isSuccess: true,
         targetLink: targetLinkText,
-        hasLeakage: leakReg.test(titleNodeText),
-        hasSubtitle,
+        hasLeakage: regEnum.leakage.test(titleNodeText),
+        hasSubtitle: regEnum.subtitle.test(titleNodeText),
       };
     } else {
       return {
@@ -688,79 +741,50 @@
       };
     }
   }
-  function xhr(siteItem, targetLink, CODE) {
-    const xhrPromise = new Promise((resolve) => {
-      GM_xmlhttpRequest({
-        method: "GET",
+  const handleFetch = async (siteItem, targetLink, CODE) => {
+    try {
+      const response = await gmFetch({
         url: targetLink,
-        onload: (response) => {
-          if (siteItem.fetcher === "get") {
-            if (response.status === 404) {
-              resolve({
-                isSuccess: false,
-                targetLink,
-                hasSubtitle: false,
-                hasLeakage: false,
-                msg: "应该是没有资源",
-              });
-            } else {
-              const { hasSubtitle, hasLeakage, isSuccess } = videoPageParser(
-                response.responseText,
-                siteItem.domQuery,
-              );
-              resolve({
-                isSuccess,
-                targetLink,
-                hasSubtitle,
-                hasLeakage,
-                msg: "[get]，存在资源",
-              });
-            }
-          } else if (siteItem.fetcher === "parser") {
-            const {
-              targetLink: targetLink2,
-              isSuccess,
-              hasLeakage,
-              hasSubtitle,
-            } = serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE);
-            resolve({
-              isSuccess,
-              targetLink: isSuccess ? targetLink2 : targetLink2,
-              hasSubtitle,
-              hasLeakage,
-              msg: "[parser]存在资源",
-            });
-          }
-        },
-        onerror: (error) => {
-          resolve({
-            isSuccess: false,
-            targetLink,
-            hasSubtitle: false,
-            hasLeakage: false,
-            msg: error.error,
-          });
-        },
       });
-    });
-    return xhrPromise;
-  }
-  function isCaseInsensitiveEqual(str1, str2) {
-    return str1.toLowerCase() === str2.toLowerCase();
-  }
-  const SiteBtn = R(({ siteItem, CODE }) => {
+      console.log("|targetLink", targetLink);
+      if (isErrorCode(response.status)) {
+        throw Error(String(response.status));
+      }
+      if (siteItem.fetcher === "get") {
+        return {
+          ...videoPageParser(response.responseText, siteItem.domQuery),
+          targetLink,
+          msg: "[get]，存在资源",
+        };
+      } else {
+        return {
+          ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
+          msg: "[parser]存在资源",
+        };
+      }
+    } catch (error) {
+      return {
+        isSuccess: false,
+        targetLink,
+        hasSubtitle: false,
+        hasLeakage: false,
+        msg: String(error),
+      };
+    }
+  };
+  const SiteBtn = x(({ siteItem, CODE }) => {
     const { name, codeFormater } = siteItem;
     const formatCode = codeFormater ? codeFormater(CODE) : CODE;
     const link = siteItem.url.replace("{{code}}", formatCode);
-    const [status, setStatus] = p({
+    const [status, setStatus] = h({
       isSuccess: "pedding",
       hasSubtitle: false,
       hasLeakage: false,
       targetLink: "",
     });
     const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
-    h(() => {
-      xhr(siteItem, link, formatCode).then((res) => {
+    p(() => {
+      handleFetch(siteItem, link, formatCode).then((res) => {
         setStatus({
           isSuccess: res.isSuccess ? "fulfilled" : "rejected",
           hasSubtitle: res.hasSubtitle,
@@ -768,7 +792,7 @@
           targetLink: res.targetLink,
         });
       });
-    }, [xhr, siteItem, CODE, link]);
+    }, [handleFetch, siteItem, CODE, link]);
     const colorClass =
       isSuccess === "pedding"
         ? " "
@@ -812,6 +836,7 @@
       domQuery: {
         linkQuery: `.container .detail>.title>a`,
         titleQuery: `.container .detail>.title>a`,
+        // checkMethod: () => ({}),
       },
       method: print,
     },
@@ -821,8 +846,10 @@
       url: "https://missav.com/{{code}}/",
       fetcher: "get",
       domQuery: {
+        // 标签区的第一个一般是字幕标签
         subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
-        leakQuery: ".order-first div.rounded-md a[href]:last-child",
+        // 有个「切換無碼」按钮，藏在分享按钮旁边……
+        // leakQuery: ".order-first div.rounded-md a[href]:last-child",
       },
       method: print,
     },
@@ -832,7 +859,9 @@
       url: "https://missav123.com/{{code}}/",
       fetcher: "get",
       domQuery: {
+        // 标签区的第一个一般是字幕标签
         subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
+        // 有个「切換無碼」按钮，藏在分享按钮旁边……
         leakQuery: ".order-first div.rounded-md a[href]:last-child",
       },
       method: print,
@@ -848,6 +877,7 @@
       method: print,
     },
     {
+      // 有可能搜出仨：leakage subtitle 4k
       name: "Supjav",
       hostname: "supjav.com",
       url: "https://supjav.com/zh/?s={{code}}",
@@ -911,7 +941,7 @@
         videoQuery: "a.nav-link[aria-controls='pills-0']",
       },
       method: print,
-      codeFormater: (preCode) => preCode.replace("-", ""),
+      // codeFormater: (preCode) => preCode.replace("-", ""),
     },
     {
       name: "Jav.Guru",
@@ -940,17 +970,19 @@
       hostname: "hayav.com",
       url: "https://hayav.com/video/{{code}}/",
       fetcher: "get",
-      domQuery: {},
+      domQuery: {
+        // subQuery: `.site__col>.entry-header>h1.entry-title`,
+      },
       method: print,
     },
     {
       name: "AvJoy",
       hostname: "avjoy.me",
-      url: "https://avjoy.me/search/video/{{code}}",
+      url: "https://avjoy.me/search/videos/{{code}}",
       fetcher: "parser",
       domQuery: {
-        titleQuery: `.content-info>.content-title`,
-        linkQuery: `.content-row>a`,
+        titleQuery: `#wrapper .row .content-info span.content-title`,
+        linkQuery: `#wrapper .row a[href^="/video/"]`,
       },
       method: print,
     },
@@ -972,6 +1004,7 @@
       fetcher: "parser",
       domQuery: {
         linkQuery: "div.col>div.card>a[href]",
+        // 然而这个不是 title，是图片，这个站居然 title 里不包含 code，反而图片包含
         titleQuery: "div.card img.card-img-top",
       },
       method: print,
@@ -983,6 +1016,7 @@
       fetcher: "parser",
       domQuery: {
         listIndex: 1,
+        // spaceCode: true,
         titleQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
         linkQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
       },
@@ -1022,6 +1056,17 @@
       method: print,
     },
     {
+      name: "18av",
+      hostname: "18av.mm-cg.com",
+      url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
+      fetcher: "parser",
+      domQuery: {
+        linkQuery: ".posts h3>a[href]",
+        titleQuery: ".posts h3>a[href]",
+      },
+      method: print,
+    },
+    {
       name: "JavBus",
       disableLibItemName: "javbus",
       hostname: "javbus.com",
@@ -1055,13 +1100,13 @@
       method: print,
     },
   ];
-  const App = R(function ({ libItem, CODE }) {
+  const App = x(function ({ libItem, CODE }) {
     const defDis = [
       ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
       ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
     ];
-    const [disables, setDisables] = p(GM_getValue("disable", defDis));
-    return o(preact2.Fragment, {
+    const [disables, setDisables] = h(_GM_getValue("disable", defDis));
+    return o(preact.Fragment, {
       children: [
         o("div", {
           class: "jop-list",
@@ -1078,7 +1123,7 @@
                 siteItem.name,
               );
             } else {
-              return o(preact2.Fragment, {});
+              return o(preact.Fragment, {});
             }
           }),
         }),
@@ -1087,7 +1132,7 @@
             siteList,
             setDisables: (disable) => {
               setDisables(disable);
-              GM_setValue("disable", disable);
+              _GM_setValue("disable", disable);
             },
             disables,
           }),
@@ -1111,7 +1156,7 @@
     const app = document.createElement("div");
     app.classList.add("jop-app");
     panel.append(app);
-    preact2.render(
+    preact.render(
       o(App, {
         libItem,
         CODE,
