@@ -4,9 +4,16 @@ import { type LibItem } from "./libSites";
 const isCaseInsensitiveEqual = (str1: string, str2: string) => {
   return str1.toLowerCase() === str2.toLowerCase();
 };
+
 const isErrorCode = (resCode: number) => {
   return [404, 403].includes(resCode);
 };
+
+const regEnum = {
+  subtitle: /(中文|字幕|subtitle)/,
+  leakage: /(无码|無碼|泄漏|Uncensored)/,
+};
+
 const getCode = (libItem: LibItem): string => {
   const { codeQueryStr } = libItem.querys;
   const codeNode = document.querySelector<HTMLElement>(codeQueryStr);
@@ -43,4 +50,4 @@ const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
   });
 };
 
-export { isCaseInsensitiveEqual, isErrorCode, getCode, gmFetch };
+export { isCaseInsensitiveEqual, isErrorCode, getCode, gmFetch, regEnum as regEnum };

@@ -282,6 +282,14 @@ export const siteList: SiteItem[] = [
     method: print,
   },
   {
+    name: "18av",
+    hostname: "18av.mm-cg.com",
+    url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
+    fetcher: "parser",
+    domQuery: { linkQuery: ".posts h3>a[href]", titleQuery: ".posts h3>a[href]" },
+    method: print,
+  },
+  {
     name: "JavBus",
     disableLibItemName: "javbus",
     hostname: "javbus.com",

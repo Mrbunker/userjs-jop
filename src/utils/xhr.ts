@@ -1,4 +1,4 @@
-import { gmFetch, isCaseInsensitiveEqual, isErrorCode } from "@/utils";
+import { gmFetch, isCaseInsensitiveEqual, isErrorCode, regEnum } from "@/utils";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type FetchResult = {
@@ -8,8 +8,6 @@ export type FetchResult = {
   hasLeakage: boolean;
   msg: string;
 };
-
-const leakReg = /(无码|無碼|泄漏|Uncensored)/;
 
 /** 针对视频播放页进行解析，寻找字幕等信息 */
 function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery }: DomQuery_get) {
@@ -26,8 +24,8 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
   const videoNode = videoQuery ? doc.querySelector<HTMLElement>(videoQuery) : true;
   return {
     isSuccess: !!videoNode,
-    hasSubtitle: subNodeText.includes("字幕") || subNodeText.includes("subtitle"),
-    hasLeakage: leakReg.test(linkNodeText),
+    hasSubtitle: regEnum.subtitle.test(subNodeText),
+    hasLeakage: regEnum.leakage.test(linkNodeText),
   };
 }
 
@@ -55,13 +53,11 @@ function serachPageParser(
 
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
-
-    const hasSubtitle = titleNodeText.includes("字幕") || titleNodeText.includes("subtitle");
     return {
       isSuccess: true,
       targetLink: targetLinkText,
-      hasLeakage: leakReg.test(titleNodeText),
-      hasSubtitle,
+      hasLeakage: regEnum.leakage.test(titleNodeText),
+      hasSubtitle: regEnum.subtitle.test(titleNodeText),
     };
   } else {
     return { targetLink: "", isSuccess: false, hasSubtitle: false, hasLeakage: false };
