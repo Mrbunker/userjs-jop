@@ -1,7 +1,7 @@
-import { GM_xmlhttpRequest } from "$";
+import { gmFetch, isCaseInsensitiveEqual, isErrorCode } from "@/utils";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
-export type xhrResult = {
+export type FetchResult = {
   isSuccess: boolean;
   targetLink: string;
   hasSubtitle: boolean;
@@ -48,9 +48,6 @@ function serachPageParser(
   const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
   const titleNodeText = titleNode ? titleNode?.outerHTML : "";
 
-  /** 空格版本的 code */
-  // const formatCode = spaceCode ? CODE.replace("-", " ") : CODE;
-
   const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
   const matchCode = titleNodeText.match(codeRegex);
   const isSuccess =
@@ -71,128 +68,39 @@ function serachPageParser(
   }
 }
 
-function xhr(siteItem: SiteItem, targetLink: string, CODE: string) {
-  const xhrPromise: Promise<xhrResult> = new Promise((resolve) => {
-    GM_xmlhttpRequest({
-      method: "GET",
-      url: targetLink,
-      onload: (response) => {
-        if (siteItem.fetcher === "get") {
-          // 直接 get 网页，且 get 结果为 404，大概是对应网站没有资源
-          if (response.status === 404) {
-            resolve({
-              isSuccess: false,
-              targetLink,
-              hasSubtitle: false,
-              hasLeakage: false,
-              msg: "应该是没有资源",
-            });
-          }
-          // 直接 get 网页，成功，需要进一步解析 videoPage，获取字幕等信息
-          else {
-            const { hasSubtitle, hasLeakage, isSuccess } = videoPageParser(
-              response.responseText,
-              siteItem.domQuery,
-            );
-            resolve({ isSuccess, targetLink, hasSubtitle, hasLeakage, msg: "[get]，存在资源" });
-          }
-        }
-        // 需要解析 searchPage
-        else if (siteItem.fetcher === "parser") {
-          const { targetLink, isSuccess, hasLeakage, hasSubtitle } = serachPageParser(
-            response.responseText,
-            siteItem.domQuery,
-            siteItem.hostname,
-            CODE,
-          );
-          resolve({
-            isSuccess,
-            targetLink: isSuccess ? targetLink : targetLink,
-            hasSubtitle,
-            hasLeakage,
-            msg: "[parser]存在资源",
-          });
-        }
-      },
-      onerror: (error) => {
-        resolve({
-          isSuccess: false,
-          targetLink: targetLink,
-          hasSubtitle: false,
-          hasLeakage: false,
-          msg: error.error,
-        });
-      },
-    });
-  });
-  return xhrPromise;
-}
-export default xhr;
+export const handleFetch = async (
+  siteItem: SiteItem,
+  targetLink: string,
+  CODE: string,
+): Promise<FetchResult> => {
+  try {
+    const response = await gmFetch({ url: targetLink });
+    if (isErrorCode(response.status)) {
+      // 请求 404，大概是对应网站没有资源
+      throw Error(String(response.status));
+    }
 
-function isCaseInsensitiveEqual(str1: string, str2: string) {
-  return str1.toLowerCase() === str2.toLowerCase();
-}
-
-/** 获取 javdb 的分数
- * 没用了，白写
- */
-// export function getDbScore(url: string): Promise<string> {
-//   return new Promise((resolve, reject) => {
-//     GM_xmlhttpRequest({
-//       method: "GET",
-//       url,
-//       onload: (response) => {
-//         const doc = new DOMParser().parseFromString(response.responseText, "text/html");
-//         const plist = doc.querySelector<HTMLElement>(`.panel.movie-panel-info`);
-//         const innerHtml = plist?.innerHTML;
-//         const matchResult = innerHtml?.match(/\d\.\d分/);
-//         if (!innerHtml || !matchResult) {
-//           reject("无评分");
-//           return;
-//         } else {
-//           resolve(matchResult[0]);
-//         }
-//       },
-//       onerror(error) {
-//         reject(error);
-//       },
-//     });
-//   });
-// }
-
-// interface dbResult {
-//   score: string;
-//   release: string;
-// }
-/** 没用了，白写 */
-// export function parserJavdb(code?: string): Promise<dbResult> {
-//   return new Promise((resolve, reject) => {
-//     if (!code) reject("没找到");
-//     GM_xmlhttpRequest({
-//       url: `https://javdb005.com/search?q=${code}`,
-//       method: "GET",
-//       onload: (response) => {
-//         const doc = new DOMParser().parseFromString(response.responseText, "text/html");
-//         const firstItem = doc.querySelectorAll<HTMLElement>(`.movie-list>.item`)[0];
-//         const titleString = firstItem.querySelector<HTMLElement>(`.video-title>strong`)?.innerHTML;
-//         const releaseString = firstItem.querySelector<HTMLElement>(`.meta`)?.innerHTML.trim();
-//         if (titleString !== code || !releaseString) {
-//           reject("没找到");
-//         } else {
-//           const fullScoreText = firstItem.querySelector<HTMLElement>(`.score .value`)?.innerHTML;
-//           const matchResult = fullScoreText?.match(/\d\.\d*分/);
-//           if (!matchResult) reject("没找到");
-//           else
-//             resolve({
-//               // score: matchResult[0],
-//               score: matchResult[0].replace("分", ""),
-//               release: releaseString,
-//             });
-//         }
-//       },
-//       onerror(error) {
-//         reject(error);
-//       },
-//     });
-//   });
-// }
+    if (siteItem.fetcher === "get") {
+      // 直接 get 网页，成功，需要进一步解析 videoPage，获取字幕等信息
+      return {
+        ...videoPageParser(response.responseText, siteItem.domQuery),
+        targetLink,
+        msg: "[get]，存在资源",
+      };
+    } else {
+      // 需要解析 searchPage  siteItem.fetcher === "parser"
+      return {
+        ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
+        msg: "[parser]存在资源",
+      };
+    }
+  } catch (error) {
+    return {
+      isSuccess: false,
+      targetLink: targetLink,
+      hasSubtitle: false,
+      hasLeakage: false,
+      msg: String(error),
+    };
+  }
+};

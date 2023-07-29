@@ -21,6 +21,7 @@ export const libSites: LibItem[] = [
       codeQueryStr: `[data-clipboard-text]`,
     },
     method() {
+      // 一些样式调整
       const columnVideoCover = document.querySelector<HTMLElement>(
         ".column-video-cover",
       ) as HTMLElement;

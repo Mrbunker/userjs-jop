@@ -1,4 +1,4 @@
-import xhr from "@/utils/xhr";
+import { handleFetch } from "@/utils/xhr";
 import { SiteItem } from "@/utils/siteList";
 import { memo, useEffect, useState } from "preact/compat";
 
@@ -23,7 +23,7 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
   const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
 
   useEffect(() => {
-    xhr(siteItem, link, formatCode).then((res) => {
+    handleFetch(siteItem, link, formatCode).then((res) => {
       setStatus({
         isSuccess: res.isSuccess ? "fulfilled" : "rejected",
         hasSubtitle: res.hasSubtitle,
@@ -31,7 +31,7 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
         targetLink: res.targetLink,
       });
     });
-  }, [xhr, siteItem, CODE, link]);
+  }, [handleFetch, siteItem, CODE, link]);
 
   const colorClass =
     isSuccess === "pedding"

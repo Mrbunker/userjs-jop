@@ -1,6 +1,6 @@
 import { render } from "preact";
-import { LibItem, libSites } from "@/utils/libSites";
-import { getCode } from "@/utils/getCode";
+import { libSites } from "@/utils/libSites";
+import { getCode } from "@/utils";
 
 import "@/style.css";
 import App from "./components/App";
