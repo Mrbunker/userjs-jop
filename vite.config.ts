@@ -13,7 +13,7 @@ const UserscriptConfig: MonkeyUserScript = {
   version: "1.1.14",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
-  match: ["*://*/cn/?v=jav*"],
+  // match: ["*://*/cn/?v=jav*"],
   include: includeList,
   icon: "https://javdb.com/favicon-32x32.png",
   namespace: "https://greasyfork.org/zh-CN/scripts/429173",

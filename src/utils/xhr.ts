@@ -71,7 +71,6 @@ export const handleFetch = async (
 ): Promise<FetchResult> => {
   try {
     const response = await gmFetch({ url: targetLink });
-    console.log("|targetLink", targetLink);
     if (isErrorCode(response.status)) {
       // 请求 404，大概是对应网站没有资源
       throw Error(String(response.status));

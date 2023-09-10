@@ -45,7 +45,7 @@ export const libSites: LibItem[] = [
   {
     name: "javlib",
     enable: true,
-    href: /^https?:\/\/(\w*\.)?(javlib|javlibrary)*\.com.*$/,
+    href: /^http.*\/cn\/\?v=jav.*$/,
     querys: {
       panelQueryStr: "#video_jacket_info #video_info",
       codeQueryStr: `#video_id td.text`,
