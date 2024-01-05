@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.15
+// @version      1.1.16
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -15,7 +15,7 @@
 // @connect      missav123.com
 // @connect      njav.tv
 // @connect      supjav.com
-// @connect      netflav.com
+// @connect      netflav5.com
 // @connect      avgle.com
 // @connect      javhhh.com
 // @connect      bestjavporn.com
@@ -27,9 +27,11 @@
 // @connect      javfc2.net
 // @connect      paipancon.com
 // @connect      ggjav.com
-// @connect      av01.tv
+// @connect      www.av01.tv
 // @connect      18sex.org
 // @connect      highporn.net
+// @connect      evojav.pro
+// @connect      7mm002.com
 // @connect      18av.mm-cg.com
 // @connect      javbus.com
 // @connect      javdb.com
@@ -104,6 +106,277 @@
     typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   var _GM_xmlhttpRequest = /* @__PURE__ */ (() =>
     typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
+  const siteList = [
+    {
+      name: "Jable",
+      hostname: "jable.tv",
+      url: "https://jable.tv/videos/{{code}}/",
+      fetchType: "get",
+      domQuery: {
+        subQuery: ".info-header",
+        leakQuery: ".info-header",
+      },
+    },
+    {
+      name: "MISSAV",
+      hostname: "missav.com",
+      url: "https://missav.com/{{code}}/",
+      fetchType: "get",
+      domQuery: {
+        // 标签区的第一个一般是字幕标签
+        subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
+        // 有个「切換無碼」按钮，藏在分享按钮旁边……
+        // leakQuery: ".order-first div.rounded-md a[href]:last-child",
+      },
+    },
+    {
+      name: "MISSAV_",
+      hostname: "missav123.com",
+      url: "https://missav123.com/{{code}}/",
+      fetchType: "get",
+      domQuery: {
+        // 标签区的第一个一般是字幕标签
+        subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
+        // 有个「切換無碼」按钮，藏在分享按钮旁边……
+        leakQuery: ".order-first div.rounded-md a[href]:last-child",
+      },
+    },
+    {
+      name: "njav",
+      hostname: "njav.tv",
+      url: "https://njav.tv/zh/v/{{code}}",
+      fetchType: "get",
+      domQuery: {
+        videoQuery: "#player",
+      },
+    },
+    {
+      // 有可能搜出仨：leakage subtitle 4k
+      name: "Supjav",
+      hostname: "supjav.com",
+      url: "https://supjav.com/zh/?s={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: `.posts.clearfix>.post>a.img[title]`,
+        titleQuery: `h3>a[rel="bookmark"][itemprop="url"]`,
+      },
+    },
+    {
+      name: "NETFLAV",
+      hostname: "netflav5.com",
+      url: "https://netflav5.com/search?type=title&keyword={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".grid_cell>a",
+        titleQuery: ".grid_cell>a>.grid_title",
+      },
+    },
+    {
+      name: "Avgle",
+      hostname: "avgle.com",
+      url: "https://avgle.com/search/videos?search_query={{code}}&search_type=videos",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".container>.row .row .well>a[href]",
+        titleQuery: ".container>.row .row .well .video-title",
+      },
+    },
+    {
+      name: "JAVHHH",
+      hostname: "javhhh.com",
+      url: "https://javhhh.com/v/?wd={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".typelist>.i-container>a[href]",
+        titleQuery: ".typelist>.i-container>a[href]",
+      },
+    },
+    {
+      name: "BestJP",
+      hostname: "bestjavporn.com",
+      url: "https://www3.bestjavporn.com/search/{{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: "article.thumb-block>a",
+        titleQuery: "article.thumb-block>a",
+      },
+    },
+    {
+      name: "JAVMENU",
+      hostname: "javmenu.com",
+      url: "https://javmenu.com/{{code}}",
+      fetchType: "get",
+      domQuery: {
+        videoQuery: "a.nav-link[aria-controls='pills-0']",
+      },
+      // codeFormater: (preCode) => preCode.replace("-", ""),
+    },
+    {
+      name: "Jav.Guru",
+      hostname: "jav.guru",
+      url: "https://jav.guru/?s={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".imgg>a[href]",
+        titleQuery: ".inside-article>.grid1 a[title]",
+      },
+    },
+    {
+      name: "JAVMOST",
+      hostname: "javmost.cx",
+      url: "https://javmost.cx/search/{{code}}/",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: "#content .card a#MyImage",
+        titleQuery: "#content .card-block .card-title",
+      },
+    },
+    {
+      name: "HAYAV",
+      hostname: "hayav.com",
+      url: "https://hayav.com/video/{{code}}/",
+      fetchType: "get",
+      domQuery: {
+        // subQuery: `.site__col>.entry-header>h1.entry-title`,
+      },
+    },
+    {
+      name: "AvJoy",
+      hostname: "avjoy.me",
+      url: "https://avjoy.me/search/videos/{{code}}",
+      fetchType: "parser",
+      domQuery: {
+        titleQuery: `#wrapper .row .content-info span.content-title`,
+        linkQuery: `#wrapper .row a[href^="/video/"]`,
+      },
+    },
+    {
+      name: "JAVFC2",
+      hostname: "javfc2.net",
+      url: "https://javfc2.net/?s={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: "article.loop-video>a[href]",
+        titleQuery: "article.loop-video .entry-header",
+      },
+    },
+    {
+      name: "baihuse",
+      hostname: "paipancon.com",
+      url: "https://paipancon.com/search/{{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: "div.col>div.card>a[href]",
+        // 然而这个不是 title，是图片，这个站居然 title 里不包含 code，反而图片包含
+        titleQuery: "div.card img.card-img-top",
+      },
+    },
+    {
+      name: "GGJAV",
+      hostname: "ggjav.com",
+      url: "https://ggjav.com/main/search?string={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        listIndex: 1,
+        // spaceCode: true,
+        titleQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
+        linkQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
+      },
+    },
+    {
+      name: "AV01",
+      hostname: "www.av01.tv",
+      url: "https://www.av01.tv/search/videos?search_query={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: "div[id].well-sm>a",
+        titleQuery: ".video-views>.pull-left",
+      },
+    },
+    {
+      name: "18sex",
+      hostname: "18sex.org",
+      url: "https://www.18sex.org/cn/search/{{code}}/",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".white_link[href]",
+        titleQuery: ".white_link>.card-title",
+      },
+    },
+    {
+      name: "highporn",
+      hostname: "highporn.net",
+      url: "https://highporn.net/search/videos?search_query={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".well>a[href]",
+        titleQuery: ".well>a[href]>span.video-title",
+      },
+    },
+    {
+      name: "evojav",
+      hostname: "evojav.pro",
+      url: "https://evojav.pro/video/{{code}}/",
+      fetchType: "get",
+      domQuery: {},
+    },
+    {
+      name: "7mm002",
+      hostname: "7mm002.com",
+      url: "https://7mm002.com/zh/searchform_search/all/index.html",
+      fetchType: "post",
+      postParams: {
+        search_type: "searchall",
+        op: "search",
+      },
+      domQuery: {
+        linkQuery: ".content .video-title>a[href]",
+        titleQuery: ".content .video-title>a[href]",
+      },
+    },
+    {
+      name: "18av",
+      hostname: "18av.mm-cg.com",
+      url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".posts h3>a[href]",
+        titleQuery: ".posts h3>a[href]",
+      },
+    },
+    {
+      name: "JavBus",
+      disableLibItemName: "javbus",
+      hostname: "javbus.com",
+      url: "https://javbus.com/{{code}}",
+      fetchType: "get",
+      domQuery: {},
+      codeFormater: (preCode) => (preCode.startsWith("MIUM") ? `${SP_PREFIX}${preCode}` : preCode),
+    },
+    {
+      name: "JavDB",
+      disableLibItemName: "javdb",
+      hostname: "javdb.com",
+      url: "https://javdb.com/search?q={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".movie-list>.item:first-child>a",
+        titleQuery: ".video-title",
+      },
+    },
+    {
+      name: "JAVLib",
+      disableLibItemName: "javlib",
+      hostname: "javlibrary.com",
+      url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
+      fetchType: "parser",
+      domQuery: {
+        linkQuery: ".videothumblist .video[id]:first-child>a",
+        titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
+      },
+    },
+  ];
+  const SP_PREFIX = "300";
   const isCaseInsensitiveEqual = (str1, str2) => {
     return str1.toLowerCase() === str2.toLowerCase();
   };
@@ -122,13 +395,28 @@
       libItem.name === "javdb"
         ? codeNode.dataset.clipboardText
         : codeNode.innerText.replace("复制", "");
-    if (codeText == null ? void 0 : codeText.includes("FC2")) return codeText.split("-")[1];
+    if (codeText.includes("FC2")) return codeText.split("-")[1];
+    if (codeText.startsWith(SP_PREFIX)) return codeText.substring(3);
     return codeText;
   };
-  const gmFetch = ({ url }) => {
+  const gmGet = ({ url }) => {
     return new Promise((resolve, reject) => {
       _GM_xmlhttpRequest({
         method: "GET",
+        url,
+        onload: (response) => resolve(response),
+        onerror: (error) => reject(error),
+      });
+    });
+  };
+  const gmPost = ({ url, data }) => {
+    return new Promise((resolve, reject) => {
+      _GM_xmlhttpRequest({
+        method: "POST",
+        data: new URLSearchParams(data).toString(),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
         url,
         onload: (response) => resolve(response),
         onerror: (error) => reject(error),
@@ -747,22 +1035,32 @@
   }
   const handleFetch = async (siteItem, targetLink, CODE) => {
     try {
-      const response = await gmFetch({
+      if (siteItem.fetchType === "post") {
+        const response2 = await gmPost({
+          url: targetLink,
+          data: {
+            search_keyword: CODE,
+            ...siteItem.postParams,
+          },
+        });
+        return {
+          ...serachPageParser(response2.responseText, siteItem.domQuery, siteItem.hostname, CODE),
+        };
+      }
+      const response = await gmGet({
         url: targetLink,
       });
       if (isErrorCode(response.status)) {
         throw Error(String(response.status));
       }
-      if (siteItem.fetcher === "get") {
+      if (siteItem.fetchType === "get") {
         return {
           ...videoPageParser(response.responseText, siteItem.domQuery),
           targetLink,
-          msg: "[get]，存在资源",
         };
       } else {
         return {
           ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
-          msg: "[parser]存在资源",
         };
       }
     } catch (error) {
@@ -771,9 +1069,13 @@
         targetLink,
         hasSubtitle: false,
         hasLeakage: false,
-        msg: String(error),
       };
     }
+  };
+  const handleFetchJavBle = async (siteItem, targetLink, CODE) => {
+    const res = await handleFetch(siteItem, targetLink, CODE);
+    const newLink = targetLink.slice(0, -1) + "-c/";
+    return res.isSuccess ? res : await handleFetch(siteItem, newLink, CODE);
   };
   const SiteBtn = x(({ siteItem, CODE }) => {
     const { name, codeFormater } = siteItem;
@@ -787,7 +1089,8 @@
     });
     const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
     p(() => {
-      handleFetch(siteItem, link, formatCode).then((res) => {
+      const fetchMethod = name === "Jable" ? handleFetchJavBle : handleFetch;
+      fetchMethod(siteItem, link, formatCode).then((res) => {
         setStatus({
           isSuccess: res.isSuccess ? "fulfilled" : "rejected",
           hasSubtitle: res.hasSubtitle,
@@ -827,288 +1130,12 @@
       ],
     });
   });
-  const print = (name) => {
-    console.log(name);
-  };
-  const siteList = [
-    {
-      name: "Jable",
-      hostname: "jable.tv",
-      url: "https://jable.tv/search/{{code}}/",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: `.container .detail>.title>a`,
-        titleQuery: `.container .detail>.title>a`,
-        // checkMethod: () => ({}),
-      },
-      method: print,
-    },
-    {
-      name: "MISSAV",
-      hostname: "missav.com",
-      url: "https://missav.com/{{code}}/",
-      fetcher: "get",
-      domQuery: {
-        // 标签区的第一个一般是字幕标签
-        subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
-        // 有个「切換無碼」按钮，藏在分享按钮旁边……
-        // leakQuery: ".order-first div.rounded-md a[href]:last-child",
-      },
-      method: print,
-    },
-    {
-      name: "MISSAV_",
-      hostname: "missav123.com",
-      url: "https://missav123.com/{{code}}/",
-      fetcher: "get",
-      domQuery: {
-        // 标签区的第一个一般是字幕标签
-        subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
-        // 有个「切換無碼」按钮，藏在分享按钮旁边……
-        leakQuery: ".order-first div.rounded-md a[href]:last-child",
-      },
-      method: print,
-    },
-    {
-      name: "njav",
-      hostname: "njav.tv",
-      url: "https://njav.tv/zh/v/{{code}}",
-      fetcher: "get",
-      domQuery: {
-        videoQuery: "#player",
-      },
-      method: print,
-    },
-    {
-      // 有可能搜出仨：leakage subtitle 4k
-      name: "Supjav",
-      hostname: "supjav.com",
-      url: "https://supjav.com/zh/?s={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: `.posts.clearfix>.post>a.img[title]`,
-        titleQuery: `h3>a[rel="bookmark"][itemprop="url"]`,
-      },
-      method: print,
-    },
-    {
-      name: "NETFLAV",
-      hostname: "netflav.com",
-      url: "https://netflav.com/search?type=title&keyword={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".grid_cell>a",
-        titleQuery: ".grid_cell>a>.grid_title",
-      },
-      method: print,
-    },
-    {
-      name: "Avgle",
-      hostname: "avgle.com",
-      url: "https://avgle.com/search/videos?search_query={{code}}&search_type=videos",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".container>.row .row .well>a[href]",
-        titleQuery: ".container>.row .row .well .video-title",
-      },
-      method: print,
-    },
-    {
-      name: "JAVHHH",
-      hostname: "javhhh.com",
-      url: "https://javhhh.com/v/?wd={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".typelist>.i-container>a[href]",
-        titleQuery: ".typelist>.i-container>a[href]",
-      },
-      method: print,
-    },
-    {
-      name: "BestJP",
-      hostname: "bestjavporn.com",
-      url: "https://www3.bestjavporn.com/search/{{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: "article.thumb-block>a",
-        titleQuery: "article.thumb-block>a",
-      },
-      method: print,
-    },
-    {
-      name: "JAVMENU",
-      hostname: "javmenu.com",
-      url: "https://javmenu.com/{{code}}",
-      fetcher: "get",
-      domQuery: {
-        videoQuery: "a.nav-link[aria-controls='pills-0']",
-      },
-      method: print,
-      // codeFormater: (preCode) => preCode.replace("-", ""),
-    },
-    {
-      name: "Jav.Guru",
-      hostname: "jav.guru",
-      url: "https://jav.guru/?s={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".imgg>a[href]",
-        titleQuery: ".inside-article>.grid1 a[title]",
-      },
-      method: print,
-    },
-    {
-      name: "JAVMOST",
-      hostname: "javmost.cx",
-      url: "https://javmost.cx/search/{{code}}/",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: "#content .card a#MyImage",
-        titleQuery: "#content .card-block .card-title",
-      },
-      method: print,
-    },
-    {
-      name: "HAYAV",
-      hostname: "hayav.com",
-      url: "https://hayav.com/video/{{code}}/",
-      fetcher: "get",
-      domQuery: {
-        // subQuery: `.site__col>.entry-header>h1.entry-title`,
-      },
-      method: print,
-    },
-    {
-      name: "AvJoy",
-      hostname: "avjoy.me",
-      url: "https://avjoy.me/search/videos/{{code}}",
-      fetcher: "parser",
-      domQuery: {
-        titleQuery: `#wrapper .row .content-info span.content-title`,
-        linkQuery: `#wrapper .row a[href^="/video/"]`,
-      },
-      method: print,
-    },
-    {
-      name: "JAVFC2",
-      hostname: "javfc2.net",
-      url: "https://javfc2.net/?s={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: "article.loop-video>a[href]",
-        titleQuery: "article.loop-video .entry-header",
-      },
-      method: print,
-    },
-    {
-      name: "baihuse",
-      hostname: "paipancon.com",
-      url: "https://paipancon.com/search/{{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: "div.col>div.card>a[href]",
-        // 然而这个不是 title，是图片，这个站居然 title 里不包含 code，反而图片包含
-        titleQuery: "div.card img.card-img-top",
-      },
-      method: print,
-    },
-    {
-      name: "GGJAV",
-      hostname: "ggjav.com",
-      url: "https://ggjav.com/main/search?string={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        listIndex: 1,
-        // spaceCode: true,
-        titleQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
-        linkQuery: "div.columns.large-3.medium-6.small-12.item.float-left>div.item_title>a.gray_a",
-      },
-      method: print,
-    },
-    {
-      name: "AV01",
-      hostname: "av01.tv",
-      url: "https://www.av01.tv/search/videos?search_query={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: "div[id].well-sm>a",
-        titleQuery: ".video-views>.pull-left",
-      },
-      method: print,
-    },
-    {
-      name: "18sex",
-      hostname: "18sex.org",
-      url: "https://www.18sex.org/cn/search/{{code}}/",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".white_link[href]",
-        titleQuery: ".white_link>.card-title",
-      },
-      method: print,
-    },
-    {
-      name: "highporn",
-      hostname: "highporn.net",
-      url: "https://highporn.net/search/videos?search_query={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".well>a[href]",
-        titleQuery: ".well>a[href]>span.video-title",
-      },
-      method: print,
-    },
-    {
-      name: "18av",
-      hostname: "18av.mm-cg.com",
-      url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".posts h3>a[href]",
-        titleQuery: ".posts h3>a[href]",
-      },
-      method: print,
-    },
-    {
-      name: "JavBus",
-      disableLibItemName: "javbus",
-      hostname: "javbus.com",
-      url: "https://javbus.com/{{code}}",
-      fetcher: "get",
-      domQuery: {},
-      method: print,
-    },
-    {
-      name: "JavDB",
-      disableLibItemName: "javdb",
-      hostname: "javdb.com",
-      url: "https://javdb.com/search?q={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".movie-list>.item:first-child>a",
-        titleQuery: ".video-title",
-      },
-      method: print,
-    },
-    {
-      name: "JAVLib",
-      disableLibItemName: "javlib",
-      hostname: "javlibrary.com",
-      url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
-      fetcher: "parser",
-      domQuery: {
-        linkQuery: ".videothumblist .video[id]:first-child>a",
-        titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
-      },
-      method: print,
-    },
-  ];
   const App = x(function ({ libItem, CODE }) {
-    const defDis = [
+    const DEF_DIS = [
       ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
       ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
     ];
-    const [disables, setDisables] = h(_GM_getValue("disable", defDis));
+    const [disables, setDisables] = h(_GM_getValue("disable", DEF_DIS));
     return o(preact.Fragment, {
       children: [
         o("div", {
