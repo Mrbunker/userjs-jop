@@ -1,4 +1,4 @@
-import { handleFetch } from "@/utils/xhr";
+import { handleFetch, handleFetchJavBle } from "@/utils/xhr";
 import { SiteItem } from "@/utils/siteList";
 import { memo, useEffect, useState } from "preact/compat";
 
@@ -23,7 +23,8 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
   const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
 
   useEffect(() => {
-    handleFetch(siteItem, link, formatCode).then((res) => {
+    const fetchMethod = name === "Jable" ? handleFetchJavBle : handleFetch;
+    fetchMethod(siteItem, link, formatCode).then((res) => {
       setStatus({
         isSuccess: res.isSuccess ? "fulfilled" : "rejected",
         hasSubtitle: res.hasSubtitle,

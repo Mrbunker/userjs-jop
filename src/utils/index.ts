@@ -51,5 +51,3 @@ export const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
     });
   });
 };
-
-

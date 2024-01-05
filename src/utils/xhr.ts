@@ -1,4 +1,4 @@
-import { gmFetch, isCaseInsensitiveEqual, isErrorCode, regEnum } from "@/utils";
+import { gmFetch, isCaseInsensitiveEqual, isErrorCode, regEnum } from "./";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type FetchResult = {
@@ -6,7 +6,6 @@ export type FetchResult = {
   targetLink: string;
   hasSubtitle: boolean;
   hasLeakage: boolean;
-  msg: string;
 };
 
 /** 针对视频播放页进行解析，寻找字幕等信息 */
@@ -75,18 +74,16 @@ export const handleFetch = async (
       throw Error(String(response.status));
     }
 
-    if (siteItem.fetcher === "get") {
+    if (siteItem.fetchType === "get") {
       // 直接 get 网页，成功，需要进一步解析 videoPage，获取字幕等信息
       return {
         ...videoPageParser(response.responseText, siteItem.domQuery),
         targetLink,
-        msg: "[get]，存在资源",
       };
     } else {
       // 需要解析 searchPage  siteItem.fetcher === "parser"
       return {
         ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
-        msg: "[parser]存在资源",
       };
     }
   } catch (error) {
@@ -95,7 +92,17 @@ export const handleFetch = async (
       targetLink: targetLink,
       hasSubtitle: false,
       hasLeakage: false,
-      msg: String(error),
     };
   }
+};
+
+/** jable 有些域名是带 -c */
+export const handleFetchJavBle = async (
+  siteItem: SiteItem,
+  targetLink: string,
+  CODE: string,
+): Promise<FetchResult> => {
+  const res = await handleFetch(siteItem, targetLink, CODE);
+  const newLink = targetLink.slice(0, -1) + "-c/";
+  return res.isSuccess ? res : await handleFetch(siteItem, newLink, CODE);
 };
