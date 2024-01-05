@@ -130,8 +130,8 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "NETFLAV",
-    hostname: "netflav.com",
-    url: "https://netflav.com/search?type=title&keyword={{code}}",
+    hostname: "netflav5.com",
+    url: "https://netflav5.com/search?type=title&keyword={{code}}",
     fetcher: "parser",
     domQuery: {
       linkQuery: ".grid_cell>a",
@@ -259,7 +259,7 @@ export const siteList: SiteItem[] = [
 
   {
     name: "AV01",
-    hostname: "av01.tv",
+    hostname: "www.av01.tv",
     url: "https://www.av01.tv/search/videos?search_query={{code}}",
     fetcher: "parser",
     domQuery: { linkQuery: "div[id].well-sm>a", titleQuery: ".video-views>.pull-left" },

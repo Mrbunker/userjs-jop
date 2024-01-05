@@ -50,7 +50,6 @@ function serachPageParser(
   const matchCode = titleNodeText.match(codeRegex);
   const isSuccess =
     linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
-
   if (isSuccess) {
     const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
     return {
