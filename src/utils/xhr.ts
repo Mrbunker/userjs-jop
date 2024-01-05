@@ -1,4 +1,4 @@
-import { gmFetch, isCaseInsensitiveEqual, isErrorCode, regEnum } from "./";
+import { gmGet, gmPost, isCaseInsensitiveEqual, isErrorCode, regEnum } from "./";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type FetchResult = {
@@ -68,7 +68,16 @@ export const handleFetch = async (
   CODE: string,
 ): Promise<FetchResult> => {
   try {
-    const response = await gmFetch({ url: targetLink });
+    if (siteItem.fetchType === "post") {
+      const response = await gmPost({
+        url: targetLink,
+        data: { search_keyword: CODE, ...siteItem.postParams },
+      });
+      return {
+        ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
+      };
+    }
+    const response = await gmGet({ url: targetLink });
     if (isErrorCode(response.status)) {
       // 请求 404，大概是对应网站没有资源
       throw Error(String(response.status));
@@ -81,7 +90,6 @@ export const handleFetch = async (
         targetLink,
       };
     } else {
-      // 需要解析 searchPage  siteItem.fetcher === "parser"
       return {
         ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
       };

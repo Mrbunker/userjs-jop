@@ -41,7 +41,7 @@ interface TResponse {
   readonly finalUrl: string;
 }
 
-export const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
+export const gmGet = ({ url }: { url: string }): Promise<TResponse> => {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: "GET",
@@ -51,3 +51,23 @@ export const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
     });
   });
 };
+
+export const gmPost = ({
+  url,
+  data,
+}: {
+  url: string;
+  data?: Record<string, any>;
+}): Promise<TResponse> => {
+  return new Promise((resolve, reject) => {
+    GM_xmlhttpRequest({
+      method: "POST",
+      data: new URLSearchParams(data).toString(),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      url,
+      onload: (response) => resolve(response),
+      onerror: (error) => reject(error),
+    });
+  });
+};
+

@@ -13,11 +13,6 @@ export interface DomQuery_parser {
   linkQuery: string;
   /** 在 title 里检测是否包含「字幕」等文本 */
   titleQuery: string;
-
-  /** 检测有无字幕的方法
-   * 点名：Jable
-   */
-  // checkMethod?: (pageDoc: Document) => { hasSubtitle?: boolean; hasLeakage?: boolean };
 }
 
 export interface DomQuery_get {
@@ -57,8 +52,13 @@ export interface SiteItem_parser extends SiteItemBase {
   fetchType: "parser";
   domQuery: DomQuery_parser;
 }
+export interface SiteItem_post extends SiteItemBase {
+  fetchType: "post";
+  postParams: Record<string, any>;
+  domQuery: DomQuery_parser;
+}
 
-export type SiteItem = SiteItem_get | SiteItem_parser;
+export type SiteItem = SiteItem_get | SiteItem_parser | SiteItem_post;
 
 /** 在线网站列表 */
 export const siteList: SiteItem[] = [
@@ -255,6 +255,27 @@ export const siteList: SiteItem[] = [
     domQuery: { linkQuery: ".well>a[href]", titleQuery: ".well>a[href]>span.video-title" },
   },
   {
+    name: "evojav",
+    hostname: "evojav.pro",
+    url: "https://evojav.pro/video/{{code}}/",
+    fetchType: "get",
+    domQuery: {},
+  },
+  {
+    name: "7mm002",
+    hostname: "7mm002.com",
+    url: "https://7mm002.com/zh/searchform_search/all/index.html",
+    fetchType: "post",
+    postParams: {
+      search_type: "searchall",
+      op: "search",
+    },
+    domQuery: {
+      linkQuery: ".content .video-title>a[href]",
+      titleQuery: ".content .video-title>a[href]",
+    },
+  },
+  {
     name: "18av",
     hostname: "18av.mm-cg.com",
     url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
@@ -292,7 +313,7 @@ export const siteList: SiteItem[] = [
       titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
     },
   },
-] as const;
+];
 
 /** bus 里有些以 '300MIUM' 开头，要处理掉这个 300 */
 export const SP_PREFIX = "300" as const;
