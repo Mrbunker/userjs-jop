@@ -297,6 +297,7 @@ export const siteList: SiteItem[] = [
     fetcher: "get",
     domQuery: {},
     method: print,
+    codeFormater: (preCode) => (preCode.startsWith("MIUM") ? `${SP_PREFIX}${preCode}` : preCode),
   },
   {
     name: "JavDB",
@@ -323,3 +324,6 @@ export const siteList: SiteItem[] = [
     method: print,
   },
 ];
+
+/** bus 里有些以 '300MIUM' 开头，要处理掉这个 300 */
+export const SP_PREFIX = "300" as const;

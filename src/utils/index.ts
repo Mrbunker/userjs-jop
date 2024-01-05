@@ -1,20 +1,21 @@
 import { GM_xmlhttpRequest } from "$";
 import { type LibItem } from "./libSites";
+import { SP_PREFIX } from "./siteList";
 
-const isCaseInsensitiveEqual = (str1: string, str2: string) => {
+export const isCaseInsensitiveEqual = (str1: string, str2: string) => {
   return str1.toLowerCase() === str2.toLowerCase();
 };
 
-const isErrorCode = (resCode: number) => {
+export const isErrorCode = (resCode: number) => {
   return [404, 403].includes(resCode);
 };
 
-const regEnum = {
+export const regEnum = {
   subtitle: /(中文|字幕|subtitle)/,
   leakage: /(无码|無碼|泄漏|Uncensored)/,
 };
 
-const getCode = (libItem: LibItem): string => {
+export const getCode = (libItem: LibItem): string => {
   const { codeQueryStr } = libItem.querys;
   const codeNode = document.querySelector<HTMLElement>(codeQueryStr);
   if (!codeNode) return "";
@@ -24,7 +25,8 @@ const getCode = (libItem: LibItem): string => {
       ? (codeNode.dataset.clipboardText as string)
       : codeNode.innerText.replace("复制", "");
 
-  if (codeText?.includes("FC2")) return codeText.split("-")[1];
+  if (codeText.includes("FC2")) return codeText.split("-")[1];
+  if (codeText.startsWith(SP_PREFIX)) return codeText.substring(3);
 
   return codeText;
 };
@@ -39,7 +41,7 @@ interface TResponse {
   readonly finalUrl: string;
 }
 
-const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
+export const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: "GET",
@@ -50,4 +52,4 @@ const gmFetch = ({ url }: { url: string }): Promise<TResponse> => {
   });
 };
 
-export { isCaseInsensitiveEqual, isErrorCode, getCode, gmFetch, regEnum as regEnum };
+
