@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.16
+// @version      1.1.17
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
 // @icon         https://javdb.com/favicon-32x32.png
-// @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/
+// @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
-// @require      https://cdn.jsdelivr.net/npm/preact@10.15.1/dist/preact.min.js
+// @require      https://cdn.jsdelivr.net/npm/preact@10.22.0/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
 // @connect      missav123.com
@@ -31,8 +31,8 @@
 // @connect      18sex.org
 // @connect      highporn.net
 // @connect      evojav.pro
-// @connect      7mm002.com
 // @connect      18av.mm-cg.com
+// @connect      javgo.to
 // @connect      javbus.com
 // @connect      javdb.com
 // @connect      javlibrary.com
@@ -52,7 +52,7 @@
   const t = document.createElement("style");
   (t.textContent = o), document.head.append(t);
 })(
-  " .jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap;background-color:#fff}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px;-webkit-user-select:none;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer} ",
+  " .jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px;-webkit-user-select:none;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer} ",
 );
 
 (function (preact) {
@@ -62,18 +62,20 @@
     {
       name: "javdb",
       enable: true,
-      href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
+      href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/,
       querys: {
         panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
         codeQueryStr: `[data-clipboard-text]`,
       },
       method() {
         const columnVideoCover = document.querySelector(".column-video-cover");
-        columnVideoCover.style.width = "60%";
+        if (columnVideoCover) {
+          columnVideoCover.style.width = "60%";
+        }
         const panel = document.querySelector(
           ".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)",
         );
-        panel.classList.add("db-panel");
+        panel == null ? void 0 : panel.classList.add("db-panel");
       },
     },
     {
@@ -96,7 +98,7 @@
       },
       method() {
         const panel = document.querySelector("#video_info");
-        panel.classList.add("lib-panel");
+        panel == null ? void 0 : panel.classList.add("lib-panel");
       },
     },
   ];
@@ -321,20 +323,6 @@
       domQuery: {},
     },
     {
-      name: "7mm002",
-      hostname: "7mm002.com",
-      url: "https://7mm002.com/zh/searchform_search/all/index.html",
-      fetchType: "post",
-      postParams: {
-        search_type: "searchall",
-        op: "search",
-      },
-      domQuery: {
-        linkQuery: ".content .video-title>a[href]",
-        titleQuery: ".content .video-title>a[href]",
-      },
-    },
-    {
       name: "18av",
       hostname: "18av.mm-cg.com",
       url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
@@ -343,6 +331,13 @@
         linkQuery: ".posts h3>a[href]",
         titleQuery: ".posts h3>a[href]",
       },
+    },
+    {
+      name: "javgo",
+      hostname: "javgo.to",
+      url: "https://javgo.to/zh/v/{{code}}",
+      fetchType: "get",
+      domQuery: {},
     },
     {
       name: "JavBus",
@@ -409,47 +404,35 @@
       });
     });
   };
-  const gmPost = ({ url, data }) => {
-    return new Promise((resolve, reject) => {
-      _GM_xmlhttpRequest({
-        method: "POST",
-        data: new URLSearchParams(data).toString(),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        url,
-        onload: (response) => resolve(response),
-        onerror: (error) => reject(error),
-      });
-    });
-  };
   var t,
     r,
-    u,
+    u$1,
     i,
-    o$1 = 0,
-    f = [],
+    o = 0,
+    f$1 = [],
     c = [],
-    e = preact.options.__b,
-    a = preact.options.__r,
-    v = preact.options.diffed,
-    l = preact.options.__c,
-    m = preact.options.unmount;
-  function d(t2, u2) {
-    preact.options.__h && preact.options.__h(r, t2, o$1 || u2), (o$1 = 0);
-    var i2 = r.__H || (r.__H = { __: [], __h: [] });
-    return t2 >= i2.__.length && i2.__.push({ __V: c }), i2.__[t2];
+    e = preact.options,
+    a = e.__b,
+    v = e.__r,
+    l = e.diffed,
+    m = e.__c,
+    s = e.unmount,
+    d = e.__;
+  function h(n, t2) {
+    e.__h && e.__h(r, n, o || t2), (o = 0);
+    var u2 = r.__H || (r.__H = { __: [], __h: [] });
+    return n >= u2.__.length && u2.__.push({ __V: c }), u2.__[n];
   }
-  function h(n) {
-    return (o$1 = 1), s(B$1, n);
+  function p(n) {
+    return (o = 1), y(D$1, n);
   }
-  function s(n, u2, i2) {
-    var o2 = d(t++, 2);
+  function y(n, u2, i2) {
+    var o2 = h(t++, 2);
     if (
       ((o2.t = n),
       !o2.__c &&
         ((o2.__ = [
-          i2 ? i2(u2) : B$1(void 0, u2),
+          i2 ? i2(u2) : D$1(void 0, u2),
           function (n2) {
             var t2 = o2.__N ? o2.__N[0] : o2.__[0],
               r2 = o2.t(t2, n2);
@@ -462,7 +445,7 @@
       var f2 = function (n2, t2, r2) {
         if (!o2.__c.__H) return true;
         var u3 = o2.__c.__H.__.filter(function (n3) {
-          return n3.__c;
+          return !!n3.__c;
         });
         if (
           u3.every(function (n3) {
@@ -495,100 +478,103 @@
     }
     return o2.__N || o2.__;
   }
-  function p(u2, i2) {
-    var o2 = d(t++, 3);
-    !preact.options.__s && z(o2.__H, i2) && ((o2.__ = u2), (o2.i = i2), r.__H.__h.push(o2));
+  function _(n, u2) {
+    var i2 = h(t++, 3);
+    !e.__s && C$1(i2.__H, u2) && ((i2.__ = n), (i2.i = u2), r.__H.__h.push(i2));
   }
-  function b() {
-    for (var t2; (t2 = f.shift()); )
-      if (t2.__P && t2.__H)
+  function j() {
+    for (var n; (n = f$1.shift()); )
+      if (n.__P && n.__H)
         try {
-          t2.__H.__h.forEach(k), t2.__H.__h.forEach(w$1), (t2.__H.__h = []);
-        } catch (r2) {
-          (t2.__H.__h = []), preact.options.__e(r2, t2.__v);
+          n.__H.__h.forEach(z$1), n.__H.__h.forEach(B$1), (n.__H.__h = []);
+        } catch (t2) {
+          (n.__H.__h = []), e.__e(t2, n.__v);
         }
   }
-  (preact.options.__b = function (n) {
-    (r = null), e && e(n);
+  (e.__b = function (n) {
+    (r = null), a && a(n);
   }),
-    (preact.options.__r = function (n) {
-      a && a(n), (t = 0);
+    (e.__ = function (n, t2) {
+      n && t2.__k && t2.__k.__m && (n.__m = t2.__k.__m), d && d(n, t2);
+    }),
+    (e.__r = function (n) {
+      v && v(n), (t = 0);
       var i2 = (r = n.__c).__H;
       i2 &&
-        (u === r
+        (u$1 === r
           ? ((i2.__h = []),
             (r.__h = []),
             i2.__.forEach(function (n2) {
               n2.__N && (n2.__ = n2.__N), (n2.__V = c), (n2.__N = n2.i = void 0);
             }))
-          : (i2.__h.forEach(k), i2.__h.forEach(w$1), (i2.__h = []), (t = 0))),
-        (u = r);
+          : (i2.__h.forEach(z$1), i2.__h.forEach(B$1), (i2.__h = []), (t = 0))),
+        (u$1 = r);
     }),
-    (preact.options.diffed = function (t2) {
-      v && v(t2);
-      var o2 = t2.__c;
-      o2 &&
-        o2.__H &&
-        (o2.__H.__h.length &&
-          ((1 !== f.push(o2) && i === preact.options.requestAnimationFrame) ||
-            ((i = preact.options.requestAnimationFrame) || j)(b)),
-        o2.__H.__.forEach(function (n) {
-          n.i && (n.__H = n.i), n.__V !== c && (n.__ = n.__V), (n.i = void 0), (n.__V = c);
+    (e.diffed = function (n) {
+      l && l(n);
+      var t2 = n.__c;
+      t2 &&
+        t2.__H &&
+        (t2.__H.__h.length &&
+          ((1 !== f$1.push(t2) && i === e.requestAnimationFrame) ||
+            ((i = e.requestAnimationFrame) || w)(j)),
+        t2.__H.__.forEach(function (n2) {
+          n2.i && (n2.__H = n2.i), n2.__V !== c && (n2.__ = n2.__V), (n2.i = void 0), (n2.__V = c);
         })),
-        (u = r = null);
+        (u$1 = r = null);
     }),
-    (preact.options.__c = function (t2, r2) {
-      r2.some(function (t3) {
+    (e.__c = function (n, t2) {
+      t2.some(function (n2) {
         try {
-          t3.__h.forEach(k),
-            (t3.__h = t3.__h.filter(function (n) {
-              return !n.__ || w$1(n);
+          n2.__h.forEach(z$1),
+            (n2.__h = n2.__h.filter(function (n3) {
+              return !n3.__ || B$1(n3);
             }));
-        } catch (u2) {
-          r2.some(function (n) {
-            n.__h && (n.__h = []);
+        } catch (r2) {
+          t2.some(function (n3) {
+            n3.__h && (n3.__h = []);
           }),
-            (r2 = []),
-            preact.options.__e(u2, t3.__v);
+            (t2 = []),
+            e.__e(r2, n2.__v);
         }
       }),
-        l && l(t2, r2);
+        m && m(n, t2);
     }),
-    (preact.options.unmount = function (t2) {
-      m && m(t2);
-      var r2,
-        u2 = t2.__c;
-      u2 &&
-        u2.__H &&
-        (u2.__H.__.forEach(function (n) {
+    (e.unmount = function (n) {
+      s && s(n);
+      var t2,
+        r2 = n.__c;
+      r2 &&
+        r2.__H &&
+        (r2.__H.__.forEach(function (n2) {
           try {
-            k(n);
-          } catch (n2) {
-            r2 = n2;
+            z$1(n2);
+          } catch (n3) {
+            t2 = n3;
           }
         }),
-        (u2.__H = void 0),
-        r2 && preact.options.__e(r2, u2.__v));
+        (r2.__H = void 0),
+        t2 && e.__e(t2, r2.__v));
     });
-  var g$1 = "function" == typeof requestAnimationFrame;
-  function j(n) {
+  var k = "function" == typeof requestAnimationFrame;
+  function w(n) {
     var t2,
       r2 = function () {
-        clearTimeout(u2), g$1 && cancelAnimationFrame(t2), setTimeout(n);
+        clearTimeout(u2), k && cancelAnimationFrame(t2), setTimeout(n);
       },
       u2 = setTimeout(r2, 100);
-    g$1 && (t2 = requestAnimationFrame(r2));
+    k && (t2 = requestAnimationFrame(r2));
   }
-  function k(n) {
+  function z$1(n) {
     var t2 = r,
       u2 = n.__c;
     "function" == typeof u2 && ((n.__c = void 0), u2()), (r = t2);
   }
-  function w$1(n) {
+  function B$1(n) {
     var t2 = r;
     (n.__c = n.__()), (r = t2);
   }
-  function z(n, t2) {
+  function C$1(n, t2) {
     return (
       !n ||
       n.length !== t2.length ||
@@ -597,20 +583,20 @@
       })
     );
   }
-  function B$1(n, t2) {
+  function D$1(n, t2) {
     return "function" == typeof t2 ? t2(n) : t2;
   }
   function g(n, t2) {
     for (var e2 in t2) n[e2] = t2[e2];
     return n;
   }
-  function C(n, t2) {
+  function E(n, t2) {
     for (var e2 in n) if ("__source" !== e2 && !(e2 in t2)) return true;
     for (var r2 in t2) if ("__source" !== r2 && n[r2] !== t2[r2]) return true;
     return false;
   }
-  function w(n) {
-    this.props = n;
+  function C(n, t2) {
+    (this.props = n), (this.context = t2);
   }
   function x(n, e2) {
     function r2(n2) {
@@ -618,7 +604,7 @@
         r3 = t2 == n2.ref;
       return (
         !r3 && t2 && (t2.call ? t2(null) : (t2.current = null)),
-        e2 ? !e2(this.props, n2) || !r3 : C(this.props, n2)
+        e2 ? !e2(this.props, n2) || !r3 : E(this.props, n2)
       );
     }
     function u2(e3) {
@@ -631,25 +617,25 @@
       u2
     );
   }
-  ((w.prototype = new preact.Component()).isPureReactComponent = true),
-    (w.prototype.shouldComponentUpdate = function (n, t2) {
-      return C(this.props, n) || C(this.state, t2);
+  ((C.prototype = new preact.Component()).isPureReactComponent = true),
+    (C.prototype.shouldComponentUpdate = function (n, t2) {
+      return E(this.props, n) || E(this.state, t2);
     });
   var R = preact.options.__b;
   preact.options.__b = function (n) {
     n.type && n.type.__f && n.ref && ((n.props.ref = n.ref), (n.ref = null)), R && R(n);
   };
-  var T = preact.options.__e;
+  var M = preact.options.__e;
   preact.options.__e = function (n, t2, e2, r2) {
     if (n.then) {
       for (var u2, o2 = t2; (o2 = o2.__); )
         if ((u2 = o2.__c) && u2.__c)
           return null == t2.__e && ((t2.__e = e2.__e), (t2.__k = e2.__k)), u2.__c(n, t2);
     }
-    T(n, t2, e2, r2);
+    M(n, t2, e2, r2);
   };
-  var I = preact.options.unmount;
-  function L(n, t2, e2) {
+  var T = preact.options.unmount;
+  function A(n, t2, e2) {
     return (
       n &&
         (n.__c &&
@@ -662,82 +648,82 @@
         (n.__k =
           n.__k &&
           n.__k.map(function (n2) {
-            return L(n2, t2, e2);
+            return A(n2, t2, e2);
           }))),
       n
     );
   }
-  function U(n, t2, e2) {
+  function D(n, t2, e2) {
     return (
       n &&
+        e2 &&
         ((n.__v = null),
         (n.__k =
           n.__k &&
           n.__k.map(function (n2) {
-            return U(n2, t2, e2);
+            return D(n2, t2, e2);
           })),
         n.__c &&
           n.__c.__P === t2 &&
-          (n.__e && e2.insertBefore(n.__e, n.__d), (n.__c.__e = true), (n.__c.__P = e2))),
+          (n.__e && e2.appendChild(n.__e), (n.__c.__e = true), (n.__c.__P = e2))),
       n
     );
   }
-  function D() {
+  function L() {
     (this.__u = 0), (this.t = null), (this.__b = null);
   }
-  function F(n) {
+  function O(n) {
     var t2 = n.__.__c;
     return t2 && t2.__a && t2.__a(n);
   }
-  function V() {
+  function U() {
     (this.u = null), (this.o = null);
   }
   (preact.options.unmount = function (n) {
     var t2 = n.__c;
-    t2 && t2.__R && t2.__R(), t2 && true === n.__h && (n.type = null), I && I(n);
+    t2 && t2.__R && t2.__R(), t2 && 32 & n.__u && (n.type = null), T && T(n);
   }),
-    ((D.prototype = new preact.Component()).__c = function (n, t2) {
+    ((L.prototype = new preact.Component()).__c = function (n, t2) {
       var e2 = t2.__c,
         r2 = this;
       null == r2.t && (r2.t = []), r2.t.push(e2);
-      var u2 = F(r2.__v),
+      var u2 = O(r2.__v),
         o2 = false,
         i2 = function () {
           o2 || ((o2 = true), (e2.__R = null), u2 ? u2(l2) : l2());
         };
       e2.__R = i2;
       var l2 = function () {
-          if (!--r2.__u) {
-            if (r2.state.__a) {
-              var n2 = r2.state.__a;
-              r2.__v.__k[0] = U(n2, n2.__c.__P, n2.__c.__O);
-            }
-            var t3;
-            for (r2.setState({ __a: (r2.__b = null) }); (t3 = r2.t.pop()); ) t3.forceUpdate();
+        if (!--r2.__u) {
+          if (r2.state.__a) {
+            var n2 = r2.state.__a;
+            r2.__v.__k[0] = D(n2, n2.__c.__P, n2.__c.__O);
           }
-        },
-        c2 = true === t2.__h;
-      r2.__u++ || c2 || r2.setState({ __a: (r2.__b = r2.__v.__k[0]) }), n.then(i2, i2);
+          var t3;
+          for (r2.setState({ __a: (r2.__b = null) }); (t3 = r2.t.pop()); ) t3.forceUpdate();
+        }
+      };
+      r2.__u++ || 32 & t2.__u || r2.setState({ __a: (r2.__b = r2.__v.__k[0]) }), n.then(i2, i2);
     }),
-    (D.prototype.componentWillUnmount = function () {
+    (L.prototype.componentWillUnmount = function () {
       this.t = [];
     }),
-    (D.prototype.render = function (n, e2) {
+    (L.prototype.render = function (n, e2) {
       if (this.__b) {
         if (this.__v.__k) {
           var r2 = document.createElement("div"),
             o2 = this.__v.__k[0].__c;
-          this.__v.__k[0] = L(this.__b, r2, (o2.__O = o2.__P));
+          this.__v.__k[0] = A(this.__b, r2, (o2.__O = o2.__P));
         }
         this.__b = null;
       }
       var i2 = e2.__a && preact.createElement(preact.Fragment, null, n.fallback);
       return (
-        i2 && (i2.__h = null),
+        i2 && (i2.__u &= -33),
         [preact.createElement(preact.Fragment, null, e2.__a ? null : n.children), i2]
       );
     });
-  var W = function (n, t2, e2) {
+  var V = function (n, t2, e2) {
     if (
       (++e2[1] === e2[0] && n.o.delete(t2),
       n.props.revealOrder && ("t" !== n.props.revealOrder[0] || !n.o.size))
@@ -748,41 +734,41 @@
         n.u = e2 = e2[2];
       }
   };
-  ((V.prototype = new preact.Component()).__a = function (n) {
+  ((U.prototype = new preact.Component()).__a = function (n) {
     var t2 = this,
-      e2 = F(t2.__v),
+      e2 = O(t2.__v),
       r2 = t2.o.get(n);
     return (
       r2[0]++,
       function (u2) {
         var o2 = function () {
-          t2.props.revealOrder ? (r2.push(u2), W(t2, n, r2)) : u2();
+          t2.props.revealOrder ? (r2.push(u2), V(t2, n, r2)) : u2();
         };
         e2 ? e2(o2) : o2();
       }
     );
   }),
-    (V.prototype.render = function (n) {
+    (U.prototype.render = function (n) {
       (this.u = null), (this.o = /* @__PURE__ */ new Map());
       var t2 = preact.toChildArray(n.children);
       n.revealOrder && "b" === n.revealOrder[0] && t2.reverse();
       for (var e2 = t2.length; e2--; ) this.o.set(t2[e2], (this.u = [1, 0, this.u]));
       return n.children;
     }),
-    (V.prototype.componentDidUpdate = V.prototype.componentDidMount =
+    (U.prototype.componentDidUpdate = U.prototype.componentDidMount =
       function () {
         var n = this;
         this.o.forEach(function (t2, e2) {
-          W(n, e2, t2);
+          V(n, e2, t2);
         });
       });
-  var B = ("undefined" != typeof Symbol && Symbol.for && Symbol.for("react.element")) || 60103,
-    H =
+  var z = ("undefined" != typeof Symbol && Symbol.for && Symbol.for("react.element")) || 60103,
+    B =
       /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image(!S)|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/,
-    Z = /^on(Ani|Tra|Tou|BeforeInp|Compo)/,
-    Y = /[A-Z0-9]/g,
-    $ = "undefined" != typeof document,
-    q = function (n) {
+    H = /^on(Ani|Tra|Tou|BeforeInp|Compo)/,
+    Z = /[A-Z0-9]/g,
+    Y = "undefined" != typeof document,
+    $ = function (n) {
       return (
         "undefined" != typeof Symbol && "symbol" == typeof Symbol() ? /fil|che|rad/ : /fil|che|ra/
       ).test(n);
@@ -801,31 +787,31 @@
         },
       });
     });
-  var K = preact.options.event;
-  function Q() {}
-  function X() {
+  var J = preact.options.event;
+  function K() {}
+  function Q() {
     return this.cancelBubble;
   }
-  function nn() {
+  function X() {
     return this.defaultPrevented;
   }
   preact.options.event = function (n) {
     return (
-      K && (n = K(n)),
-      (n.persist = Q),
-      (n.isPropagationStopped = X),
-      (n.isDefaultPrevented = nn),
+      J && (n = J(n)),
+      (n.persist = K),
+      (n.isPropagationStopped = Q),
+      (n.isDefaultPrevented = X),
       (n.nativeEvent = n)
     );
   };
-  var en = {
+  var tn = {
       enumerable: false,
       configurable: true,
       get: function () {
         return this.class;
       },
     },
-    rn = preact.options.vnode;
+    en = preact.options.vnode;
   preact.options.vnode = function (n) {
     "string" == typeof n.type &&
       (function (n2) {
@@ -837,7 +823,7 @@
           if (
             !(
               ("value" === o2 && "defaultValue" in t2 && null == i2) ||
-              ($ && "children" === o2 && "noscript" === e2) ||
+              (Y && "children" === o2 && "noscript" === e2) ||
               "class" === o2 ||
               "className" === o2
             )
@@ -847,17 +833,19 @@
               ? (o2 = "value")
               : "download" === o2 && true === i2
               ? (i2 = "")
+              : "translate" === l2 && "no" === i2
+              ? (i2 = false)
               : "ondoubleclick" === l2
               ? (o2 = "ondblclick")
-              : "onchange" !== l2 || ("input" !== e2 && "textarea" !== e2) || q(t2.type)
+              : "onchange" !== l2 || ("input" !== e2 && "textarea" !== e2) || $(t2.type)
               ? "onfocus" === l2
                 ? (o2 = "onfocusin")
                 : "onblur" === l2
                 ? (o2 = "onfocusout")
-                : Z.test(o2)
+                : H.test(o2)
                 ? (o2 = l2)
-                : -1 === e2.indexOf("-") && H.test(o2)
-                ? (o2 = o2.replace(Y, "-$&").toLowerCase())
+                : -1 === e2.indexOf("-") && B.test(o2)
+                ? (o2 = o2.replace(Z, "-$&").toLowerCase())
                 : null === i2 && (i2 = void 0)
               : (l2 = o2 = "oninput"),
               "oninput" === l2 && u2[(o2 = l2)] && (o2 = "oninputCapture"),
@@ -878,21 +866,21 @@
                 : u2.defaultValue == n3.props.value;
             })),
           t2.class && !t2.className
-            ? ((u2.class = t2.class), Object.defineProperty(u2, "className", en))
+            ? ((u2.class = t2.class), Object.defineProperty(u2, "className", tn))
             : ((t2.className && !t2.class) || (t2.class && t2.className)) &&
               (u2.class = u2.className = t2.className),
           (n2.props = u2);
       })(n),
-      (n.$$typeof = B),
-      rn && rn(n);
+      (n.$$typeof = z),
+      en && en(n);
   };
-  var un = preact.options.__r;
+  var rn = preact.options.__r;
   preact.options.__r = function (n) {
-    un && un(n), n.__c;
+    rn && rn(n), n.__c;
   };
-  var on = preact.options.diffed;
+  var un = preact.options.diffed;
   preact.options.diffed = function (n) {
-    on && on(n);
+    un && un(n);
     var t2 = n.props,
       e2 = n.__e;
     null != e2 &&
@@ -901,35 +889,37 @@
       t2.value !== e2.value &&
       (e2.value = null == t2.value ? "" : t2.value);
   };
-  var _ = 0;
-  function o(o2, e2, n, t2, f2, l2) {
-    var s2,
-      u2,
-      a2 = {};
-    for (u2 in e2) "ref" == u2 ? (s2 = e2[u2]) : (a2[u2] = e2[u2]);
-    var i2 = {
-      type: o2,
-      props: a2,
+  var f = 0;
+  function u(e2, t2, n, o2, i2, u2) {
+    t2 || (t2 = {});
+    var a2,
+      c2,
+      p2 = t2;
+    if ("ref" in p2) for (c2 in ((p2 = {}), t2)) "ref" == c2 ? (a2 = t2[c2]) : (p2[c2] = t2[c2]);
+    var l2 = {
+      type: e2,
+      props: p2,
       key: n,
-      ref: s2,
+      ref: a2,
       __k: null,
       __: null,
       __b: 0,
       __e: null,
       __d: void 0,
       __c: null,
-      __h: null,
       constructor: void 0,
-      __v: --_,
-      __source: f2,
-      __self: l2,
+      __v: --f,
+      __i: -1,
+      __u: 0,
+      __source: i2,
+      __self: u2,
     };
-    if ("function" == typeof o2 && (s2 = o2.defaultProps))
-      for (u2 in s2) void 0 === a2[u2] && (a2[u2] = s2[u2]);
-    return preact.options.vnode && preact.options.vnode(i2), i2;
+    if ("function" == typeof e2 && (a2 = e2.defaultProps))
+      for (c2 in a2) void 0 === p2[c2] && (p2[c2] = a2[c2]);
+    return preact.options.vnode && preact.options.vnode(l2), l2;
   }
   const Setting = ({ siteList: siteList2, setDisables, disables }) => {
-    const [showSetting, setShowSetting] = h(false);
+    const [showSetting, setShowSetting] = p(false);
     const changeCheck = (item, isHidden) => {
       if (isHidden) {
         setDisables(disables.filter((disItem) => disItem !== item.name));
@@ -937,37 +927,37 @@
         setDisables([...disables, item.name]);
       }
     };
-    return o(preact.Fragment, {
+    return u(preact.Fragment, {
       children: [
         !showSetting
-          ? o("div", {
+          ? u("div", {
               className: "jop-button_def",
               onClick: () => {
                 setShowSetting(!showSetting);
               },
               children: "设置",
             })
-          : o("h4", {
+          : u("h4", {
               className: "jop-setting-title",
               children: "勾选默认显示的网站",
             }),
         showSetting &&
-          o(preact.Fragment, {
+          u(preact.Fragment, {
             children: [
-              o("div", {
+              u("div", {
                 className: "jop-setting",
-                children: o("div", {
+                children: u("div", {
                   className: "jop-setting-list",
                   children: siteList2.map((item) => {
                     const isHidden = disables.includes(item.name);
-                    return o("div", {
+                    return u("div", {
                       className: "jop-setting-item",
                       onClick: () => {
                         changeCheck(item, isHidden);
                       },
                       children: [
                         item.name,
-                        o("input", {
+                        u("input", {
                           type: "checkbox",
                           className: "jop-setting-checkbox",
                           checked: !isHidden,
@@ -977,7 +967,7 @@
                   }),
                 }),
               }),
-              o("div", {
+              u("div", {
                 className: "jop-button_def",
                 onClick: () => {
                   setShowSetting(!showSetting);
@@ -1035,18 +1025,6 @@
   }
   const handleFetch = async (siteItem, targetLink, CODE) => {
     try {
-      if (siteItem.fetchType === "post") {
-        const response2 = await gmPost({
-          url: targetLink,
-          data: {
-            search_keyword: CODE,
-            ...siteItem.postParams,
-          },
-        });
-        return {
-          ...serachPageParser(response2.responseText, siteItem.domQuery, siteItem.hostname, CODE),
-        };
-      }
       const response = await gmGet({
         url: targetLink,
       });
@@ -1081,14 +1059,14 @@
     const { name, codeFormater } = siteItem;
     const formatCode = codeFormater ? codeFormater(CODE) : CODE;
     const link = siteItem.url.replace("{{code}}", formatCode);
-    const [status, setStatus] = h({
+    const [status, setStatus] = p({
       isSuccess: "pedding",
       hasSubtitle: false,
       hasLeakage: false,
       targetLink: "",
     });
     const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
-    p(() => {
+    _(() => {
       const fetchMethod = name === "Jable" ? handleFetchJavBle : handleFetch;
       fetchMethod(siteItem, link, formatCode).then((res) => {
         setStatus({
@@ -1105,26 +1083,26 @@
         : isSuccess === "fulfilled"
         ? "jop-button_green "
         : "jop-button_red ";
-    return o("a", {
+    return u("a", {
       className: "jop-button " + colorClass,
       target: "_blank",
       href: targetLink === "" ? link : targetLink,
       children: [
         (hasSubtitle || hasLeakage) &&
-          o("div", {
+          u("div", {
             className: "jop-button_label",
             children: [
               hasSubtitle &&
-                o("span", {
+                u("span", {
                   children: "字幕 ",
                 }),
               hasLeakage &&
-                o("span", {
+                u("span", {
                   children: " 无码",
                 }),
             ],
           }),
-        o("span", {
+        u("span", {
           children: name,
         }),
       ],
@@ -1135,16 +1113,16 @@
       ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
       ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
     ];
-    const [disables, setDisables] = h(_GM_getValue("disable", DEF_DIS));
-    return o(preact.Fragment, {
+    const [disables, setDisables] = p(_GM_getValue("disable", DEF_DIS));
+    return u(preact.Fragment, {
       children: [
-        o("div", {
+        u("div", {
           class: "jop-list",
           children: siteList.map((siteItem) => {
             const hidden = disables.find((disItem) => disItem === siteItem.name) === void 0;
             const sameSite = libItem.name !== siteItem.disableLibItemName;
             if (hidden && sameSite) {
-              return o(
+              return u(
                 SiteBtn,
                 {
                   siteItem,
@@ -1153,12 +1131,12 @@
                 siteItem.name,
               );
             } else {
-              return o(preact.Fragment, {});
+              return u(preact.Fragment, {});
             }
           }),
         }),
-        o("div", {
-          children: o(Setting, {
+        u("div", {
+          children: u(Setting, {
             siteList,
             setDisables: (disable) => {
               setDisables(disable);
@@ -1187,7 +1165,7 @@
     app.classList.add("jop-app");
     panel.append(app);
     preact.render(
-      o(App, {
+      u(App, {
         libItem,
         CODE,
       }),
