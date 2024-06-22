@@ -1,4 +1,4 @@
-import { StateUpdater, useState } from "preact/hooks";
+import { Dispatch, StateUpdater, useState } from "preact/hooks";
 import { SiteItem } from "@/utils/siteList";
 
 const Setting = ({
@@ -7,7 +7,7 @@ const Setting = ({
   disables,
 }: {
   siteList: SiteItem[];
-  setDisables: StateUpdater<string[]>;
+  setDisables: Dispatch<StateUpdater<string[]>>;
   disables: SiteItem["name"][];
 }) => {
   const [showSetting, setShowSetting] = useState(false);

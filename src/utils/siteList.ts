@@ -262,25 +262,18 @@ export const siteList: SiteItem[] = [
     domQuery: {},
   },
   {
-    name: "7mm002",
-    hostname: "7mm002.com",
-    url: "https://7mm002.com/zh/searchform_search/all/index.html",
-    fetchType: "post",
-    postParams: {
-      search_type: "searchall",
-      op: "search",
-    },
-    domQuery: {
-      linkQuery: ".content .video-title>a[href]",
-      titleQuery: ".content .video-title>a[href]",
-    },
-  },
-  {
     name: "18av",
     hostname: "18av.mm-cg.com",
     url: "https://18av.mm-cg.com/zh/fc_search/all/{{code}}/1.html",
     fetchType: "parser",
     domQuery: { linkQuery: ".posts h3>a[href]", titleQuery: ".posts h3>a[href]" },
+  },
+  {
+    name: "javgo",
+    hostname: "javgo.to",
+    url: "https://javgo.to/zh/v/{{code}}",
+    fetchType: "get",
+    domQuery: {},
   },
   {
     name: "JavBus",

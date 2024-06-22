@@ -15,21 +15,21 @@ export const libSites: LibItem[] = [
   {
     name: "javdb",
     enable: true,
-    href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com.*$/,
+    href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/,
     querys: {
       panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
       codeQueryStr: `[data-clipboard-text]`,
     },
     method() {
       // 一些样式调整
-      const columnVideoCover = document.querySelector<HTMLElement>(
-        ".column-video-cover",
-      ) as HTMLElement;
-      columnVideoCover.style.width = "60%";
+      const columnVideoCover = document.querySelector<HTMLElement>(".column-video-cover");
+      if (columnVideoCover) {
+        columnVideoCover.style.width = "60%";
+      }
       const panel = document.querySelector<HTMLElement>(
         ".video-meta-panel>.columns.is-desktop>.column:not(.column-video-cover)",
-      ) as HTMLElement;
-      panel.classList.add("db-panel");
+      );
+      panel?.classList.add("db-panel");
     },
   },
   {
@@ -51,8 +51,8 @@ export const libSites: LibItem[] = [
       codeQueryStr: `#video_id td.text`,
     },
     method() {
-      const panel = document.querySelector<HTMLElement>("#video_info") as HTMLElement;
-      panel.classList.add("lib-panel");
+      const panel = document.querySelector<HTMLElement>("#video_info");
+      panel?.classList.add("lib-panel");
     },
   },
 ];

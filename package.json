@@ -9,7 +9,7 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
-    "preact": "10.15.1"
+    "preact": "10.22.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.6.0",
