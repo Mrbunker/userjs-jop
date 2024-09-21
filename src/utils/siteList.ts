@@ -32,10 +32,7 @@ interface SiteItemBase {
   /** [废弃] 用户定义的 disable */
   // disable: boolean;
 
-  /** 在指定 LibItem.name 下不显示
-   * 点名：都是针对的 matchList 里的三个，防止出现自己检索自己站。
-   */
-  disableLibItemName?: string;
+  /** 在指定 LibItem.name 下不显示 */
 
   hostname: string;
   url: string;
@@ -277,7 +274,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JavBus",
-    disableLibItemName: "javbus",
     hostname: "javbus.com",
     url: "https://javbus.com/{{code}}",
     fetchType: "get",
@@ -286,7 +282,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JavDB",
-    disableLibItemName: "javdb",
     hostname: "javdb.com",
     url: "https://javdb.com/search?q={{code}}",
     fetchType: "parser",
@@ -297,7 +292,6 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "JAVLib",
-    disableLibItemName: "javlib",
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
     fetchType: "parser",

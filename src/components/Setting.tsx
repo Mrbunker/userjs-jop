@@ -9,9 +9,19 @@ type Props = {
   disables: SiteItem["name"][];
   multipleNavi: boolean;
   setMultipleNavi: Dispatch<StateUpdater<boolean>>;
+  hiddenError: boolean;
+  setHiddenError: Dispatch<StateUpdater<boolean>>;
 };
 
-const Setting = ({ siteList, setDisables, disables, multipleNavi, setMultipleNavi }: Props) => {
+const Setting = ({
+  siteList,
+  setDisables,
+  disables,
+  multipleNavi,
+  setMultipleNavi,
+  hiddenError,
+  setHiddenError,
+}: Props) => {
   const [showSetting, setShowSetting] = useState(true);
 
   const hanleListChange = (item: SiteItem, isHidden: boolean) => {
@@ -27,6 +37,10 @@ const Setting = ({ siteList, setDisables, disables, multipleNavi, setMultipleNav
     GM_setValue("multipleNavi", checked);
   };
 
+  const handlehiddenErrorChange = (checked: boolean) => {
+    setHiddenError(checked);
+    GM_setValue("hiddenError", checked);
+  };
   return (
     <>
       {!showSetting && (
@@ -58,7 +72,11 @@ const Setting = ({ siteList, setDisables, disables, multipleNavi, setMultipleNav
                 tip="一个站点内出现多条匹配结果时，打开后跳转搜索结果页"
                 onChange={handleNaviChange}
               />
-              {/* <Checkbox label="简洁模式" value={true} onChange={() => {}} /> */}
+              <Checkbox
+                label="隐藏失败结果"
+                value={hiddenError}
+                onChange={handlehiddenErrorChange}
+              />
             </Group>
           </div>
 

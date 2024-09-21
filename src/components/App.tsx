@@ -13,23 +13,24 @@ const App = memo(function ({ libItem, CODE }: { libItem: LibItem; CODE: string }
   ];
   const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", DEF_DIS));
   const [multipleNavi, setMultipleNavi] = useState(GM_getValue<boolean>("multipleNavi", true));
+  const [hiddenError, setHiddenError] = useState(GM_getValue<boolean>("hiddenError", false));
+
+  const list = siteList.filter(
+    (siteItem) => !disables.includes(siteItem.name) && !siteItem.hostname.includes(libItem.name),
+  );
 
   return (
     <>
       <div class="jop-list">
-        {siteList
-          .filter(
-            (siteItem) =>
-              !disables.includes(siteItem.name) && libItem.name !== siteItem.disableLibItemName,
-          )
-          .map((siteItem) => (
-            <SiteBtn
-              siteItem={siteItem}
-              CODE={CODE}
-              key={siteItem.name}
-              multipleNavi={multipleNavi}
-            />
-          ))}
+        {list.map((siteItem) => (
+          <SiteBtn
+            siteItem={siteItem}
+            CODE={CODE}
+            key={siteItem.name}
+            multipleNavi={multipleNavi}
+            hiddenError={hiddenError}
+          />
+        ))}
       </div>
 
       <Setting
@@ -44,6 +45,11 @@ const App = memo(function ({ libItem, CODE }: { libItem: LibItem; CODE: string }
           GM_setValue("multipleNavi", multipleNavi);
         }}
         disables={disables}
+        hiddenError={hiddenError}
+        setHiddenError={(v) => {
+          setHiddenError(v);
+          GM_setValue("hiddenError", v);
+        }}
       />
     </>
   );
