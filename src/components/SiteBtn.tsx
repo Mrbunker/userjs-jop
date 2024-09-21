@@ -26,9 +26,9 @@ const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }: Props) => {
     });
   }, [fetcher, siteItem, CODE, link]);
 
-  const tag = multipleNavi && fetchRes?.multipleRes ? "多结果" : fetchRes?.tag;
-  const resultLink = fetchRes?.multipleRes ? fetchRes.multipResLink : fetchRes?.targetLink;
-
+  const multipleFlag = multipleNavi && fetchRes?.multipleRes;
+  const tag = multipleFlag ? "多结果" : fetchRes?.tag;
+  const resultLink = multipleFlag ? fetchRes.multipResLink : fetchRes?.targetLink;
   const colorClass = fetchRes?.isSuccess ? "jop-button_green " : "jop-button_red ";
 
   if (hiddenError && !fetchRes?.isSuccess) {

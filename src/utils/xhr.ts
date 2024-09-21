@@ -59,6 +59,7 @@ function serachPageParser(
     return { isSuccess: false };
   }
   const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+  console.log("|titleNodes", titleNodes);
   return {
     isSuccess: true,
     targetLink: targetLinkText,
