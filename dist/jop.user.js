@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.2
+// @version      1.2.3
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -1173,13 +1173,9 @@
         setLoading(false);
       });
     }, [fetcher, siteItem, CODE, link]);
-    const tag =
-      multipleNavi && (fetchRes == null ? void 0 : fetchRes.multipleRes)
-        ? "多结果"
-        : fetchRes == null
-        ? void 0
-        : fetchRes.tag;
-    const resultLink = (fetchRes == null ? void 0 : fetchRes.multipleRes)
+    const multipleFlag = multipleNavi && (fetchRes == null ? void 0 : fetchRes.multipleRes);
+    const tag = multipleFlag ? "多结果" : fetchRes == null ? void 0 : fetchRes.tag;
+    const resultLink = multipleFlag
       ? fetchRes.multipResLink
       : fetchRes == null
       ? void 0
