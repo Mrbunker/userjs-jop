@@ -1,16 +1,17 @@
 import { Dispatch, StateUpdater, useState } from "preact/hooks";
+import { GM_setValue } from "$";
 import { SiteItem } from "@/utils/siteList";
 import Checkbox from "./Checkbox";
 
-const Setting = ({
-  siteList,
-  setDisables,
-  disables,
-}: {
+type Props = {
   siteList: SiteItem[];
   setDisables: Dispatch<StateUpdater<string[]>>;
   disables: SiteItem["name"][];
-}) => {
+  multipleNavi: boolean;
+  setMultipleNavi: Dispatch<StateUpdater<boolean>>;
+};
+
+const Setting = ({ siteList, setDisables, disables, multipleNavi, setMultipleNavi }: Props) => {
   const [showSetting, setShowSetting] = useState(true);
 
   const hanleListChange = (item: SiteItem, isHidden: boolean) => {
@@ -19,6 +20,11 @@ const Setting = ({
     } else {
       setDisables([...disables, item.name]);
     }
+  };
+
+  const handleNaviChange = (checked: boolean) => {
+    setMultipleNavi(checked);
+    GM_setValue("multipleNavi", checked);
   };
 
   return (
@@ -31,9 +37,10 @@ const Setting = ({
       {showSetting && (
         <>
           <div className="jop-setting">
-            <Group title="勾选默认显示的网站：">
+            <Group title="勾选默认展示">
               {siteList.map((item) => {
                 const isHidden = disables.includes(item.name);
+
                 return (
                   <Checkbox
                     label={item.name}
@@ -42,6 +49,16 @@ const Setting = ({
                   />
                 );
               })}
+            </Group>
+
+            <Group title="其他设置">
+              <Checkbox
+                label="展示多个搜索结果"
+                value={multipleNavi}
+                tip="一个站点内出现多条匹配结果时，打开后跳转搜索结果页"
+                onChange={handleNaviChange}
+              />
+              {/* <Checkbox label="简洁模式" value={true} onChange={() => {}} /> */}
             </Group>
           </div>
 

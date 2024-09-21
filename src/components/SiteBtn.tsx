@@ -1,14 +1,19 @@
-import { handleFetch, handleFetchJavBle } from "@/utils/xhr";
+import { fetcher } from "@/utils/xhr";
 import { SiteItem } from "@/utils/siteList";
 import { memo, useEffect, useState } from "preact/compat";
 
 interface Status {
   isSuccess: "pedding" | "rejected" | "fulfilled";
-  hasSubtitle: boolean;
-  hasLeakage: boolean;
-  targetLink: string;
+  resultLink?: string;
+  tag?: string;
 }
-const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) => {
+type Props = {
+  siteItem: SiteItem;
+  CODE: string;
+  multipleNavi?: boolean;
+};
+
+const SiteBtn = memo(({ siteItem, CODE, multipleNavi }: Props) => {
   const { name, codeFormater } = siteItem;
   /** 格式化 CODE */
   const formatCode = codeFormater ? codeFormater(CODE) : CODE;
@@ -16,23 +21,22 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
 
   const [status, setStatus] = useState<Status>({
     isSuccess: "pedding",
-    hasSubtitle: false,
-    hasLeakage: false,
-    targetLink: "",
+    tag: "",
+    resultLink: "",
   });
-  const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
+  const { isSuccess, tag, resultLink } = status;
 
   useEffect(() => {
-    const fetchMethod = name === "Jable" ? handleFetchJavBle : handleFetch;
-    fetchMethod(siteItem, link, formatCode).then((res) => {
+    fetcher({ siteItem, targetLink: link, CODE: formatCode }).then((res) => {
+      const resultLink = multipleNavi && res.multipleRes ? res.multipResLink : res.targetLink;
+
       setStatus({
         isSuccess: res.isSuccess ? "fulfilled" : "rejected",
-        hasSubtitle: res.hasSubtitle,
-        hasLeakage: res.hasLeakage,
-        targetLink: res.targetLink,
+        tag: multipleNavi && res.multipleRes ? "多结果" : res.tag,
+        resultLink,
       });
     });
-  }, [handleFetch, siteItem, CODE, link]);
+  }, [fetcher, siteItem, CODE, link, multipleNavi]);
 
   const colorClass =
     isSuccess === "pedding"
@@ -45,14 +49,9 @@ const SiteBtn = memo(({ siteItem, CODE }: { siteItem: SiteItem; CODE: string }) 
     <a
       className={"jop-button " + colorClass}
       target="_blank"
-      href={targetLink === "" ? link : targetLink}
+      href={resultLink === "" ? link : resultLink}
     >
-      {(hasSubtitle || hasLeakage) && (
-        <div className="jop-button_label">
-          {hasSubtitle && <span>字幕 </span>}
-          {hasLeakage && <span> 无码</span>}
-        </div>
-      )}
+      {tag && <div className="jop-button_label">{tag}</div>}
 
       {/* 加载动画 */}
       {/* {isSuccess === "pedding" && <span className="jop-loading"> </span>} */}

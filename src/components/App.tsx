@@ -6,37 +6,45 @@ import { SiteItem, siteList } from "@/utils/siteList";
 import type { LibItem } from "@/utils/libSites";
 
 const App = memo(function ({ libItem, CODE }: { libItem: LibItem; CODE: string }) {
-    // 默认不显示
+  // 默认不显示
   const DEF_DIS = [
     ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
     ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
   ];
   const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", DEF_DIS));
+  const [multipleNavi, setMultipleNavi] = useState(GM_getValue<boolean>("multipleNavi", true));
 
   return (
     <>
       <div class="jop-list">
-        {siteList.map((siteItem) => {
-          const hidden = disables.find((disItem) => disItem === siteItem.name) === undefined;
-          const sameSite = libItem.name !== siteItem.disableLibItemName;
-          if (hidden && sameSite) {
-            return <SiteBtn siteItem={siteItem} CODE={CODE} key={siteItem.name} />;
-          } else {
-            return <></>;
-          }
-        })}
+        {siteList
+          .filter(
+            (siteItem) =>
+              !disables.includes(siteItem.name) && libItem.name !== siteItem.disableLibItemName,
+          )
+          .map((siteItem) => (
+            <SiteBtn
+              siteItem={siteItem}
+              CODE={CODE}
+              key={siteItem.name}
+              multipleNavi={multipleNavi}
+            />
+          ))}
       </div>
 
-      <div>
-        <Setting
-          siteList={siteList}
-          setDisables={(disable) => {
-            setDisables(disable);
-            GM_setValue("disable", disable);
-          }}
-          disables={disables}
-        />
-      </div>
+      <Setting
+        siteList={siteList}
+        setDisables={(disable) => {
+          setDisables(disable);
+          GM_setValue("disable", disable);
+        }}
+        multipleNavi={multipleNavi}
+        setMultipleNavi={(multipleNavi) => {
+          setMultipleNavi(multipleNavi);
+          GM_setValue("multipleNavi", multipleNavi);
+        }}
+        disables={disables}
+      />
     </>
   );
 });
