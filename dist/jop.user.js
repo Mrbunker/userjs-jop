@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.0
+// @version      1.2.2
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -342,7 +342,6 @@
     },
     {
       name: "JavBus",
-      disableLibItemName: "javbus",
       hostname: "javbus.com",
       url: "https://javbus.com/{{code}}",
       fetchType: "get",
@@ -351,7 +350,6 @@
     },
     {
       name: "JavDB",
-      disableLibItemName: "javdb",
       hostname: "javdb.com",
       url: "https://javdb.com/search?q={{code}}",
       fetchType: "parser",
@@ -362,7 +360,6 @@
     },
     {
       name: "JAVLib",
-      disableLibItemName: "javlib",
       hostname: "javlibrary.com",
       url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
       fetchType: "parser",
@@ -976,6 +973,8 @@
     disables,
     multipleNavi,
     setMultipleNavi,
+    hiddenError,
+    setHiddenError,
   }) => {
     const [showSetting, setShowSetting] = p(true);
     const hanleListChange = (item, isHidden) => {
@@ -988,6 +987,10 @@
     const handleNaviChange = (checked) => {
       setMultipleNavi(checked);
       _GM_setValue("multipleNavi", checked);
+    };
+    const handlehiddenErrorChange = (checked) => {
+      setHiddenError(checked);
+      _GM_setValue("hiddenError", checked);
     };
     return u(preact.Fragment, {
       children: [
@@ -1016,12 +1019,19 @@
                   }),
                   u(Group, {
                     title: "其他设置",
-                    children: u(Checkbox, {
-                      label: "展示多个搜索结果",
-                      value: multipleNavi,
-                      tip: "一个站点内出现多条匹配结果时，打开后跳转搜索结果页",
-                      onChange: handleNaviChange,
-                    }),
+                    children: [
+                      u(Checkbox, {
+                        label: "展示多个搜索结果",
+                        value: multipleNavi,
+                        tip: "一个站点内出现多条匹配结果时，打开后跳转搜索结果页",
+                        onChange: handleNaviChange,
+                      }),
+                      u(Checkbox, {
+                        label: "隐藏失败结果",
+                        value: hiddenError,
+                        onChange: handlehiddenErrorChange,
+                      }),
+                    ],
                   }),
                 ],
               }),
@@ -1146,38 +1156,42 @@
     }
     return baseFetcher(args);
   };
-  const SiteBtn = x(({ siteItem, CODE, multipleNavi }) => {
+  const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }) => {
     const { name, codeFormater } = siteItem;
     const formatCode = codeFormater ? codeFormater(CODE) : CODE;
     const link = siteItem.url.replace("{{code}}", formatCode);
-    const [status, setStatus] = p({
-      isSuccess: "pedding",
-      tag: "",
-      resultLink: "",
-    });
-    const { isSuccess, tag, resultLink } = status;
+    const [loading, setLoading] = p(false);
+    const [fetchRes, setFetchRes] = p();
     _(() => {
+      setLoading(true);
       fetcher({
         siteItem,
         targetLink: link,
         CODE: formatCode,
       }).then((res) => {
-        const resultLink2 = multipleNavi && res.multipleRes ? res.multipResLink : res.targetLink;
-        setStatus({
-          isSuccess: res.isSuccess ? "fulfilled" : "rejected",
-          tag: multipleNavi && res.multipleRes ? "多结果" : res.tag,
-          resultLink: resultLink2,
-        });
+        setFetchRes(res);
+        setLoading(false);
       });
-    }, [fetcher, siteItem, CODE, link, multipleNavi]);
-    const colorClass =
-      isSuccess === "pedding"
-        ? " "
-        : isSuccess === "fulfilled"
-        ? "jop-button_green "
-        : "jop-button_red ";
+    }, [fetcher, siteItem, CODE, link]);
+    const tag =
+      multipleNavi && (fetchRes == null ? void 0 : fetchRes.multipleRes)
+        ? "多结果"
+        : fetchRes == null
+        ? void 0
+        : fetchRes.tag;
+    const resultLink = (fetchRes == null ? void 0 : fetchRes.multipleRes)
+      ? fetchRes.multipResLink
+      : fetchRes == null
+      ? void 0
+      : fetchRes.targetLink;
+    const colorClass = (fetchRes == null ? void 0 : fetchRes.isSuccess)
+      ? "jop-button_green "
+      : "jop-button_red ";
+    if (hiddenError && !(fetchRes == null ? void 0 : fetchRes.isSuccess)) {
+      return u(preact.Fragment, {});
+    }
     return u("a", {
-      className: "jop-button " + colorClass,
+      className: "jop-button " + (loading ? " " : colorClass),
       target: "_blank",
       href: resultLink === "" ? link : resultLink,
       children: [
@@ -1191,7 +1205,7 @@
         }),
       ],
     });
-  });
+  };
   const App = x(function ({ libItem, CODE }) {
     const DEF_DIS = [
       ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
@@ -1199,26 +1213,26 @@
     ];
     const [disables, setDisables] = p(_GM_getValue("disable", DEF_DIS));
     const [multipleNavi, setMultipleNavi] = p(_GM_getValue("multipleNavi", true));
+    const [hiddenError, setHiddenError] = p(_GM_getValue("hiddenError", false));
+    const list = siteList.filter(
+      (siteItem) => !disables.includes(siteItem.name) && !siteItem.hostname.includes(libItem.name),
+    );
     return u(preact.Fragment, {
       children: [
         u("div", {
           class: "jop-list",
-          children: siteList
-            .filter(
-              (siteItem) =>
-                !disables.includes(siteItem.name) && libItem.name !== siteItem.disableLibItemName,
-            )
-            .map((siteItem) =>
-              u(
-                SiteBtn,
-                {
-                  siteItem,
-                  CODE,
-                  multipleNavi,
-                },
-                siteItem.name,
-              ),
+          children: list.map((siteItem) =>
+            u(
+              SiteBtn,
+              {
+                siteItem,
+                CODE,
+                multipleNavi,
+                hiddenError,
+              },
+              siteItem.name,
             ),
+          ),
         }),
         u(Setting, {
           siteList,
@@ -1232,6 +1246,11 @@
             _GM_setValue("multipleNavi", multipleNavi2);
           },
           disables,
+          hiddenError,
+          setHiddenError: (v2) => {
+            setHiddenError(v2);
+            _GM_setValue("hiddenError", v2);
+          },
         }),
       ],
     });
