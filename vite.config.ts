@@ -4,7 +4,9 @@ import preact from "@preact/preset-vite";
 import { siteList } from "./src/utils/siteList";
 import { libSites } from "./src/utils/libSites";
 
-const connectList = siteList.map((site) => site.hostname).concat(["javdb008.com", "g64w.com"]);
+const connectList = siteList
+  .map((site) => site.hostname)
+  .concat(["javdb368.com", "javdb369.com", "g64w.com"]);
 
 const includeList = libSites.map((libItem) => libItem.href);
 

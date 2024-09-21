@@ -9,7 +9,6 @@
   height: 100%;
   z-index: 1;
   transition: right 200ms ease-in-out;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
   color: black;
 }
 
@@ -21,7 +20,6 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  /* min-width: 50px; */
   padding: 3px 10px;
   border-radius: 4px;
   font-weight: 500;
@@ -106,17 +104,20 @@
 }
 
 /*  */
+.jop-setting{
+  margin-top:20px;
+}
 .jop-setting-list {
   display: flex;
   flex-wrap: wrap;
 }
 .jop-setting-title {
   margin: 10px 0 5px 0;
+  font-weight: 700;
 }
 .jop-setting-item {
   display: flex;
   height: 20px;
-  justify-content: center;
   align-items: center;
   margin-right: 15px;
   user-select: none;
@@ -148,3 +149,78 @@ input[type="radio"] {
   cursor: pointer;
 }
 /*  */
+
+.jop-tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.jop-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.jop-setting-label {
+  cursor: pointer;
+}
+
+.jop-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 15px;
+  user-select: none;
+}
+
+.jop-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.jop-checkbox-custom {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.jop-checkbox-input:checked + .jop-checkbox-custom {
+  background-color: #409eff;
+  border-color: #409eff;
+}
+
+.jop-checkbox-input:checked + .jop-checkbox-custom::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.jop-checkbox-label {
+  margin-left: 3px;
+  font-size: 14px;
+  color: #606266;
+}
+
+.jop-checkbox:hover .jop-checkbox-custom {
+  border-color: #409eff;
+}
