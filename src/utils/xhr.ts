@@ -1,4 +1,4 @@
-import { gmGet, isCaseInsensitiveEqual, isErrorCode, regEnum } from "./";
+import { gmGet, isCaseInsensitiveEqual, isErrorCode, regEnum, tagsQuery } from "./";
 import type { DomQuery_get, DomQuery_parser, SiteItem } from "./siteList";
 
 export type FetchResult = {
@@ -24,8 +24,7 @@ function videoPageParser(responseText: string, { subQuery, leakQuery, videoQuery
   const videoNode = videoQuery ? doc.querySelector<HTMLElement>(videoQuery) : true;
   return {
     isSuccess: !!videoNode,
-    hasSubtitle: regEnum.subtitle.test(subNodeText),
-    hasLeakage: regEnum.leakage.test(linkNodeText),
+    tag: tagsQuery({ leakageText: linkNodeText, subtitleText: subNodeText }),
   };
 }
 
@@ -60,17 +59,12 @@ function serachPageParser(
     return { isSuccess: false };
   }
   const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
-  const hasLeakage = regEnum.leakage.test(titleNodeText);
-  const hasSubtitle = regEnum.subtitle.test(titleNodeText);
-  const tags = [];
-  if (hasLeakage) tags.push("无码");
-  if (hasSubtitle) tags.push("字幕");
   return {
     isSuccess: true,
     targetLink: targetLinkText,
     multipResLink: searchPageLink,
     multipleRes: titleNodes.length > 1,
-    tag: tags.join(" "),
+    tag: tagsQuery({ leakageText: titleNodeText, subtitleText: titleNodeText }),
   };
 }
 

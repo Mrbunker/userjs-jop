@@ -81,7 +81,7 @@ export const siteList: SiteItem[] = [
       // 标签区的第一个一般是字幕标签
       subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
       // 有个「切換無碼」按钮，藏在分享按钮旁边……
-      // leakQuery: ".order-first div.rounded-md a[href]:last-child",
+      leakQuery: ".order-first div.rounded-md a[href]:last-child",
     },
   },
   {
