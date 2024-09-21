@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.1.17
+// @version      1.2.0
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -36,7 +36,8 @@
 // @connect      javbus.com
 // @connect      javdb.com
 // @connect      javlibrary.com
-// @connect      javdb008.com
+// @connect      javdb368.com
+// @connect      javdb369.com
 // @connect      g64w.com
 // @grant        GM_addStyle
 // @grant        GM_getValue
@@ -49,10 +50,10 @@
     GM_addStyle(o);
     return;
   }
-  const t = document.createElement("style");
-  (t.textContent = o), document.head.append(t);
+  const e = document.createElement("style");
+  (e.textContent = o), document.head.append(e);
 })(
-  " .jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;transition:right .2s ease-in-out;font-family:Roboto,Helvetica,Arial,sans-serif;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting-list{display:flex;flex-wrap:wrap}.jop-setting-title{margin:10px 0 5px}.jop-setting-item{display:flex;height:20px;justify-content:center;align-items:center;margin-right:15px;-webkit-user-select:none;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer} ",
+  ' .jop-list{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:100%;height:100%;z-index:1;transition:right .2s ease-in-out;color:#000}.jop-button,.jop-button_def{position:relative;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:3px 10px;border-radius:4px;font-weight:500;font-size:14px;border:1px solid #dcdfe6;color:#606266;cursor:pointer}.jop-button_def{margin:10px 0;width:100px}.jop-button:visited{color:#606266}.jop-button:hover{text-decoration:none;color:#409eff;border:1px solid #c6e2ff;background-color:#ecf5ff}.jop-button_label{position:absolute;font-size:10px;padding:4px;border-radius:4px;top:-13px;right:-10px;line-height:.75;color:#67c23a;border:1px solid #e1f3d8;background:white}.jop-button_green{color:#fff!important;background-color:#67c23a}.jop-button_green:hover{color:#fff!important;background-color:#95d475}.jop-button_red{color:#fff!important;background-color:#f56c6c}.jop-button_red:hover{color:#fff!important;background-color:#f89898}.jop-loading{display:inline-block;width:14px;height:14px;margin-right:10px;border:2px dashed #dcdfe6;border-top-color:transparent;border-radius:100%;animation:btnLoading infinite 1s linear}@keyframes btnLoading{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.jop-tag{padding:3px 6px;color:#409eff!important;background:#ecf5ff;border:1px solid #d9ecff;border-radius:4px}.jop-setting{margin-top:20px}.jop-setting-list{display:flex;flex-wrap:wrap}.jop-setting-title{margin:10px 0 5px;font-weight:700}.jop-setting-item{display:flex;height:20px;align-items:center;margin-right:15px;-webkit-user-select:none;user-select:none;cursor:pointer}.db-panel .movie-panel-info div.panel-block{padding:5.5px 12px}.db-panel .jop-app{padding:15px 12px}.lib-panel .jop-app{padding:20px 30px;margin-top:10px}input[type=checkbox],input[type=radio]{margin:0 0 0 5px;cursor:pointer}.jop-tooltip-container{position:relative;display:inline-block}.jop-tooltip{position:absolute;bottom:100%;left:50%;transform:translate(-50%);background-color:#333;color:#fff;padding:5px 10px;border-radius:4px;font-size:12px;white-space:nowrap;z-index:1000}.jop-setting-label{cursor:pointer}.jop-checkbox{display:inline-flex;align-items:center;cursor:pointer;margin-right:15px;-webkit-user-select:none;user-select:none}.jop-checkbox-input{position:absolute;opacity:0;cursor:pointer}.jop-checkbox-custom{position:relative;display:inline-block;width:16px;height:16px;background-color:#fff;border:1px solid #dcdfe6;border-radius:2px;transition:all .3s}.jop-checkbox-input:checked+.jop-checkbox-custom{background-color:#409eff;border-color:#409eff}.jop-checkbox-input:checked+.jop-checkbox-custom:after{content:"";position:absolute;top:1px;left:4px;width:5px;height:10px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}.jop-checkbox-label{margin-left:3px;font-size:14px;color:#606266}.jop-checkbox:hover .jop-checkbox-custom{border-color:#409eff} ',
 );
 
 (function (preact) {
@@ -128,7 +129,7 @@
         // 标签区的第一个一般是字幕标签
         subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
         // 有个「切換無碼」按钮，藏在分享按钮旁边……
-        // leakQuery: ".order-first div.rounded-md a[href]:last-child",
+        leakQuery: ".order-first div.rounded-md a[href]:last-child",
       },
     },
     {
@@ -372,15 +373,21 @@
     },
   ];
   const SP_PREFIX = "300";
+  const gmGet = ({ url }) => {
+    return new Promise((resolve, reject) => {
+      _GM_xmlhttpRequest({
+        method: "GET",
+        url,
+        onload: (response) => resolve(response),
+        onerror: (error) => reject(error),
+      });
+    });
+  };
   const isCaseInsensitiveEqual = (str1, str2) => {
     return str1.toLowerCase() === str2.toLowerCase();
   };
   const isErrorCode = (resCode) => {
     return [404, 403].includes(resCode);
-  };
-  const regEnum = {
-    subtitle: /(中文|字幕|subtitle)/,
-    leakage: /(无码|無碼|泄漏|Uncensored)/,
   };
   const getCode = (libItem) => {
     const { codeQueryStr } = libItem.querys;
@@ -394,15 +401,17 @@
     if (codeText.startsWith(SP_PREFIX)) return codeText.substring(3);
     return codeText;
   };
-  const gmGet = ({ url }) => {
-    return new Promise((resolve, reject) => {
-      _GM_xmlhttpRequest({
-        method: "GET",
-        url,
-        onload: (response) => resolve(response),
-        onerror: (error) => reject(error),
-      });
-    });
+  const regEnum = {
+    subtitle: /(中文|字幕|subtitle)/,
+    leakage: /(无码|無碼|泄漏|Uncensored)/,
+  };
+  const tagsQuery = ({ leakageText, subtitleText }) => {
+    const hasLeakage = regEnum.leakage.test(leakageText);
+    const hasSubtitle = regEnum.subtitle.test(subtitleText);
+    const tags = [];
+    if (hasLeakage) tags.push("无码");
+    if (hasSubtitle) tags.push("字幕");
+    return tags.join(" ");
   };
   var t,
     r,
@@ -918,54 +927,103 @@
       for (c2 in a2) void 0 === p2[c2] && (p2[c2] = a2[c2]);
     return preact.options.vnode && preact.options.vnode(l2), l2;
   }
-  const Setting = ({ siteList: siteList2, setDisables, disables }) => {
-    const [showSetting, setShowSetting] = p(false);
-    const changeCheck = (item, isHidden) => {
+  const Tooltip = ({ content, children }) => {
+    const [isVisible, setIsVisible] = p(false);
+    return u("div", {
+      className: "jop-tooltip-container",
+      onMouseEnter: () => setIsVisible(true),
+      onMouseLeave: () => setIsVisible(false),
+      children: [
+        children,
+        isVisible &&
+          content &&
+          u("div", {
+            className: "jop-tooltip",
+            children: content,
+          }),
+      ],
+    });
+  };
+  const Checkbox = ({ label, value, tip, onChange }) => {
+    const handleChange = (event) => {
+      onChange(event.currentTarget.checked);
+    };
+    return u("label", {
+      className: "jop-checkbox",
+      children: [
+        u("input", {
+          type: "checkbox",
+          className: "jop-checkbox-input",
+          checked: value,
+          onChange: handleChange,
+        }),
+        u("span", {
+          className: "jop-checkbox-custom",
+        }),
+        u(Tooltip, {
+          content: tip || "",
+          children: u("span", {
+            className: "jop-checkbox-label",
+            children: label,
+          }),
+        }),
+      ],
+    });
+  };
+  const Setting = ({
+    siteList: siteList2,
+    setDisables,
+    disables,
+    multipleNavi,
+    setMultipleNavi,
+  }) => {
+    const [showSetting, setShowSetting] = p(true);
+    const hanleListChange = (item, isHidden) => {
       if (isHidden) {
         setDisables(disables.filter((disItem) => disItem !== item.name));
       } else {
         setDisables([...disables, item.name]);
       }
     };
+    const handleNaviChange = (checked) => {
+      setMultipleNavi(checked);
+      _GM_setValue("multipleNavi", checked);
+    };
     return u(preact.Fragment, {
       children: [
-        !showSetting
-          ? u("div", {
-              className: "jop-button_def",
-              onClick: () => {
-                setShowSetting(!showSetting);
-              },
-              children: "设置",
-            })
-          : u("h4", {
-              className: "jop-setting-title",
-              children: "勾选默认显示的网站",
-            }),
+        !showSetting &&
+          u("div", {
+            className: "jop-button_def",
+            onClick: () => setShowSetting(!showSetting),
+            children: "设置",
+          }),
         showSetting &&
           u(preact.Fragment, {
             children: [
               u("div", {
                 className: "jop-setting",
-                children: u("div", {
-                  className: "jop-setting-list",
-                  children: siteList2.map((item) => {
-                    const isHidden = disables.includes(item.name);
-                    return u("div", {
-                      className: "jop-setting-item",
-                      onClick: () => {
-                        changeCheck(item, isHidden);
-                      },
-                      children: [
-                        item.name,
-                        u("input", {
-                          type: "checkbox",
-                          className: "jop-setting-checkbox",
-                          checked: !isHidden,
-                        }),
-                      ],
-                    });
+                children: [
+                  u(Group, {
+                    title: "勾选默认展示",
+                    children: siteList2.map((item) => {
+                      const isHidden = disables.includes(item.name);
+                      return u(Checkbox, {
+                        label: item.name,
+                        value: !isHidden,
+                        onChange: (checked) => hanleListChange(item, checked),
+                      });
+                    }),
                   }),
-                }),
+                  u(Group, {
+                    title: "其他设置",
+                    children: u(Checkbox, {
+                      label: "展示多个搜索结果",
+                      value: multipleNavi,
+                      tip: "一个站点内出现多条匹配结果时，打开后跳转搜索结果页",
+                      onChange: handleNaviChange,
+                    }),
+                  }),
+                ],
               }),
               u("div", {
                 className: "jop-button_def",
@@ -979,6 +1037,20 @@
       ],
     });
   };
+  const Group = ({ title, children }) => {
+    return u(preact.Fragment, {
+      children: [
+        u("h4", {
+          className: "jop-setting-title",
+          children: title,
+        }),
+        u("div", {
+          className: "jop-setting-list",
+          children,
+        }),
+      ],
+    });
+  };
   function videoPageParser(responseText, { subQuery, leakQuery, videoQuery }) {
     const doc = new DOMParser().parseFromString(responseText, "text/html");
     const subNode = subQuery ? doc.querySelector(subQuery) : "";
@@ -988,8 +1060,10 @@
     const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
     return {
       isSuccess: !!videoNode,
-      hasSubtitle: regEnum.subtitle.test(subNodeText),
-      hasLeakage: regEnum.leakage.test(linkNodeText),
+      tag: tagsQuery({
+        leakageText: linkNodeText,
+        subtitleText: subNodeText,
+      }),
     };
   }
   function serachPageParser(
@@ -997,33 +1071,36 @@
     { linkQuery, titleQuery, listIndex = 0 },
     siteHostName,
     CODE,
+    searchPageLink,
   ) {
     const doc = new DOMParser().parseFromString(responseText, "text/html");
-    const linkNode = linkQuery ? doc.querySelectorAll(linkQuery)[listIndex] : null;
-    const titleNode = titleQuery ? doc.querySelectorAll(titleQuery)[listIndex] : null;
+    const titleNodes = titleQuery ? doc.querySelectorAll(titleQuery) : [];
+    const linkNodes = linkQuery ? doc.querySelectorAll(linkQuery) : [];
+    const titleNode = titleNodes[listIndex];
+    const linkNode = linkNodes[listIndex];
     const titleNodeText = titleNode ? (titleNode == null ? void 0 : titleNode.outerHTML) : "";
     const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
     const matchCode = titleNodeText.match(codeRegex);
     const isSuccess =
       linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
-    if (isSuccess) {
-      const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+    if (!isSuccess) {
       return {
-        isSuccess: true,
-        targetLink: targetLinkText,
-        hasLeakage: regEnum.leakage.test(titleNodeText),
-        hasSubtitle: regEnum.subtitle.test(titleNodeText),
-      };
-    } else {
-      return {
-        targetLink: "",
         isSuccess: false,
-        hasSubtitle: false,
-        hasLeakage: false,
       };
     }
+    const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+    return {
+      isSuccess: true,
+      targetLink: targetLinkText,
+      multipResLink: searchPageLink,
+      multipleRes: titleNodes.length > 1,
+      tag: tagsQuery({
+        leakageText: titleNodeText,
+        subtitleText: titleNodeText,
+      }),
+    };
   }
-  const handleFetch = async (siteItem, targetLink, CODE) => {
+  const baseFetcher = async ({ siteItem, targetLink, CODE }) => {
     try {
       const response = await gmGet({
         url: targetLink,
@@ -1038,45 +1115,61 @@
         };
       } else {
         return {
-          ...serachPageParser(response.responseText, siteItem.domQuery, siteItem.hostname, CODE),
+          ...serachPageParser(
+            response.responseText,
+            siteItem.domQuery,
+            siteItem.hostname,
+            CODE,
+            targetLink,
+          ),
         };
       }
     } catch (error) {
       return {
         isSuccess: false,
         targetLink,
-        hasSubtitle: false,
-        hasLeakage: false,
       };
     }
   };
-  const handleFetchJavBle = async (siteItem, targetLink, CODE) => {
-    const res = await handleFetch(siteItem, targetLink, CODE);
-    const newLink = targetLink.slice(0, -1) + "-c/";
-    return res.isSuccess ? res : await handleFetch(siteItem, newLink, CODE);
+  const javbleFetcher = async (args) => {
+    const res = await baseFetcher(args);
+    if (res.isSuccess) return res;
+    const newLink = args.targetLink.slice(0, -1) + "-c/";
+    return await baseFetcher({
+      ...args,
+      targetLink: newLink,
+    });
   };
-  const SiteBtn = x(({ siteItem, CODE }) => {
+  const fetcher = (args) => {
+    if (args.siteItem.name === "Jable") {
+      return javbleFetcher(args);
+    }
+    return baseFetcher(args);
+  };
+  const SiteBtn = x(({ siteItem, CODE, multipleNavi }) => {
     const { name, codeFormater } = siteItem;
     const formatCode = codeFormater ? codeFormater(CODE) : CODE;
     const link = siteItem.url.replace("{{code}}", formatCode);
     const [status, setStatus] = p({
       isSuccess: "pedding",
-      hasSubtitle: false,
-      hasLeakage: false,
-      targetLink: "",
+      tag: "",
+      resultLink: "",
     });
-    const { isSuccess, hasSubtitle, hasLeakage, targetLink } = status;
+    const { isSuccess, tag, resultLink } = status;
     _(() => {
-      const fetchMethod = name === "Jable" ? handleFetchJavBle : handleFetch;
-      fetchMethod(siteItem, link, formatCode).then((res) => {
+      fetcher({
+        siteItem,
+        targetLink: link,
+        CODE: formatCode,
+      }).then((res) => {
+        const resultLink2 = multipleNavi && res.multipleRes ? res.multipResLink : res.targetLink;
         setStatus({
           isSuccess: res.isSuccess ? "fulfilled" : "rejected",
-          hasSubtitle: res.hasSubtitle,
-          hasLeakage: res.hasLeakage,
-          targetLink: res.targetLink,
+          tag: multipleNavi && res.multipleRes ? "多结果" : res.tag,
+          resultLink: resultLink2,
         });
       });
-    }, [handleFetch, siteItem, CODE, link]);
+    }, [fetcher, siteItem, CODE, link, multipleNavi]);
     const colorClass =
       isSuccess === "pedding"
         ? " "
@@ -1086,21 +1179,12 @@
     return u("a", {
       className: "jop-button " + colorClass,
       target: "_blank",
-      href: targetLink === "" ? link : targetLink,
+      href: resultLink === "" ? link : resultLink,
       children: [
-        (hasSubtitle || hasLeakage) &&
+        tag &&
           u("div", {
             className: "jop-button_label",
-            children: [
-              hasSubtitle &&
-                u("span", {
-                  children: "字幕 ",
-                }),
-              hasLeakage &&
-                u("span", {
-                  children: " 无码",
-                }),
-            ],
+            children: tag,
           }),
         u("span", {
           children: name,
@@ -1114,36 +1198,40 @@
       ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
     ];
     const [disables, setDisables] = p(_GM_getValue("disable", DEF_DIS));
+    const [multipleNavi, setMultipleNavi] = p(_GM_getValue("multipleNavi", true));
     return u(preact.Fragment, {
       children: [
         u("div", {
           class: "jop-list",
-          children: siteList.map((siteItem) => {
-            const hidden = disables.find((disItem) => disItem === siteItem.name) === void 0;
-            const sameSite = libItem.name !== siteItem.disableLibItemName;
-            if (hidden && sameSite) {
-              return u(
+          children: siteList
+            .filter(
+              (siteItem) =>
+                !disables.includes(siteItem.name) && libItem.name !== siteItem.disableLibItemName,
+            )
+            .map((siteItem) =>
+              u(
                 SiteBtn,
                 {
                   siteItem,
                   CODE,
+                  multipleNavi,
                 },
                 siteItem.name,
-              );
-            } else {
-              return u(preact.Fragment, {});
-            }
-          }),
+              ),
+            ),
         }),
-        u("div", {
-          children: u(Setting, {
-            siteList,
-            setDisables: (disable) => {
-              setDisables(disable);
-              _GM_setValue("disable", disable);
-            },
-            disables,
-          }),
+        u(Setting, {
+          siteList,
+          setDisables: (disable) => {
+            setDisables(disable);
+            _GM_setValue("disable", disable);
+          },
+          multipleNavi,
+          setMultipleNavi: (multipleNavi2) => {
+            setMultipleNavi(multipleNavi2);
+            _GM_setValue("multipleNavi", multipleNavi2);
+          },
+          disables,
         }),
       ],
     });
