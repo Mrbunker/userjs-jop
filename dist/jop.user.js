@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.3
+// @version      1.2.4
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -976,7 +976,7 @@
     hiddenError,
     setHiddenError,
   }) => {
-    const [showSetting, setShowSetting] = p(true);
+    const [showSetting, setShowSetting] = p(false);
     const hanleListChange = (item, isHidden) => {
       if (isHidden) {
         setDisables(disables.filter((disItem) => disItem !== item.name));

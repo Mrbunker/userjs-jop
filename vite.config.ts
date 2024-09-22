@@ -12,7 +12,7 @@ const includeList = libSites.map((libItem) => libItem.href);
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.2.3",
+  version: "1.2.4",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
   // match: ["*://*/cn/?v=jav*"],
