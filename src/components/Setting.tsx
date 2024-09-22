@@ -22,7 +22,7 @@ const Setting = ({
   hiddenError,
   setHiddenError,
 }: Props) => {
-  const [showSetting, setShowSetting] = useState(true);
+  const [showSetting, setShowSetting] = useState(false);
 
   const hanleListChange = (item: SiteItem, isHidden: boolean) => {
     if (isHidden) {
