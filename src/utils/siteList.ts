@@ -119,8 +119,8 @@ export const siteList: SiteItem[] = [
     url: "https://netflav5.com/search?type=title&keyword={{code}}",
     fetchType: "parser",
     domQuery: {
-      linkQuery: ".grid_cell>a",
-      titleQuery: ".grid_cell>a>.grid_title",
+      linkQuery: ".video_grid_container a",
+      titleQuery: ".video_grid_container",
     },
   },
   {

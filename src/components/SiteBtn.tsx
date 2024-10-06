@@ -13,22 +13,22 @@ const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }: Props) => {
   const { name, codeFormater } = siteItem;
   /** 格式化 CODE */
   const formatCode = codeFormater ? codeFormater(CODE) : CODE;
-  const link = siteItem.url.replace("{{code}}", formatCode);
+  const originLink = siteItem.url.replace("{{code}}", formatCode);
 
   const [loading, setLoading] = useState(false);
   const [fetchRes, setFetchRes] = useState<FetchResult>();
 
   useEffect(() => {
     setLoading(true);
-    fetcher({ siteItem, targetLink: link, CODE: formatCode }).then((res) => {
+    fetcher({ siteItem, targetLink: originLink, CODE: formatCode }).then((res) => {
       setFetchRes(res);
       setLoading(false);
     });
-  }, [fetcher, siteItem, CODE, link]);
+  }, [fetcher, siteItem, CODE, originLink]);
 
   const multipleFlag = multipleNavi && fetchRes?.multipleRes;
   const tag = multipleFlag ? "多结果" : fetchRes?.tag;
-  const resultLink = multipleFlag ? fetchRes.multipResLink : fetchRes?.targetLink;
+  const resultLink = (multipleFlag ? fetchRes.multipResLink : fetchRes?.targetLink) ?? originLink;
   const colorClass = fetchRes?.isSuccess ? "jop-button_green " : "jop-button_red ";
 
   if (hiddenError && !fetchRes?.isSuccess) {
@@ -38,7 +38,7 @@ const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }: Props) => {
     <a
       className={"jop-button " + (loading ? " " : colorClass)}
       target="_blank"
-      href={resultLink === "" ? link : resultLink}
+      href={resultLink === "" ? originLink : resultLink}
     >
       {tag && <div className="jop-button_label">{tag}</div>}
 
