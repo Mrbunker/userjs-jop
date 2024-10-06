@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.4
+// @version      1.2.5
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -170,8 +170,8 @@
       url: "https://netflav5.com/search?type=title&keyword={{code}}",
       fetchType: "parser",
       domQuery: {
-        linkQuery: ".grid_cell>a",
-        titleQuery: ".grid_cell>a>.grid_title",
+        linkQuery: ".video_grid_container a",
+        titleQuery: ".video_grid_container",
       },
     },
     {
@@ -1159,27 +1159,25 @@
   const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }) => {
     const { name, codeFormater } = siteItem;
     const formatCode = codeFormater ? codeFormater(CODE) : CODE;
-    const link = siteItem.url.replace("{{code}}", formatCode);
+    const originLink = siteItem.url.replace("{{code}}", formatCode);
     const [loading, setLoading] = p(false);
     const [fetchRes, setFetchRes] = p();
     _(() => {
       setLoading(true);
       fetcher({
         siteItem,
-        targetLink: link,
+        targetLink: originLink,
         CODE: formatCode,
       }).then((res) => {
         setFetchRes(res);
         setLoading(false);
       });
-    }, [fetcher, siteItem, CODE, link]);
+    }, [fetcher, siteItem, CODE, originLink]);
     const multipleFlag = multipleNavi && (fetchRes == null ? void 0 : fetchRes.multipleRes);
     const tag = multipleFlag ? "多结果" : fetchRes == null ? void 0 : fetchRes.tag;
-    const resultLink = multipleFlag
-      ? fetchRes.multipResLink
-      : fetchRes == null
-      ? void 0
-      : fetchRes.targetLink;
+    const resultLink =
+      (multipleFlag ? fetchRes.multipResLink : fetchRes == null ? void 0 : fetchRes.targetLink) ??
+      originLink;
     const colorClass = (fetchRes == null ? void 0 : fetchRes.isSuccess)
       ? "jop-button_green "
       : "jop-button_red ";
@@ -1189,7 +1187,7 @@
     return u("a", {
       className: "jop-button " + (loading ? " " : colorClass),
       target: "_blank",
-      href: resultLink === "" ? link : resultLink,
+      href: resultLink === "" ? originLink : resultLink,
       children: [
         tag &&
           u("div", {
