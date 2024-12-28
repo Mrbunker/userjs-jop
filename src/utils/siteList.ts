@@ -17,8 +17,7 @@ export interface DomQuery_parser {
 
 export interface DomQuery_get {
   /** 检测是否提供播放
-   * 点名：JAVMENU  收录视频，但是未提供在线播放资源。
-   * 点名：njav  资源没有但是非要返回 404
+   * JAVMENU  收录视频，但是未提供在线播放资源
    */
   videoQuery?: string;
 
@@ -67,6 +66,7 @@ export const siteList: SiteItem[] = [
     domQuery: {
       subQuery: ".info-header",
       leakQuery: ".info-header",
+      videoQuery: ".plyr__controls",
     },
   },
   {
@@ -94,13 +94,11 @@ export const siteList: SiteItem[] = [
     },
   },
   {
-    name: "njav",
-    hostname: "njav.tv",
-    url: "https://njav.tv/zh/v/{{code}}",
+    name: "123av",
+    hostname: "123av.com",
+    url: "https://123av.com/zh/v/{{code}}",
     fetchType: "get",
-    domQuery: {
-      videoQuery: "#player",
-    },
+    domQuery: {},
   },
   {
     // 有可能搜出仨：leakage subtitle 4k
@@ -173,8 +171,8 @@ export const siteList: SiteItem[] = [
     url: "https://javmost.cx/search/{{code}}/",
     fetchType: "parser",
     domQuery: {
-      linkQuery: "#content .card a#MyImage",
-      titleQuery: "#content .card-block .card-title",
+      linkQuery: ".card #myButton",
+      titleQuery: ".card-block h4.card-title",
     },
   },
   {
@@ -271,6 +269,13 @@ export const siteList: SiteItem[] = [
     url: "https://javgo.to/zh/v/{{code}}",
     fetchType: "get",
     domQuery: {},
+  },
+  {
+    name: "javhub",
+    hostname: "javhub.net",
+    url: "https://javhub.net/search/{{code}}",
+    fetchType: "parser",
+    domQuery: { linkQuery: "a.card-text[href*='play']", titleQuery: "a.card-text[href*='play']" },
   },
   {
     name: "JavBus",

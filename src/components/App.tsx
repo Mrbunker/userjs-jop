@@ -8,8 +8,8 @@ import type { LibItem } from "@/utils/libSites";
 const App = memo(function ({ libItem, CODE }: { libItem: LibItem; CODE: string }) {
   // 默认不显示
   const DEF_DIS = [
-    ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
-    ...["JavBus", "JavDB", "JAVLib", "MISSAV_"],
+    ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn", "evojav", "HAYAV"],
+    ...["JavBus", "JavDB", "JAVLib", "MISSAV_", "123av", "javhub", "javgo", "JAVMENU"],
   ];
   const [disables, setDisables] = useState(GM_getValue<SiteItem["name"][]>("disable", DEF_DIS));
   const [multipleNavi, setMultipleNavi] = useState(GM_getValue<boolean>("multipleNavi", true));
