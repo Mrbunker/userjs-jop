@@ -15,8 +15,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
     "baseUrl": "./",
     "paths": { "@/*": ["./src/*"] }
   },
