@@ -1,4 +1,5 @@
 {
   "editor.formatOnSaveMode": "modificationsIfAvailable",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }

@@ -9,6 +9,7 @@
 // @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
+// @require      https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com

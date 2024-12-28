@@ -5,8 +5,9 @@ import { getCode } from "@/utils";
 import "@/style.css";
 import App from "./components/App";
 
-// !debugger 关图片
-// document.querySelectorAll("img").forEach((item) => (item.style.display = "none"));
+if (!import.meta.env.PROD) {
+  document.querySelectorAll("img").forEach((item) => (item.style.visibility = "hidden"));
+}
 
 function main() {
   /** 当前匹配的图书馆站点对象 */
@@ -28,6 +29,7 @@ function main() {
 
   const app = document.createElement("div");
   app.classList.add("jop-app");
+  // app.classList.add(a.toString());
   panel.append(app);
 
   render(<App libItem={libItem} CODE={CODE} />, app);

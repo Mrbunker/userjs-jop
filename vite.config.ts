@@ -10,6 +10,9 @@ const connectList = siteList
 
 const includeList = libSites.map((libItem) => libItem.href);
 
+const PARALLEL =
+  "https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js";
+
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
   version: "1.2.5",
@@ -21,6 +24,7 @@ const UserscriptConfig: MonkeyUserScript = {
   namespace: "https://greasyfork.org/zh-CN/scripts/429173",
   description: "为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接",
   connect: connectList,
+  require: [PARALLEL],
 };
 
 export default defineConfig({
