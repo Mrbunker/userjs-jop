@@ -11,9 +11,9 @@ if (!import.meta.env.PROD) {
 
 function main() {
   /** 当前匹配的图书馆站点对象 */
-  const libItem = libSites.find((item) => item.href.test(window.location.href));
+  const libItem = libSites.find((item) => document.querySelector(item.identifier));
   if (!libItem) {
-    console.error("||脚本挂载错误");
+    console.error("||jop 匹配站点失败");
     return;
   }
   const CODE = getCode(libItem);
@@ -23,7 +23,7 @@ function main() {
 
   const panel = document.querySelector<HTMLElement>(libItem.querys.panelQueryStr);
   if (!panel) {
-    console.error("||脚本挂载错误");
+    console.error("||jop 插入界面失败");
     return;
   }
 

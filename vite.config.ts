@@ -1,14 +1,7 @@
 import { defineConfig } from "vite";
 import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
-import { siteList } from "./src/utils/siteList";
-import { libSites } from "./src/utils/libSites";
-
-const connectList = siteList
-  .map((site) => site.hostname)
-  .concat(["javdb368.com", "javdb369.com", "g64w.com"]);
-
-const includeList = libSites.map((libItem) => libItem.href);
+import urlConfig from "./script/urlConfig";
 
 const PARALLEL =
   "https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js";
@@ -18,12 +11,10 @@ const UserscriptConfig: MonkeyUserScript = {
   version: "1.2.5",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
-  // match: ["*://*/cn/?v=jav*"],
-  include: includeList,
   icon: "https://javdb.com/favicon-32x32.png",
   namespace: "https://greasyfork.org/zh-CN/scripts/429173",
   description: "为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接",
-  connect: connectList,
+  ...urlConfig,
   require: [PARALLEL],
 };
 

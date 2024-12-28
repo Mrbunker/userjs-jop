@@ -2,7 +2,7 @@
 export type LibItem = {
   name: "javdb" | "javbus" | "javlib";
   enable: boolean;
-  href: RegExp;
+  identifier: string;
   querys: {
     panelQueryStr: string;
     codeQueryStr: string;
@@ -15,7 +15,7 @@ export const libSites: LibItem[] = [
   {
     name: "javdb",
     enable: true,
-    href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/,
+    identifier: "a[href*='javdb']",
     querys: {
       panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
       codeQueryStr: `[data-clipboard-text]`,
@@ -35,7 +35,7 @@ export const libSites: LibItem[] = [
   {
     name: "javbus",
     enable: true,
-    href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/,
+    identifier: "a[href*='javbus']",
     querys: {
       panelQueryStr: ".movie>div.info",
       codeQueryStr: `span[style="color:#CC0000;"]`,
@@ -45,7 +45,7 @@ export const libSites: LibItem[] = [
   {
     name: "javlib",
     enable: true,
-    href: /^http.*\/cn\/\?v=jav.*$/,
+    identifier: "img[src*='logo-top']",
     querys: {
       panelQueryStr: "#video_jacket_info #video_info",
       codeQueryStr: `#video_id td.text`,
