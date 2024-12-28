@@ -1,20 +1,25 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.5
+// @version      1.2.6
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
 // @icon         https://javdb.com/favicon-32x32.png
 // @include      /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
+// @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
+// @match        jav525.app
+// @match        javdb368.com/
+// @match        javdb.com/
+// @match        s87n.com
 // @require      https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com
 // @connect      missav123.com
-// @connect      njav.tv
+// @connect      123av.com
 // @connect      supjav.com
 // @connect      netflav5.com
 // @connect      avgle.com
@@ -34,12 +39,10 @@
 // @connect      evojav.pro
 // @connect      18av.mm-cg.com
 // @connect      javgo.to
+// @connect      javhub.net
 // @connect      javbus.com
 // @connect      javdb.com
 // @connect      javlibrary.com
-// @connect      javdb368.com
-// @connect      javdb369.com
-// @connect      g64w.com
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -64,7 +67,7 @@
     {
       name: "javdb",
       enable: true,
-      href: /^https?:\/\/(\w*\.)?javdb(\d)*\.com\/v.*$/,
+      identifier: "a[href*='javdb']",
       querys: {
         panelQueryStr: ".video-meta-panel>.columns.is-desktop .panel.movie-panel-info",
         codeQueryStr: `[data-clipboard-text]`
@@ -83,7 +86,7 @@
     {
       name: "javbus",
       enable: true,
-      href: /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/,
+      identifier: "a[href*='javbus']",
       querys: {
         panelQueryStr: ".movie>div.info",
         codeQueryStr: `span[style="color:#CC0000;"]`
@@ -94,7 +97,7 @@
     {
       name: "javlib",
       enable: true,
-      href: /^http.*\/cn\/\?v=jav.*$/,
+      identifier: "img[src*='logo-top']",
       querys: {
         panelQueryStr: "#video_jacket_info #video_info",
         codeQueryStr: `#video_id td.text`
@@ -116,7 +119,8 @@
       fetchType: "get",
       domQuery: {
         subQuery: ".info-header",
-        leakQuery: ".info-header"
+        leakQuery: ".info-header",
+        videoQuery: ".plyr__controls"
       }
     },
     {
@@ -144,13 +148,11 @@
       }
     },
     {
-      name: "njav",
-      hostname: "njav.tv",
-      url: "https://njav.tv/zh/v/{{code}}",
+      name: "123av",
+      hostname: "123av.com",
+      url: "https://123av.com/zh/v/{{code}}",
       fetchType: "get",
-      domQuery: {
-        videoQuery: "#player"
-      }
+      domQuery: {}
     },
     {
       // 有可能搜出仨：leakage subtitle 4k
@@ -223,8 +225,8 @@
       url: "https://javmost.cx/search/{{code}}/",
       fetchType: "parser",
       domQuery: {
-        linkQuery: "#content .card a#MyImage",
-        titleQuery: "#content .card-block .card-title"
+        linkQuery: ".card #myButton",
+        titleQuery: ".card-block h4.card-title"
       }
     },
     {
@@ -320,6 +322,13 @@
       url: "https://javgo.to/zh/v/{{code}}",
       fetchType: "get",
       domQuery: {}
+    },
+    {
+      name: "javhub",
+      hostname: "javhub.net",
+      url: "https://javhub.net/search/{{code}}",
+      fetchType: "parser",
+      domQuery: { linkQuery: "a.card-text[href*='play']", titleQuery: "a.card-text[href*='play']" }
     },
     {
       name: "JavBus",
@@ -901,8 +910,8 @@
   };
   const App = M(function({ libItem, CODE }) {
     const DEF_DIS = [
-      ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn"],
-      ...["JavBus", "JavDB", "JAVLib", "MISSAV_"]
+      ...["AvJoy", "baihuse", "GGJAV", "AV01", "18sex", "highporn", "evojav", "HAYAV"],
+      ...["JavBus", "JavDB", "JAVLib", "MISSAV_", "123av", "javhub", "javgo", "JAVMENU"]
     ];
     const [disables, setDisables] = h(_GM_getValue("disable", DEF_DIS));
     const [multipleNavi, setMultipleNavi] = h(_GM_getValue("multipleNavi", true));
@@ -945,16 +954,16 @@
     ] });
   });
   function main() {
-    const libItem = libSites.find((item) => item.href.test(window.location.href));
+    const libItem = libSites.find((item) => document.querySelector(item.identifier));
     if (!libItem) {
-      console.error("||脚本挂载错误");
+      console.error("||jop 匹配站点失败");
       return;
     }
     const CODE = getCode(libItem);
     libItem.method();
     const panel = document.querySelector(libItem.querys.panelQueryStr);
     if (!panel) {
-      console.error("||脚本挂载错误");
+      console.error("||jop 插入界面失败");
       return;
     }
     const app = document.createElement("div");

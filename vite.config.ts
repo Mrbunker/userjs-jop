@@ -8,7 +8,7 @@ const PARALLEL =
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
-  version: "1.2.5",
+  version: "1.2.6",
   license: "MIT",
   name: "JAV 添加跳转在线观看",
   icon: "https://javdb.com/favicon-32x32.png",
