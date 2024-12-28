@@ -14,7 +14,7 @@
 // @match        javdb368.com/
 // @match        javdb.com/
 // @match        s87n.com
-// @require      https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js
+// @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
 // @connect      missav.com

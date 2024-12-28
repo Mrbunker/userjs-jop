@@ -3,8 +3,9 @@ import monkey, { cdn, MonkeyUserScript } from "vite-plugin-monkey";
 import preact from "@preact/preset-vite";
 import urlConfig from "./script/urlConfig";
 
-const PARALLEL =
-  "https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js";
+// const PARALLEL =
+//   "https://raw.githubusercontent.com/Tampermonkey/utils/refs/heads/main/requires/gh_2215_make_GM_xhr_more_parallel_again.js";
+const PARALLEL = "https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js";
 
 const UserscriptConfig: MonkeyUserScript = {
   author: "mission522",
