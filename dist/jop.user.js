@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.7
+// @version      1.2.8
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -119,8 +119,7 @@
       fetchType: "get",
       domQuery: {
         subQuery: ".info-header",
-        leakQuery: ".info-header",
-        videoQuery: ".plyr__controls"
+        leakQuery: ".info-header"
       }
     },
     {
@@ -150,9 +149,13 @@
     {
       name: "123av",
       hostname: "123av.com",
-      url: "https://123av.com/zh/v/{{code}}",
-      fetchType: "get",
-      domQuery: {}
+      url: "https://123av.com/zh/search?keyword={{code}}",
+      fetchType: "parser",
+      strictParser: true,
+      domQuery: {
+        linkQuery: `.detail>a[href*='v/']`,
+        titleQuery: `.detail>a[href*='v/']`
+      }
     },
     {
       // 有可能搜出仨：leakage subtitle 4k
@@ -171,8 +174,8 @@
       url: "https://netflav5.com/search?type=title&keyword={{code}}",
       fetchType: "parser",
       domQuery: {
-        linkQuery: ".video_grid_container a",
-        titleQuery: ".video_grid_container"
+        linkQuery: ".grid_0_cell>a[href^='/video?']",
+        titleQuery: ".grid_0_cell>a[href^='/video?'] .grid_0_title"
       }
     },
     {
@@ -286,7 +289,10 @@
       hostname: "www.av01.tv",
       url: "https://www.av01.tv/search/videos?search_query={{code}}",
       fetchType: "parser",
-      domQuery: { linkQuery: "div[id].well-sm>a", titleQuery: ".video-views>.pull-left" }
+      domQuery: {
+        linkQuery: "div.well>a[href^='/video/']",
+        titleQuery: "div.well>a[href^='/video/']"
+      }
     },
     {
       name: "18sex",
@@ -303,6 +309,7 @@
       domQuery: { linkQuery: ".well>a[href]", titleQuery: ".well>a[href]>span.video-title" }
     },
     {
+      // 套了个 cf_clearance 的 cookie，不好搞
       name: "evojav",
       hostname: "evojav.pro",
       url: "https://evojav.pro/video/{{code}}/",
@@ -371,6 +378,7 @@
     });
   };
   const isCaseInsensitiveEqual = (str1, str2) => {
+    if (!str1 || !str2) return false;
     return str1.toLowerCase() === str2.toLowerCase();
   };
   const isErrorCode = (resCode) => {
@@ -387,7 +395,7 @@
   };
   const regEnum = {
     subtitle: /(中文|字幕|subtitle)/,
-    leakage: /(无码|無碼|泄漏|Uncensored)/
+    leakage: /(无码|無碼|泄漏|泄露|Uncensored)/
   };
   const tagsQuery = ({
     leakageText,
@@ -805,32 +813,51 @@
     const subNode = subQuery ? doc.querySelector(subQuery) : "";
     const subNodeText = subNode ? subNode.innerHTML : "";
     const leakNode = leakQuery ? doc.querySelector(leakQuery) : null;
-    const linkNodeText = leakNode ? leakNode.innerHTML : "";
+    const leakNodeText = leakNode ? leakNode.innerHTML : "";
     const videoNode = videoQuery ? doc.querySelector(videoQuery) : true;
     return {
       isSuccess: !!videoNode,
-      tag: tagsQuery({ leakageText: linkNodeText, subtitleText: subNodeText })
+      tag: tagsQuery({ leakageText: leakNodeText, subtitleText: subNodeText })
     };
   }
-  function serachPageParser(responseText, { linkQuery, titleQuery, listIndex = 0 }, siteHostName, CODE, searchPageLink) {
+  function searchPageCodeCheck(titleNodes, siteItem, CODE) {
+    if (!titleNodes || titleNodes.length === 0) return { isSuccess: false, titleNodeText: "" };
+    const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
+    if (siteItem.strictParser) {
+      const nodes = Array.from(titleNodes);
+      const passNodes = nodes.filter((node) => {
+        const nodeCode = node.outerHTML.match(codeRegex);
+        return isCaseInsensitiveEqual(nodeCode == null ? void 0 : nodeCode[0], CODE);
+      });
+      const titleNodeText = passNodes.map((node) => node.outerHTML).join(" ");
+      return {
+        titleNodeText,
+        isSuccess: passNodes.length > 0,
+        multipleRes: passNodes.length > 1
+      };
+    } else {
+      const titleNode = titleNodes[siteItem.domQuery.listIndex ?? 0];
+      const titleNodeText = titleNode ? titleNode == null ? void 0 : titleNode.outerHTML : "";
+      const matchCode = titleNodeText.match(codeRegex);
+      const isSuccess = isCaseInsensitiveEqual(matchCode == null ? void 0 : matchCode[0], CODE);
+      return { titleNodeText, isSuccess, multipleRes: titleNodes.length > 1 };
+    }
+  }
+  function serachPageParser(responseText, siteItem, CODE) {
+    const { linkQuery, titleQuery } = siteItem.domQuery;
     const doc = new DOMParser().parseFromString(responseText, "text/html");
     const titleNodes = titleQuery ? doc.querySelectorAll(titleQuery) : [];
+    const { isSuccess, titleNodeText, multipleRes } = searchPageCodeCheck(titleNodes, siteItem, CODE);
     const linkNodes = linkQuery ? doc.querySelectorAll(linkQuery) : [];
-    const titleNode = titleNodes[listIndex];
-    const linkNode = linkNodes[listIndex];
-    const titleNodeText = titleNode ? titleNode == null ? void 0 : titleNode.outerHTML : "";
-    const codeRegex = /[a-zA-Z]{3,5}-\d{3,5}/;
-    const matchCode = titleNodeText.match(codeRegex);
-    const isSuccess = linkNode && titleNode && matchCode && isCaseInsensitiveEqual(matchCode[0], CODE);
+    const linkNode = linkNodes[siteItem.domQuery.listIndex ?? 0];
     if (!isSuccess) {
       return { isSuccess: false };
     }
-    const targetLinkText = linkNode.href.replace(linkNode.hostname, siteHostName);
+    const resultLinkText = linkNode.href.replace(linkNode.hostname, siteItem.hostname);
     return {
       isSuccess: true,
-      targetLink: targetLinkText,
-      multipResLink: searchPageLink,
-      multipleRes: titleNodes.length > 1,
+      resultLink: resultLinkText,
+      multipleRes,
       tag: tagsQuery({ leakageText: titleNodeText, subtitleText: titleNodeText })
     };
   }
@@ -842,24 +869,17 @@
       }
       if (siteItem.fetchType === "get") {
         return {
-          ...videoPageParser(response.responseText, siteItem.domQuery),
-          targetLink
+          resultLink: targetLink,
+          ...videoPageParser(response.responseText, siteItem.domQuery)
         };
       } else {
         return {
-          ...serachPageParser(
-            response.responseText,
-            siteItem.domQuery,
-            siteItem.hostname,
-            CODE,
-            targetLink
-          )
+          ...serachPageParser(response.responseText, siteItem, CODE)
         };
       }
     } catch (error) {
       return {
-        isSuccess: false,
-        targetLink
+        isSuccess: false
       };
     }
   };
@@ -890,7 +910,7 @@
     }, [fetcher, siteItem, CODE, originLink]);
     const multipleFlag = multipleNavi && (fetchRes == null ? void 0 : fetchRes.multipleRes);
     const tag = multipleFlag ? "多结果" : fetchRes == null ? void 0 : fetchRes.tag;
-    const resultLink = (multipleFlag ? fetchRes.multipResLink : fetchRes == null ? void 0 : fetchRes.targetLink) ?? originLink;
+    const resultLink = multipleFlag ? originLink : fetchRes == null ? void 0 : fetchRes.resultLink;
     const colorClass = (fetchRes == null ? void 0 : fetchRes.isSuccess) ? "jop-button_green " : "jop-button_red ";
     if (hiddenError && !(fetchRes == null ? void 0 : fetchRes.isSuccess)) {
       return /* @__PURE__ */ u$1(preact.Fragment, {});
@@ -900,7 +920,7 @@
       {
         className: "jop-button " + (loading ? " " : colorClass),
         target: "_blank",
-        href: resultLink === "" ? originLink : resultLink,
+        href: !resultLink ? originLink : resultLink,
         children: [
           tag && /* @__PURE__ */ u$1("div", { className: "jop-button_label", children: tag }),
           /* @__PURE__ */ u$1("span", { children: name })
