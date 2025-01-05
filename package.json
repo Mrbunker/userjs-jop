@@ -9,6 +9,7 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "@types/node": "^22.10.5",
     "preact": "10.25.4"
   },
   "devDependencies": {

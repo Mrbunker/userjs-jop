@@ -8,6 +8,9 @@ const cleanUrl = (url: string): string => {
 };
 
 const getLibMirror = async () => {
+  if (process.env.NODE_ENV !== "production") {
+    return "";
+  }
   try {
     const user = "javlibcom";
     const res = await fetch(`https://api.github.com/users/${user}`);

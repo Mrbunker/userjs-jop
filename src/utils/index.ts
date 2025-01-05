@@ -42,7 +42,8 @@ export const gmPost = ({
   });
 };
 
-export const isCaseInsensitiveEqual = (str1: string, str2: string) => {
+export const isCaseInsensitiveEqual = (str1?: any, str2?: any) => {
+  if (!str1 || !str2) return false;
   return str1.toLowerCase() === str2.toLowerCase();
 };
 
@@ -68,7 +69,7 @@ export const getCode = (libItem: LibItem): string => {
 
 export const regEnum = {
   subtitle: /(中文|字幕|subtitle)/,
-  leakage: /(无码|無碼|泄漏|Uncensored)/,
+  leakage: /(无码|無碼|泄漏|泄露|Uncensored)/,
 };
 
 export const tagsQuery = ({

@@ -46,15 +46,17 @@ export interface SiteItem_get extends SiteItemBase {
 
 export interface SiteItem_parser extends SiteItemBase {
   fetchType: "parser";
+  /** 严格匹配，会检查搜索结果的 code */
+  strictParser?: true;
   domQuery: DomQuery_parser;
 }
-export interface SiteItem_post extends SiteItemBase {
-  fetchType: "post";
-  postParams: Record<string, any>;
-  domQuery: DomQuery_parser;
-}
+// export interface SiteItem_post extends SiteItemBase {
+//   fetchType: "post";
+//   postParams: Record<string, any>;
+//   domQuery: DomQuery_parser;
+// }
 
-export type SiteItem = SiteItem_get | SiteItem_parser | SiteItem_post;
+export type SiteItem = SiteItem_get | SiteItem_parser;
 
 /** 在线网站列表 */
 export const siteList: SiteItem[] = [
@@ -66,7 +68,6 @@ export const siteList: SiteItem[] = [
     domQuery: {
       subQuery: ".info-header",
       leakQuery: ".info-header",
-      videoQuery: ".plyr__controls",
     },
   },
   {
@@ -96,9 +97,13 @@ export const siteList: SiteItem[] = [
   {
     name: "123av",
     hostname: "123av.com",
-    url: "https://123av.com/zh/v/{{code}}",
-    fetchType: "get",
-    domQuery: {},
+    url: "https://123av.com/zh/search?keyword={{code}}",
+    fetchType: "parser",
+    strictParser: true,
+    domQuery: {
+      linkQuery: `.detail>a[href*='v/']`,
+      titleQuery: `.detail>a[href*='v/']`,
+    },
   },
   {
     // 有可能搜出仨：leakage subtitle 4k
@@ -117,8 +122,8 @@ export const siteList: SiteItem[] = [
     url: "https://netflav5.com/search?type=title&keyword={{code}}",
     fetchType: "parser",
     domQuery: {
-      linkQuery: ".video_grid_container a",
-      titleQuery: ".video_grid_container",
+      linkQuery: ".grid_0_cell>a[href^='/video?']",
+      titleQuery: ".grid_0_cell>a[href^='/video?'] .grid_0_title",
     },
   },
   {
@@ -233,7 +238,10 @@ export const siteList: SiteItem[] = [
     hostname: "www.av01.tv",
     url: "https://www.av01.tv/search/videos?search_query={{code}}",
     fetchType: "parser",
-    domQuery: { linkQuery: "div[id].well-sm>a", titleQuery: ".video-views>.pull-left" },
+    domQuery: {
+      linkQuery: "div.well>a[href^='/video/']",
+      titleQuery: "div.well>a[href^='/video/']",
+    },
   },
   {
     name: "18sex",
@@ -250,6 +258,7 @@ export const siteList: SiteItem[] = [
     domQuery: { linkQuery: ".well>a[href]", titleQuery: ".well>a[href]>span.video-title" },
   },
   {
+    // 套了个 cf_clearance 的 cookie，不好搞
     name: "evojav",
     hostname: "evojav.pro",
     url: "https://evojav.pro/video/{{code}}/",

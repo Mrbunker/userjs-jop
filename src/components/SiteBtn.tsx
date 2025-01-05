@@ -28,7 +28,7 @@ const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }: Props) => {
 
   const multipleFlag = multipleNavi && fetchRes?.multipleRes;
   const tag = multipleFlag ? "多结果" : fetchRes?.tag;
-  const resultLink = (multipleFlag ? fetchRes.multipResLink : fetchRes?.targetLink) ?? originLink;
+  const resultLink = multipleFlag ? originLink : fetchRes?.resultLink;
   const colorClass = fetchRes?.isSuccess ? "jop-button_green " : "jop-button_red ";
 
   if (hiddenError && !fetchRes?.isSuccess) {
@@ -38,7 +38,7 @@ const SiteBtn = ({ siteItem, CODE, multipleNavi, hiddenError }: Props) => {
     <a
       className={"jop-button " + (loading ? " " : colorClass)}
       target="_blank"
-      href={resultLink === "" ? originLink : resultLink}
+      href={!resultLink ? originLink : resultLink}
     >
       {tag && <div className="jop-button_label">{tag}</div>}
 
