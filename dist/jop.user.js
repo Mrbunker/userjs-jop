@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.6
+// @version      1.2.7
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -10,10 +10,10 @@
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
-// @match        jav525.app
-// @match        javdb368.com/
-// @match        javdb.com/
-// @match        s87n.com
+// @match        *://*.jav525.app/*
+// @match        *://*.javdb368.com/*
+// @match        *://*.javdb.com/*
+// @match        *://*.t88j.com/*
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
