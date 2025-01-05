@@ -1,29 +1,44 @@
 import { siteList } from "../src/utils/siteList";
 
 const cleanUrl = (url: string): string => {
-  return url.replace(/^(https?:\/\/)?(www\.)?/, "");
+  const domainMatch = url.match(/^(?:https?:\/\/)?(?:www\.)?([^\/]+)/i);
+  if (!domainMatch) return "";
+  const domain = domainMatch[1];
+  return `*://*.${domain}/*`;
 };
 
 const getLibMirror = async () => {
-  const user = "javlibcom";
-  const res = await fetch(`https://api.github.com/users/${user}`);
-  const data = (await res.json()) || {};
-  return cleanUrl(data.blog ?? "");
+  try {
+    const user = "javlibcom";
+    const res = await fetch(`https://api.github.com/users/${user}`);
+    const data = await res.json();
+    return cleanUrl(data.blog ?? "");
+  } catch (error) {
+    console.warn("Error fetching lib mirror:", error);
+    return "";
+  }
 };
 
-const getDbMirror = async () => {
-  const res = await fetch(`https://javdb.com/`);
-  const htmlText = await res.text();
+const getDbMirrors = async () => {
+  try {
+    const res = await fetch(`https://javdb.com/`);
+    const htmlText = await res.text();
 
-  const navMatch = htmlText.match(/<nav[^>]*class="[^"]*sub-header[^"]*"[^>]*>([\s\S]*?)<\/nav>/i);
-  if (!navMatch) return [];
+    const navMatch = htmlText.match(
+      /<nav[^>]*class="[^"]*sub-header[^"]*"[^>]*>([\s\S]*?)<\/nav>/i,
+    );
+    if (!navMatch) return [];
 
-  const hrefRegex = /href="([^"]+)"/g;
-  return [...navMatch[1].matchAll(hrefRegex)].map((match) => cleanUrl(match[1])).filter(Boolean);
+    const hrefRegex = /href="([^"]+)"/g;
+    return [...navMatch[1].matchAll(hrefRegex)].map((match) => cleanUrl(match[1])).filter(Boolean);
+  } catch (error) {
+    console.warn("Error fetching db mirror:", error);
+    return [];
+  }
 };
 
 const libMirrorUrl = await getLibMirror();
-const dbMirrorUrls = await getDbMirror();
+const dbMirrorUrls = await getDbMirrors();
 
 const connectList = siteList.map((site) => site.hostname);
 
@@ -34,7 +49,7 @@ const includeList = [
   /^http.*\/cn\/\?v=jav.*$/,
 ];
 
-const mirrorList = [...dbMirrorUrls, libMirrorUrl];
+const mirrorList = [...dbMirrorUrls, libMirrorUrl].filter(Boolean);
 export default {
   match: [...mirrorList],
   connect: connectList,
