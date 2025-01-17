@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.8
+// @version      1.2.9
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -17,7 +17,7 @@
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
-// @connect      missav.com
+// @connect      missav.ws
 // @connect      missav123.com
 // @connect      123av.com
 // @connect      supjav.com
@@ -124,12 +124,12 @@
     },
     {
       name: "MISSAV",
-      hostname: "missav.com",
-      url: "https://missav.com/{{code}}/",
+      hostname: "missav.ws",
+      url: "https://missav.ws/{{code}}/",
       fetchType: "get",
       domQuery: {
         // 标签区的第一个一般是字幕标签
-        subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
+        subQuery: '.space-y-2 a.text-nord13[href="https://missav.ws/chinese-subtitle"]',
         // 有个「切換無碼」按钮，藏在分享按钮旁边……
         leakQuery: ".order-first div.rounded-md a[href]:last-child"
       }
