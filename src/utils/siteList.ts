@@ -72,12 +72,12 @@ export const siteList: SiteItem[] = [
   },
   {
     name: "MISSAV",
-    hostname: "missav.com",
-    url: "https://missav.com/{{code}}/",
+    hostname: "missav.ws",
+    url: "https://missav.ws/{{code}}/",
     fetchType: "get",
     domQuery: {
       // 标签区的第一个一般是字幕标签
-      subQuery: '.space-y-2 a.text-nord13[href="https://missav.com/chinese-subtitle"]',
+      subQuery: '.space-y-2 a.text-nord13[href="https://missav.ws/chinese-subtitle"]',
       // 有个「切換無碼」按钮，藏在分享按钮旁边……
       leakQuery: ".order-first div.rounded-md a[href]:last-child",
     },
