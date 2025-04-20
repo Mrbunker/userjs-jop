@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.9
+// @version      1.2.10
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -11,9 +11,9 @@
 // @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
 // @match        *://*.jav525.app/*
-// @match        *://*.javdb368.com/*
+// @match        *://*.javdb456.com/*
 // @match        *://*.javdb.com/*
-// @match        *://*.t88j.com/*
+// @match        *://*.r86m.com/*
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      jable.tv
@@ -359,11 +359,11 @@
       name: "JAVLib",
       hostname: "javlibrary.com",
       url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
-      fetchType: "parser",
-      domQuery: {
-        linkQuery: ".videothumblist .video[id]:first-child>a",
-        titleQuery: ".videothumblist .video[id]:first-child>a>div.id"
-      }
+      fetchType: "false"
+      // domQuery: {
+      //   linkQuery: ".videothumblist .video[id]:first-child>a",
+      //   titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
+      // },
     }
   ];
   const SP_PREFIX = "300";
@@ -862,6 +862,12 @@
     };
   }
   const baseFetcher = async ({ siteItem, targetLink, CODE }) => {
+    if (siteItem.fetchType === "false") {
+      return Promise.resolve({
+        isSuccess: true,
+        resultLink: targetLink
+      });
+    }
     try {
       const response = await gmGet({ url: targetLink });
       if (isErrorCode(response.status)) {
