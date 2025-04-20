@@ -6,7 +6,7 @@ import "@/style.css";
 import App from "./components/App";
 
 if (!import.meta.env.PROD) {
-  document.querySelectorAll("img").forEach((item) => (item.style.visibility = "hidden"));
+  // document.querySelectorAll("img").forEach((item) => (item.style.visibility = "hidden"));
 }
 
 function main() {

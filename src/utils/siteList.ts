@@ -55,8 +55,11 @@ export interface SiteItem_parser extends SiteItemBase {
 //   postParams: Record<string, any>;
 //   domQuery: DomQuery_parser;
 // }
+export interface SiteItem_false extends SiteItemBase {
+  fetchType: "false";
+}
 
-export type SiteItem = SiteItem_get | SiteItem_parser;
+export type SiteItem = SiteItem_get | SiteItem_parser | SiteItem_false;
 
 /** 在线网站列表 */
 export const siteList: SiteItem[] = [
@@ -308,11 +311,11 @@ export const siteList: SiteItem[] = [
     name: "JAVLib",
     hostname: "javlibrary.com",
     url: "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword={{code}}",
-    fetchType: "parser",
-    domQuery: {
-      linkQuery: ".videothumblist .video[id]:first-child>a",
-      titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
-    },
+    fetchType: "false",
+    // domQuery: {
+    //   linkQuery: ".videothumblist .video[id]:first-child>a",
+    //   titleQuery: ".videothumblist .video[id]:first-child>a>div.id",
+    // },
   },
 ];
 

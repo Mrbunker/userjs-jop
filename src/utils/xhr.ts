@@ -1,5 +1,5 @@
 import { gmGet, isCaseInsensitiveEqual, isErrorCode, tagsQuery } from "./";
-import type { DomQuery_get, SiteItem, SiteItem_parser } from "./siteList";
+import type { DomQuery_get, SiteItem, SiteItem_get, SiteItem_parser } from "./siteList";
 
 export type FetchResult = {
   isSuccess: boolean;
@@ -87,14 +87,21 @@ type Args = {
   targetLink: string;
   CODE: string;
 };
-export const baseFetcher = async ({ siteItem, targetLink, CODE }: Args): Promise<FetchResult> => {
+
+const baseFetcher = async ({ siteItem, targetLink, CODE }: Args): Promise<FetchResult> => {
+  if (siteItem.fetchType === "false") {
+    return Promise.resolve({
+      isSuccess: true,
+      resultLink: targetLink,
+    });
+  }
+
   try {
     const response = await gmGet({ url: targetLink });
     if (isErrorCode(response.status)) {
       // 请求 404，大概是对应网站没有资源
       throw Error(String(response.status));
     }
-
     if (siteItem.fetchType === "get") {
       // 直接 get 网页，成功，需要进一步解析 videoPage，获取字幕等信息
       return {
@@ -114,7 +121,7 @@ export const baseFetcher = async ({ siteItem, targetLink, CODE }: Args): Promise
 };
 
 /** jable 有些域名是带 -c */
-export const javbleFetcher = async (args: Args): Promise<FetchResult> => {
+const javbleFetcher = async (args: Args): Promise<FetchResult> => {
   const res = await baseFetcher(args);
   if (res.isSuccess) return res;
   const newLink = args.targetLink.slice(0, -1) + "-c/";
