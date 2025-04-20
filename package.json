@@ -9,13 +9,13 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.14.1",
     "preact": "10.25.4"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.9.3",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.6",
-    "vite-plugin-monkey": "^5.0.3"
+    "@preact/preset-vite": "^2.10.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.2",
+    "vite-plugin-monkey": "^5.0.8"
   }
 }
