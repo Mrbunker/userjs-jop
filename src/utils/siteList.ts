@@ -64,6 +64,22 @@ export type SiteItem = SiteItem_get | SiteItem_parser | SiteItem_false;
 /** 在线网站列表 */
 export const siteList: SiteItem[] = [
   {
+    name: "FANZA 動画",
+    hostname: "dmm.co.jp",
+    url: "https://www.dmm.co.jp/digital/videoa/-/detail/=/cid={{code}}/",
+    // url: "https://video.dmm.co.jp/av/list/?key={{code}}",
+    fetchType: "get",
+    codeFormater: (preCode) => {
+      const [pre, num] = preCode.split("-");
+      const padNum = num.padStart(5, "0");
+      if (pre.toLowerCase().startsWith("start")) {
+        return `1${pre.toLowerCase()}${padNum}`;
+      }
+      return `${pre}${padNum}`;
+    },
+    domQuery: {},
+  },
+  {
     name: "Jable",
     hostname: "jable.tv",
     url: "https://jable.tv/videos/{{code}}/",
@@ -81,18 +97,6 @@ export const siteList: SiteItem[] = [
     domQuery: {
       // 标签区的第一个一般是字幕标签
       subQuery: '.space-y-2 a.text-nord13[href="https://missav.ws/chinese-subtitle"]',
-      // 有个「切換無碼」按钮，藏在分享按钮旁边……
-      leakQuery: ".order-first div.rounded-md a[href]:last-child",
-    },
-  },
-  {
-    name: "MISSAV_",
-    hostname: "missav123.com",
-    url: "https://missav123.com/{{code}}/",
-    fetchType: "get",
-    domQuery: {
-      // 标签区的第一个一般是字幕标签
-      subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
       // 有个「切換無碼」按钮，藏在分享按钮旁边……
       leakQuery: ".order-first div.rounded-md a[href]:last-child",
     },

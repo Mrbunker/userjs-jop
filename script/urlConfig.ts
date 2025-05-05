@@ -23,6 +23,9 @@ const getLibMirror = async () => {
 };
 
 const getDbMirrors = async () => {
+  if (process.env.NODE_ENV !== "production") {
+    return "";
+  }
   try {
     const res = await fetch(`https://javdb.com/`);
     const htmlText = await res.text();
