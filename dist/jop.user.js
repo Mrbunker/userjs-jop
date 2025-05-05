@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JAV 添加跳转在线观看
 // @namespace    https://greasyfork.org/zh-CN/scripts/429173
-// @version      1.2.10
+// @version      1.2.11
 // @author       mission522
 // @description  为 JavDB、JavBus、JavLibrary 这三个站点添加跳转在线观看的链接
 // @license      MIT
@@ -10,15 +10,15 @@
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
-// @match        *://*.jav525.app/*
-// @match        *://*.javdb456.com/*
+// @match        *://*.app.javdb457.com/*
+// @match        *://*.javdb457.com/*
 // @match        *://*.javdb.com/*
-// @match        *://*.r86m.com/*
+// @match        *://*.v90f.com/*
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
+// @connect      dmm.co.jp
 // @connect      jable.tv
 // @connect      missav.ws
-// @connect      missav123.com
 // @connect      123av.com
 // @connect      supjav.com
 // @connect      netflav5.com
@@ -113,6 +113,22 @@
   var _GM_xmlhttpRequest = /* @__PURE__ */ (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
   const siteList = [
     {
+      name: "FANZA 動画",
+      hostname: "dmm.co.jp",
+      url: "https://www.dmm.co.jp/digital/videoa/-/detail/=/cid={{code}}/",
+      // url: "https://video.dmm.co.jp/av/list/?key={{code}}",
+      fetchType: "get",
+      codeFormater: (preCode) => {
+        const [pre, num] = preCode.split("-");
+        const padNum = num.padStart(5, "0");
+        if (pre.toLowerCase().startsWith("start")) {
+          return `1${pre.toLowerCase()}${padNum}`;
+        }
+        return `${pre}${padNum}`;
+      },
+      domQuery: {}
+    },
+    {
       name: "Jable",
       hostname: "jable.tv",
       url: "https://jable.tv/videos/{{code}}/",
@@ -130,18 +146,6 @@
       domQuery: {
         // 标签区的第一个一般是字幕标签
         subQuery: '.space-y-2 a.text-nord13[href="https://missav.ws/chinese-subtitle"]',
-        // 有个「切換無碼」按钮，藏在分享按钮旁边……
-        leakQuery: ".order-first div.rounded-md a[href]:last-child"
-      }
-    },
-    {
-      name: "MISSAV_",
-      hostname: "missav123.com",
-      url: "https://missav123.com/{{code}}/",
-      fetchType: "get",
-      domQuery: {
-        // 标签区的第一个一般是字幕标签
-        subQuery: '.space-y-2 a.text-nord13[href="https://missav123.com/chinese-subtitle"]',
         // 有个「切換無碼」按钮，藏在分享按钮旁边……
         leakQuery: ".order-first div.rounded-md a[href]:last-child"
       }
