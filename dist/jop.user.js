@@ -10,10 +10,6 @@
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
-// @match        *://*.app.javdb457.com/*
-// @match        *://*.javdb457.com/*
-// @match        *://*.javdb.com/*
-// @match        *://*.v90f.com/*
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      dmm.co.jp

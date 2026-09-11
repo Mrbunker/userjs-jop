@@ -17,5 +17,10 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.2",
     "vite-plugin-monkey": "^5.0.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "browserslist": "^4.28.7"
+    }
   }
 }
