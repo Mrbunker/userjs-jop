@@ -10,10 +10,6 @@
 // @include      /^https?:\/\/(\w*\.)?(javbus|seejav|javsee)*\.(com|cc|me|life|bid).*$/
 // @include      /^https?:\/\/(\w*\.)?javlibrary\.com.*$/
 // @include      /^http.*\/cn\/\?v=jav.*$/
-// @match        *://*.app.javdb457.com/*
-// @match        *://*.javdb457.com/*
-// @match        *://*.javdb.com/*
-// @match        *://*.v90f.com/*
 // @require      https://update.greasyfork.org/scripts/522123/1511104/tampermonkey%20parallel.js
 // @require      https://cdn.jsdelivr.net/npm/preact@10.25.4/dist/preact.min.js
 // @connect      dmm.co.jp
@@ -674,7 +670,7 @@
     return this.class;
   } }, fn = preact.options.vnode;
   preact.options.vnode = function(n) {
-    "string" == typeof n.type && function(n2) {
+    "string" == typeof n.type && (function(n2) {
       var t2 = n2.props, e2 = n2.type, u2 = {}, o2 = -1 === e2.indexOf("-");
       for (var i2 in t2) {
         var c2 = t2[i2];
@@ -688,7 +684,7 @@
       })), "select" == e2 && null != u2.defaultValue && (u2.value = preact.toChildArray(t2.children).forEach(function(n3) {
         n3.props.selected = u2.multiple ? -1 != u2.defaultValue.indexOf(n3.props.value) : u2.defaultValue == n3.props.value;
       })), t2.class && !t2.className ? (u2.class = t2.class, Object.defineProperty(u2, "className", ln)) : (t2.className && !t2.class || t2.class && t2.className) && (u2.class = u2.className = t2.className), n2.props = u2;
-    }(n), n.$$typeof = q, fn && fn(n);
+    })(n), n.$$typeof = q, fn && fn(n);
   };
   var an = preact.options.__r;
   preact.options.__r = function(n) {

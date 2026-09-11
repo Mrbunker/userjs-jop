@@ -9,13 +9,18 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.20.2",
     "preact": "10.25.4"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.10.1",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.2",
-    "vite-plugin-monkey": "^5.0.8"
+    "@preact/preset-vite": "^2.10.6",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.3",
+    "vite-plugin-monkey": "^5.0.9"
+  },
+  "pnpm": {
+    "overrides": {
+      "browserslist": "^4.28.7"
+    }
   }
 }
